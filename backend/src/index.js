@@ -5,6 +5,7 @@ import pool from "../config/database.js";
 import authRoutes from "../routes/auth.routes.js"; 
 import { env } from "../config/env.js";
 import pool from "../config/database.js";
+import authRoutes from "./routes/authRoutes.js";
 import aiRoutes from "./routes/ai.js";
 import { errorHandler } from "../middleware/error.js"; 
 import authMiddleware from "../middleware/auth.middleware.js";
@@ -23,11 +24,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// --------------------------
-// Route santé
-// --------------------------
-app.use(cors()); 
-app.use(express.json()); 
 
 
 const PORT = env.PORT || 4000;
@@ -128,10 +124,9 @@ getDataset();
 // --------------------------
 // Routes
 // --------------------------
-app.use("/api/matching", matchingRoutes);
 app.use("/api/ai", aiRoutes); 
 app.use("/api/auth", authRoutes);
-
+app.use("/api/matching", matchingRoutes);
 
 // --------------------------
 // Error middleware 
