@@ -5,6 +5,7 @@ import pool from "../config/database.js"; // chemin correct si database.js est d
 import authRoutes from "../routes/auth.routes.js"; // ← remonter d'un niveau
 import { env } from "../config/env.js";
 import pool from "../config/database.js";
+import authRoutes from "./routes/authRoutes.js";
 import aiRoutes from "./routes/ai.js";
 import matchingRoutes from "../routes/matching_model_routes.js";
 import { errorHandler } from "../middleware/error.js"; 
@@ -22,6 +23,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/auth", authRoutes);
 
 // Route santé
 app.use(cors()); 

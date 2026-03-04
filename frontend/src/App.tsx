@@ -1,3 +1,15 @@
+import './App.css';
+import RegisterPage from './pages/RegisterPage.jsx';
+
+function App() {
+  return (
+    <div className="App">
+      <RegisterPage />
+    </div>
+  );
+}
+
+export default App;
 import { Routes, Route } from "react-router-dom"
 import Login from "./pages/Login"
 import ForgotPassword from "./pages/ForgotPassword"
