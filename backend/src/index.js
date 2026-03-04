@@ -1,15 +1,15 @@
 import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
-import pool from "../config/database.js"; // chemin correct si database.js est dans src/config
-import authRoutes from "../routes/auth.routes.js"; // ← remonter d'un niveau
+import pool from "../config/database.js"; 
+import authRoutes from "../routes/auth.routes.js"; 
 import { env } from "../config/env.js";
 import pool from "../config/database.js";
 import authRoutes from "./routes/authRoutes.js";
 import aiRoutes from "./routes/ai.js";
-import matchingRoutes from "../routes/matching_model_routes.js";
 import { errorHandler } from "../middleware/error.js"; 
-
+import authMiddleware from "../middleware/auth.middleware.js";
+import matchingRoutes from "../routes/matching_model_routes.js";
 
 // --------------------------
 //importer les variables d'environnement
@@ -24,11 +24,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
-
-// Route santé
-app.use(cors()); 
-app.use(express.json()); 
 
 
 const PORT = env.PORT || 4000;
@@ -74,22 +69,14 @@ app.get("/health", async (req, res) => {
   }
 });
 
-// Déclaration des routes
-app.use("/api/auth", authRoutes);
 
-// Démarrage du serveur
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-
-//pour tester une route protegéé 
-import authMiddleware from "../middleware/auth.middleware.js";
 
 app.get("/api/profile", authMiddleware, (req, res) => {
   res.json({ message: "Welcome " + req.user.email });
 });
+
+
+
 // ------------------------
 // Routes de santé / test DB
 // ------------------------
@@ -137,9 +124,9 @@ getDataset();
 // --------------------------
 // Routes
 // --------------------------
-app.use("/api/matching", matchingRoutes);
 app.use("/api/ai", aiRoutes); 
-
+app.use("/api/auth", authRoutes);
+app.use("/api/matching", matchingRoutes);
 
 // --------------------------
 // Error middleware 
