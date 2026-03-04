@@ -22,3 +22,11 @@ build/
 # IDE
 .vscode/
 .idea/
+
+# Datasets
+ai/data/*.csv
+ai/data/matching_training_dataset.csv
+
+# models
+ai/models/
+*.joblib
