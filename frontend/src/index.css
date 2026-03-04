@@ -12,3 +12,91 @@ body {
   min-height: 100vh;
   background: #F4F6F8;  /* ← idem */
 }
+/* ============================= */
+/* GOOGLE FONT */
+/* ============================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* ============================= */
+/* GLOBAL RESET */
+/* ============================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ============================= */
+/* ROOT VARIABLES */
+/* ============================= */
+:root {
+  --primary-color: #A2211B;
+  --primary-hover: #D94F4F;
+  --text-dark: #1e3a5f;
+  --text-gray: #555;
+  --background-light: #F4F6F8;
+}
+
+/* ============================= */
+/* BODY */
+/* ============================= */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--background-light);
+  color: var(--text-dark);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================= */
+/* LINKS */
+/* ============================= */
+a {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+/* ============================= */
+/* BUTTON RESET */
+/* ============================= */
+button {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* ============================= */
+/* INPUT GLOBAL STYLE */
+/* ============================= */
+input {
+  font-family: inherit;
+  outline: none;
+}
+
+/* ============================= */
+/* SMOOTH FADE-IN ANIMATION */
+/* ============================= */
+.fade-in {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
