@@ -1,6 +1,8 @@
 import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
+import pool from "../config/database.js"; // chemin correct si database.js est dans src/config
+import authRoutes from "../routes/auth.routes.js"; // ← remonter d'un niveau
 import { env } from "../config/env.js";
 import pool from "../config/database.js";
 import aiRoutes from "./routes/ai.js";
@@ -17,6 +19,11 @@ dotenv.config();
 //Initialiser l'application express
 // --------------------------
 const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Route santé
 app.use(cors()); 
 app.use(express.json()); 
 
@@ -64,6 +71,22 @@ app.get("/health", async (req, res) => {
   }
 });
 
+// Déclaration des routes
+app.use("/api/auth", authRoutes);
+
+// Démarrage du serveur
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+
+//pour tester une route protegéé 
+import authMiddleware from "../middleware/auth.middleware.js";
+
+app.get("/api/profile", authMiddleware, (req, res) => {
+  res.json({ message: "Welcome " + req.user.email });
+});
 // ------------------------
 // Routes de santé / test DB
 // ------------------------

@@ -4,6 +4,7 @@
     "prettier": "^3.8.1"
   },
   "dependencies": {
+    "nodemailer": "^8.0.1"
     "axios": "^1.13.6"
   }
 }
