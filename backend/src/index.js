@@ -4,16 +4,18 @@ import dotenv from "dotenv";
 import { env } from "../config/env.js";
 import pool from "../config/database.js";
 import aiRoutes from "./routes/ai.js";
-
-// ✅ Charger dotenv avant toute utilisation
 import matchingRoutes from "../routes/matching_model_routes.js";
 import { errorHandler } from "../middleware/error.js"; 
 
 
+// --------------------------
 //importer les variables d'environnement
+// --------------------------
 dotenv.config();
 
+// --------------------------
 //Initialiser l'application express
+// --------------------------
 const app = express();
 app.use(cors()); 
 app.use(express.json()); 
@@ -31,8 +33,10 @@ app.listen(PORT, () => {
   console.log(`AI Service URL: ${AI_SERVICE_URL}`);
 });
 
+
 // ------------------------
 // Test DB à l'initialisation (optionnel, juste log)
+// --------------------------
 async function logCounts() {
   try {
     const result1 = await pool.query("SELECT COUNT(*) FROM blood_requests");
@@ -46,10 +50,10 @@ async function logCounts() {
 
 logCounts();
 
-// ------------------------
-// Routes de santé / test DB
-// ------------------------
+
+// --------------------------
 // health check pour le backend et connexion à la base de données
+// --------------------------
 app.get("/health", async (req, res) => {
   try {
     await pool.query("SELECT 1");
@@ -60,6 +64,9 @@ app.get("/health", async (req, res) => {
   }
 });
 
+// ------------------------
+// Routes de santé / test DB
+// ------------------------
 app.get("/test-db", async (req, res) => {
   try {
     const { rows } = await pool.query("SELECT NOW()");
@@ -70,18 +77,7 @@ app.get("/test-db", async (req, res) => {
   }
 });
 
-// ------------------------
-// Routes AI
-// ------------------------
-app.use("/api/ai", aiRoutes);  // inclut maintenant /predict-shortage ET /predict-from-db
 
-// ------------------------
-// Lancement serveur
-// ------------------------
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 
 // ------------------------
 // Fonction utilitaire optionnelle pour debug dataset
@@ -111,9 +107,15 @@ async function getDataset() {
 }
 
 getDataset();
-// routes
+
+// --------------------------
+// Routes
+// --------------------------
 app.use("/api/matching", matchingRoutes);
+app.use("/api/ai", aiRoutes); 
 
 
-// error middleware 
+// --------------------------
+// Error middleware 
+// --------------------------
 app.use(errorHandler);
