@@ -30,3 +30,7 @@ ai/data/matching_training_dataset.csv
 # models
 ai/models/
 *.joblib
+
+ai/data/*.csv
+ai/models/*.joblib
+ai/models/experiments/*
