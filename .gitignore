@@ -22,3 +22,8 @@ build/
 # IDE
 .vscode/
 .idea/
+
+
+# AI generated data
+ai/data/
+ai/model/
