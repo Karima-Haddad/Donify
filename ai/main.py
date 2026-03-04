@@ -1,7 +1,30 @@
-from flask import Flask, request, jsonify
 import os
 import joblib
 import pandas as pd
+from dotenv import load_dotenv
+from pydantic import BaseModel
+from flask import Flask, request, jsonify
+from fastapi import FastAPI, Header, HTTPException
+from services.topk_matching import predict_top_k
+
+
+# =========================
+# Charger .env
+# =========================
+load_dotenv()
+INTERNAL_API_KEY = os.getenv("INTERNAL_API_KEY")
+
+
+
+# ==========================================
+# App Initialization
+# ==========================================
+
+app = FastAPI(
+    title="Donify ML Service",
+    version="1.0.0",
+    description="Blood Donor Top-K Matching Service"
+)
 
 # =========================
 # Setup Flask
@@ -67,41 +90,6 @@ def predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-# =========================
-# Lancement du serveur Flask
-# =========================
-if __name__ == "__main__":
-    # Activation debug pour développement
-    app.run(host='0.0.0.0', port=8000, debug=True)
-# ==========================================
-# Donify ML Service - FastAPI
-# ==========================================
-
-import os
-import pandas as pd
-from dotenv import load_dotenv
-from pydantic import BaseModel
-from fastapi import FastAPI, Header, HTTPException
-from services.topk_matching import predict_top_k
-
-
-# =========================
-# Charger .env
-# =========================
-load_dotenv()
-INTERNAL_API_KEY = os.getenv("INTERNAL_API_KEY")
-
-
-# ==========================================
-# App Initialization
-# ==========================================
-
-app = FastAPI(
-    title="Donify ML Service",
-    version="1.0.0",
-    description="Blood Donor Top-K Matching Service"
-)
 
 
 # ==========================================
@@ -180,3 +168,11 @@ def predict_topk(payload: PredictTopKRequest, x_api_key: str = Header(None)):
         raise HTTPException(status_code=500, detail=str(e))
 
     return result_df.to_dict(orient="records")
+
+
+# =========================
+# Lancement du serveur Flask
+# =========================
+if __name__ == "__main__":
+    # Activation debug pour développement
+    app.run(host='0.0.0.0', port=8000, debug=True)
