@@ -23,6 +23,10 @@ build/
 .vscode/
 .idea/
 
+
+# AI generated data
+ai/data/
+ai/model/
 # Datasets
 ai/data/*.csv
 ai/data/matching_training_dataset.csv
