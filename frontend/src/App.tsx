@@ -5,6 +5,8 @@ import ResetPassword from "./pages/ResetPassword"
 import UserDashboard from "./pages/UserDashboard";
 import HospitalDashboard from "./pages/HospitalDashboard";
 
+
+
 function App() {
   return (
     <Routes>
@@ -16,6 +18,7 @@ function App() {
       <Route path="/hospital-dashboard" element={<HospitalDashboard />} />
 
     </Routes>
+
   )
 }
 
