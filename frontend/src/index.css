@@ -1,3 +1,8 @@
+/* ============================= */
+/* GOOGLE FONT */
+/* ============================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -12,10 +17,7 @@ body {
   min-height: 100vh;
   background: #F4F6F8;  /* ← idem */
 }
-/* ============================= */
-/* GOOGLE FONT */
-/* ============================= */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 
 /* ============================= */
 /* GLOBAL RESET */

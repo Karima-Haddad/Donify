@@ -4,8 +4,6 @@ import dotenv from "dotenv";
 import pool from "../config/database.js"; 
 import authRoutes from "../routes/auth.routes.js"; 
 import { env } from "../config/env.js";
-import pool from "../config/database.js";
-import authRoutes from "./routes/authRoutes.js";
 import aiRoutes from "./routes/ai.js";
 import { errorHandler } from "../middleware/error.js"; 
 import authMiddleware from "../middleware/auth.middleware.js";

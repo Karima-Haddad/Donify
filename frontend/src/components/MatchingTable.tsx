@@ -10,7 +10,7 @@ import { fetchTopKDonors } from "../api/matching";
 import type { Donor } from "../types/matching";
 import CompatibleDonorsTable from "./CompatibleDonorsTable";
 
-export default function MatchingPage() {
+export default function MatchingTable() {
   const [donors, setDonors] = useState<Donor[]>([]);
   const [loading, setLoading] = useState(true);
 
