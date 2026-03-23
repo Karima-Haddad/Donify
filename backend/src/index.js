@@ -4,10 +4,11 @@ import dotenv from "dotenv";
 import pool from "../config/database.js"; 
 import authRoutes from "../routes/auth.routes.js"; 
 import { env } from "../config/env.js";
-import aiRoutes from "./routes/ai.js";
 import { errorHandler } from "../middleware/error.js"; 
 import authMiddleware from "../middleware/auth.middleware.js";
 import matchingRoutes from "../routes/matching_model_routes.js";
+import shortageRoutes from "../routes/shortage_model_routes.js";
+import hospitalDashboardRoutes from "../routes/hospitalDashoardRoutes.js";
 
 // --------------------------
 //importer les variables d'environnement
@@ -122,9 +123,10 @@ getDataset();
 // --------------------------
 // Routes
 // --------------------------
-app.use("/api/ai", aiRoutes); 
 app.use("/api/auth", authRoutes);
 app.use("/api/matching", matchingRoutes);
+app.use("/api/shortage", shortageRoutes);
+app.use("/api", hospitalDashboardRoutes);
 
 // --------------------------
 // Error middleware 

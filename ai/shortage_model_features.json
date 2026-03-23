@@ -1,0 +1,14 @@
+[
+  "blood_type_encoded",
+  "total_requested_bags",
+  "total_donated_bags",
+  "gap_bags",
+  "current_stock_bags",
+  "stock_coverage_days",
+  "month",
+  "is_weekend",
+  "is_summer",
+  "is_ramadan_like",
+  "req_7d",
+  "don_7d"
+]

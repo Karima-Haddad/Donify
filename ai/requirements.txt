@@ -4,7 +4,8 @@ scikit-learn
 joblib
 flask
 xgboost
-joblib
 fastapi
 uvicorn
 pydantic
+matplotlib
+seaborn

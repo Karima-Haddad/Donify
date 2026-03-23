@@ -6,7 +6,6 @@ import UserDashboard from "./pages/UserDashboard";
 import HospitalDashboard from "./pages/HospitalDashboard";
 
 
-
 function App() {
   return (
     <Routes>
@@ -23,3 +22,5 @@ function App() {
 }
 
 export default App
+
+
