@@ -1,4 +1,4 @@
-import { healthCheck, getTopKDonors } from "../src/services/matching_model.js";
+import { healthCheck, getTopKDonors, validateDonation, getValidatedDonations } from "../src/services/matching_model.js";
 import pool from "../config/database.js";
 
 /**
@@ -47,4 +47,43 @@ async function mlHealth(req, res) {
   }
 }
 
-export { getTopK, mlHealth };
+/**
+ * confirmDonation
+ * ---------------
+ * Valide une donation après que le donneur ait confirmé son engagement.
+ * Crée une entrée dans la table "donations" avec validated_by_hospital = true.
+ */
+async function confirmDonation(req, res, next) {
+  try {
+    const { donor_id, request_id, volume_ml } = req.body;
+
+    const result = await validateDonation(donor_id, request_id, volume_ml);
+
+    return res.status(201).json({
+      message: "Donation validated successfully",
+      donation: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * getValidatedDonationsController
+ * -----------------------------
+ * Récupère la liste des donations validées pour une demande donnée.
+ * Utilisé par l'hôpital pour voir les donneurs qui ont confirmé leur donation.
+ */
+async function getValidatedDonationsController(req, res, next) {
+  try {
+    const { requestId } = req.params;
+
+    const donations = await getValidatedDonations(requestId);
+
+    return res.status(200).json(donations);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export { getTopK, mlHealth, confirmDonation, getValidatedDonationsController };
