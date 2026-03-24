@@ -11,7 +11,7 @@
     /* Résolution des imports pour VSCode */
     "moduleResolution": "Node",
     "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
+    "allowSyntheticDefaultImports": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
