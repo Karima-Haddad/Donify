@@ -1,62 +1,64 @@
 import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
-import pool from "../config/database.js"; 
-import authRoutes from "../routes/auth.routes.js"; 
+
+// Config / DB
+import pool from "../config/database.js";
 import { env } from "../config/env.js";
-import aiRoutes from "./routes/ai.js";
-import { errorHandler } from "../middleware/error.js"; 
-import authMiddleware from "../middleware/auth.middleware.js";
+
+// Routes
+import authRoutes from "../routes/authRoutes.js";
+import aiRoutes from "../routes/ai.js";
 import matchingRoutes from "../routes/matching_model_routes.js";
+import donorRoutes from "../routes/donorRoutes.js";
+import hospitalRoutes from "../routes/hospitalRoutes.js";
+
+// Middleware
+import { errorHandler } from "../middleware/error.js";
+import authMiddleware from "../middleware/auth.middleware.js";
+
 
 // --------------------------
-//importer les variables d'environnement
+// Charger les variables d'environnement
 // --------------------------
 dotenv.config();
 
 // --------------------------
-//Initialiser l'application express
+// Initialiser Express
+
+
 // --------------------------
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-
-
+// --------------------------
+// Variables
+// --------------------------
 const PORT = env.PORT || 4000;
 const AI_SERVICE_URL = env.AI_SERVICE_URL;
+
 if (!AI_SERVICE_URL) {
   console.warn("⚠️ WARNING: AI_SERVICE_URL is not defined");
 }
 
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`AI Service URL: ${AI_SERVICE_URL}`);
-});
-
-
-// ------------------------
-// Test DB à l'initialisation (optionnel, juste log)
 // --------------------------
-async function logCounts() {
-  try {
-    const result1 = await pool.query("SELECT COUNT(*) FROM blood_requests");
-    const result2 = await pool.query("SELECT COUNT(*) FROM donations");
-    console.log("Blood Requests:", result1.rows[0].count);
-    console.log("Donations:", result2.rows[0].count);
-  } catch (err) {
-    console.error("Erreur lors du comptage initial:", err.message || err);
-  }
-}
+// Routes principales
+// --------------------------
+app.use("/api/auth", authRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/matching", matchingRoutes);
 
-logCounts();
-
+// ✅ NOUVELLES ROUTES DASHBOARD
+app.use("/api/donor", donorRoutes);
+app.use("/api/hospital", hospitalRoutes);
 
 // --------------------------
-// health check pour le backend et connexion à la base de données
+// Routes test / debug
 // --------------------------
+
+// Health check
 app.get("/health", async (req, res) => {
   try {
     await pool.query("SELECT 1");
@@ -67,17 +69,12 @@ app.get("/health", async (req, res) => {
   }
 });
 
-
-
+// Profile sécurisé
 app.get("/api/profile", authMiddleware, (req, res) => {
   res.json({ message: "Welcome " + req.user.email });
 });
 
-
-
-// ------------------------
-// Routes de santé / test DB
-// ------------------------
+// Test DB
 app.get("/test-db", async (req, res) => {
   try {
     const { rows } = await pool.query("SELECT NOW()");
@@ -88,11 +85,9 @@ app.get("/test-db", async (req, res) => {
   }
 });
 
-
-
-// ------------------------
-// Fonction utilitaire optionnelle pour debug dataset
-// ------------------------
+// --------------------------
+// Debug dataset (optionnel)
+// --------------------------
 async function getDataset() {
   try {
     const result = await pool.query(`
@@ -120,13 +115,31 @@ async function getDataset() {
 getDataset();
 
 // --------------------------
-// Routes
+// Log counts (optionnel)
 // --------------------------
-app.use("/api/ai", aiRoutes); 
-app.use("/api/auth", authRoutes);
-app.use("/api/matching", matchingRoutes);
+async function logCounts() {
+  try {
+    const result1 = await pool.query("SELECT COUNT(*) FROM blood_requests");
+    const result2 = await pool.query("SELECT COUNT(*) FROM donations");
+
+    console.log("Blood Requests:", result1.rows[0].count);
+    console.log("Donations:", result2.rows[0].count);
+  } catch (err) {
+    console.error("Erreur lors du comptage initial:", err.message || err);
+  }
+}
+
+logCounts();
 
 // --------------------------
-// Error middleware 
+// Error middleware (TOUJOURS À LA FIN)
 // --------------------------
 app.use(errorHandler);
+
+// --------------------------
+// Lancer serveur (TOUJOURS À LA FIN)
+// --------------------------
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🤖 AI Service URL: ${AI_SERVICE_URL}`);
+});

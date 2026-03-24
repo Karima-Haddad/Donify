@@ -1,5 +1,5 @@
 // backend/src/repositories/donorRepository.js
-import pool from "../../config/database.js";
+import pool from "../config/database.js";
 
 // ── Créer un profil donor ─────────────────────────────────────────────
 export const createDonor = async (donor, client = pool) => {
