@@ -1,10 +1,221 @@
+# import os
+# import json
+# import joblib
+# import pandas as pd
+# from typing import List
+# from dotenv import load_dotenv
+# from pydantic import BaseModel
+# from fastapi import FastAPI, Header, HTTPException
+# from services.topk_matching import predict_top_k
+
+# # =========================
+# # Charger .env
+# # =========================
+# load_dotenv()
+# INTERNAL_API_KEY = os.getenv("INTERNAL_API_KEY")
+
+# # =========================
+# # App Initialization
+# # =========================
+# app = FastAPI(
+#     title="Donify AI Service",
+#     version="1.0.0"
+# )
+
+# # =========================
+# # Paths modèles
+# # =========================
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# MODEL_DIR = os.path.join(BASE_DIR, "models")
+
+# MODEL_PATH = os.path.join(MODEL_DIR, "shortage_model.joblib")
+# BLOOD_ENCODER_PATH = os.path.join(MODEL_DIR, "blood_type_encoder.joblib")
+# FEATURES_PATH = os.path.join(BASE_DIR, "shortage_model_features.json")
+
+
+
+# # =========================
+# # Charger le modèle et l'encodeur
+# # =========================
+# try:
+#     model = joblib.load(MODEL_PATH)
+#     blood_encoder = joblib.load(BLOOD_ENCODER_PATH)
+
+#     with open(FEATURES_PATH, "r", encoding="utf-8") as f:
+#         FEATURES = json.load(f)
+
+#     print("✅ Modèle et encodeurs chargés avec succès.")
+
+# except Exception as e:
+#     print("❌ Erreur lors du chargement des fichiers du modèle :", str(e))
+#     raise e
+
+
+
+
+# # ==========================================
+# # Constants
+# # ==========================================
+# FEATURES = [
+#     "gender",
+#     "donor_blood_type",
+#     "age",
+#     "distance_km",
+#     "days_since_last_donation",
+#     "never_donated",
+#     "donor_reliability",
+#     "fatigue_score",
+#     "notified_hour",
+#     "notified_weekday",
+# ]
+
+# # ==========================================
+# # Request Schemas
+# # ==========================================
+# class ShortageInput(BaseModel):
+#     blood_type: str
+#     total_requested_bags: int
+#     total_donated_bags: int
+#     gap_bags: int
+#     current_stock_bags: int
+#     stock_coverage_days: float
+#     month: int
+#     is_weekend: int
+#     is_summer: int
+#     is_ramadan_like: int
+#     req_7d: int
+#     don_7d: int
+
+# class PredictTopKRequest(BaseModel):
+#     candidates: list[dict]
+#     k: int = 100
+
+
+# # ==========================================
+# # Health Check Endpoint
+# # ==========================================
+# @app.get("/health")
+# def health(x_api_key: str = Header(None)):
+#     if x_api_key != INTERNAL_API_KEY:
+#         raise HTTPException(status_code=403, detail="Unauthorized")
+
+#     return {
+#         "status": "ok",
+#         "service": "Donify ML Service",
+#         "model": "XGBoost Top-K Ranking"
+#     }
+
+
+# # ==========================================
+# # Shortage Prediction Endpoint
+# # ==========================================
+
+# @app.post("/predict-shortage")
+# def predict_shortage(data: List[ShortageInput], x_api_key: str = Header(None)):
+#     if x_api_key != INTERNAL_API_KEY:
+#         raise HTTPException(status_code=403, detail="Unauthorized")
+
+#     if not data:
+#         raise HTTPException(status_code=400, detail="La liste des données est vide.")
+
+#     df = pd.DataFrame([item.dict() for item in data])
+
+#     required_columns = [
+#         "blood_type",
+#         "total_requested_bags",
+#         "total_donated_bags",
+#         "gap_bags",
+#         "current_stock_bags",
+#         "stock_coverage_days",
+#         "month",
+#         "is_weekend",
+#         "is_summer",
+#         "is_ramadan_like",
+#         "req_7d",
+#         "don_7d"
+#     ]
+
+#     missing_columns = [col for col in required_columns if col not in df.columns]
+#     if missing_columns:
+#         raise HTTPException(status_code=400, detail=f"Colonnes manquantes : {missing_columns}")
+
+#     unknown_blood_types = set(df["blood_type"]) - set(blood_encoder.classes_)
+#     if unknown_blood_types:
+#         raise HTTPException(
+#             status_code=400,
+#             detail=f"Groupes sanguins inconnus : {list(unknown_blood_types)}"
+#         )
+
+#     df["blood_type_encoded"] = blood_encoder.transform(df["blood_type"])
+
+#     X = df[FEATURES]
+
+#     predicted_labels = model.predict(X)
+#     predicted_probas = model.predict_proba(X)[:, 1]
+
+#     results = []
+#     for i, row in df.iterrows():
+#         prob = float(predicted_probas[i])
+
+#         if prob >= 0.75:
+#             risk_level = "Critique"
+#         elif prob >= 0.45:
+#             risk_level = "Modéré"
+#         else:
+#             risk_level = "Faible"
+
+#         results.append({
+#             "blood_type": row["blood_type"],
+#             "risk_probability": round(prob, 4),
+#             "predicted_label": int(predicted_labels[i]),
+#             "risk_level": risk_level
+#         })
+
+#     return results
+
+
+
+# # ==========================================
+# # Top-K Prediction Endpoint
+# # ==========================================
+# @app.post("/predict-topk")
+# def predict_topk(payload: PredictTopKRequest, x_api_key: str = Header(None)):
+#     if x_api_key != INTERNAL_API_KEY:
+#         raise HTTPException(status_code=403, detail="Unauthorized")
+
+#     if not payload.candidates:
+#         raise HTTPException(status_code=400, detail="Candidates list is empty")
+
+#     df = pd.DataFrame(payload.candidates)
+
+#     missing = [c for c in FEATURES if c not in df.columns]
+#     if missing:
+#         raise HTTPException(
+#             status_code=400,
+#             detail=f"Missing required columns: {missing}"
+#         )
+
+#     try:
+#         result_df = predict_top_k(df, k=payload.k)
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
+
+#     return result_df.to_dict(orient="records")
+
+
+
 import os
+import json
 import joblib
 import pandas as pd
+
+from typing import List
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from fastapi import FastAPI, Header, HTTPException
+
 from services.topk_matching import predict_top_k
+
 
 # =========================
 # Charger .env
@@ -12,32 +223,51 @@ from services.topk_matching import predict_top_k
 load_dotenv()
 INTERNAL_API_KEY = os.getenv("INTERNAL_API_KEY")
 
+if not INTERNAL_API_KEY:
+    raise ValueError("INTERNAL_API_KEY est manquant dans le fichier .env")
+
+
 # =========================
 # App Initialization
 # =========================
 app = FastAPI(
-    title="Donify ML Service",
-    version="1.0.0",
-    description="Blood Donor Top-K Matching Service"
+    title="Donify AI Service",
+    version="1.0.0"
 )
+
 
 # =========================
 # Paths modèles
 # =========================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(BASE_DIR, "model", "shortage_model.pkl")
-encoder_path = os.path.join(BASE_DIR, "model", "blood_type_encoder.pkl")
+MODEL_DIR = os.path.join(BASE_DIR, "models")
+
+SHORTAGE_MODEL_PATH = os.path.join(MODEL_DIR, "shortage_model.joblib")
+BLOOD_ENCODER_PATH = os.path.join(MODEL_DIR, "blood_type_encoder.joblib")
+SHORTAGE_FEATURES_PATH = os.path.join(BASE_DIR, "shortage_model_features.json")
+
 
 # =========================
-# Charger le modèle et l'encodeur
+# Charger le modèle shortage et l'encodeur
 # =========================
-model = joblib.load(model_path)
-encoder = joblib.load(encoder_path)
+try:
+    shortage_model = joblib.load(SHORTAGE_MODEL_PATH)
+    blood_encoder = joblib.load(BLOOD_ENCODER_PATH)
+
+    with open(SHORTAGE_FEATURES_PATH, "r", encoding="utf-8") as f:
+        SHORTAGE_FEATURES = json.load(f)
+
+    print("✅ Modèle shortage et encodeurs chargés avec succès.")
+
+except Exception as e:
+    print("❌ Erreur lors du chargement des fichiers du modèle shortage :", str(e))
+    raise e
+
 
 # ==========================================
-# Constants
+# Features du modèle Matching
 # ==========================================
-FEATURES = [
+MATCHING_FEATURES = [
     "gender",
     "donor_blood_type",
     "age",
@@ -50,20 +280,23 @@ FEATURES = [
     "notified_weekday",
 ]
 
+
 # ==========================================
 # Request Schemas
 # ==========================================
-class PredictRequest(BaseModel):
-    total_requested_bags: float
-    total_donated_bags: float
-    gap_bags: float
+class ShortageInput(BaseModel):
+    blood_type: str
+    total_requested_bags: int
+    total_donated_bags: int
+    gap_bags: int
+    current_stock_bags: int
+    stock_coverage_days: float
     month: int
     is_weekend: int
     is_summer: int
     is_ramadan_like: int
-    req_7d: float
-    don_7d: float
-    blood_type: str
+    req_7d: int
+    don_7d: int
 
 
 class PredictTopKRequest(BaseModel):
@@ -82,53 +315,94 @@ def health(x_api_key: str = Header(None)):
     return {
         "status": "ok",
         "service": "Donify ML Service",
-        "model": "XGBoost Top-K Ranking"
+        "models_loaded": {
+            "shortage_model": True,
+            "blood_encoder": True
+        }
     }
 
 
 # ==========================================
 # Shortage Prediction Endpoint
 # ==========================================
-@app.post("/predict")
-def predict(payload: PredictRequest):
+@app.post("/predict-shortage")
+def predict_shortage(data: List[ShortageInput], x_api_key: str = Header(None)):
+    if x_api_key != INTERNAL_API_KEY:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+
+    if not data:
+        raise HTTPException(status_code=400, detail="La liste des données est vide.")
+
     try:
-        data_dict = payload.dict()
-        df = pd.DataFrame([data_dict])
+        df = pd.DataFrame([item.dict() for item in data])
 
-        df["blood_type_encoded"] = encoder.transform([df["blood_type"][0]])
-
-        features = [
+        required_columns = [
+            "blood_type",
             "total_requested_bags",
             "total_donated_bags",
             "gap_bags",
+            "current_stock_bags",
+            "stock_coverage_days",
             "month",
             "is_weekend",
             "is_summer",
             "is_ramadan_like",
             "req_7d",
-            "don_7d",
-            "blood_type_encoded"
+            "don_7d"
         ]
 
-        missing_cols = [f for f in features if f not in df.columns]
-        if missing_cols:
+        missing_columns = [col for col in required_columns if col not in df.columns]
+        if missing_columns:
             raise HTTPException(
                 status_code=400,
-                detail=f"Colonnes manquantes: {missing_cols}"
+                detail=f"Colonnes manquantes : {missing_columns}"
             )
 
-        prediction = model.predict(df[features])[0]
-        probability = model.predict_proba(df[features])[0][1]
+        unknown_blood_types = set(df["blood_type"]) - set(blood_encoder.classes_)
+        if unknown_blood_types:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Groupes sanguins inconnus : {list(unknown_blood_types)}"
+            )
 
-        return {
-            "shortage_predicted": int(prediction),
-            "risk_probability": float(probability)
-        }
+        df["blood_type_encoded"] = blood_encoder.transform(df["blood_type"])
+
+        missing_feature_columns = [col for col in SHORTAGE_FEATURES if col not in df.columns]
+        if missing_feature_columns:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Features shortage manquantes : {missing_feature_columns}"
+            )
+
+        X = df[SHORTAGE_FEATURES]
+
+        predicted_labels = shortage_model.predict(X)
+        predicted_probas = shortage_model.predict_proba(X)[:, 1]
+
+        results = []
+        for i, row in df.iterrows():
+            prob = float(predicted_probas[i])
+
+            if prob >= 0.75:
+                risk_level = "Critique"
+            elif prob >= 0.45:
+                risk_level = "Modéré"
+            else:
+                risk_level = "Faible"
+
+            results.append({
+                "blood_type": row["blood_type"],
+                "risk_probability": round(prob, 4),
+                "predicted_label": int(predicted_labels[i]),
+                "risk_level": risk_level
+            })
+
+        return results
 
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Erreur prédiction shortage : {str(e)}")
 
 
 # ==========================================
@@ -144,7 +418,7 @@ def predict_topk(payload: PredictTopKRequest, x_api_key: str = Header(None)):
 
     df = pd.DataFrame(payload.candidates)
 
-    missing = [c for c in FEATURES if c not in df.columns]
+    missing = [c for c in MATCHING_FEATURES if c not in df.columns]
     if missing:
         raise HTTPException(
             status_code=400,
@@ -157,186 +431,31 @@ def predict_topk(payload: PredictTopKRequest, x_api_key: str = Header(None)):
         raise HTTPException(status_code=500, detail=str(e))
 
     return result_df.to_dict(orient="records")
-
-
-
-
-
-# import os
-# import joblib
-# import pandas as pd
-# from dotenv import load_dotenv
-# from pydantic import BaseModel
-# from flask import Flask, request, jsonify
-# from fastapi import FastAPI, Header, HTTPException
-# from services.topk_matching import predict_top_k
-
-
-# # =========================
-# # Charger .env
-# # =========================
-# load_dotenv()
-# INTERNAL_API_KEY = os.getenv("INTERNAL_API_KEY")
-
-
-
-# # ==========================================
-# # App Initialization
-# # ==========================================
-
-# app = FastAPI(
-#     title="Donify ML Service",
-#     version="1.0.0",
-#     description="Blood Donor Top-K Matching Service"
-# )
-
-# # =========================
-# # Setup Flask
-# # =========================
-# app = Flask(__name__)
-
-# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# model_path = os.path.join(BASE_DIR, "model", "shortage_model.pkl")
-# encoder_path = os.path.join(BASE_DIR, "model", "blood_type_encoder.pkl")
-
-# # Charger le modèle et l'encodeur
-# # model = joblib.load(model_path)                       ##Nour
-# # encoder = joblib.load(encoder_path)                    ##NOUR
-
-# # =========================
-# # Endpoint prediction
-# # =========================
-# @app.route('/predict', methods=['POST'])
-# def predict():
-#     try:
-#         data_dict = request.json
-#         # Vérification basique
-#         if not data_dict:
-#             return jsonify({"error": "Aucune donnée reçue"}), 400
-
-#         # Conversion en DataFrame
-#         df = pd.DataFrame([data_dict])
-
-#         # Encoder blood_type
-#         if "blood_type" not in df.columns:
-#             return jsonify({"error": "blood_type manquant"}), 400
-
-#         df["blood_type_encoded"] = encoder.transform([df["blood_type"][0]])
-
-#         # Sélection des features pour le modèle
-#         features = [
-#             "total_requested_bags",
-#             "total_donated_bags",
-#             "gap_bags",
-#             "month",
-#             "is_weekend",
-#             "is_summer",
-#             "is_ramadan_like",
-#             "req_7d",
-#             "don_7d",
-#             "blood_type_encoded"
-#         ]
-
-#         # Vérification des colonnes manquantes
-#         missing_cols = [f for f in features if f not in df.columns]
-#         if missing_cols:
-#             return jsonify({"error": f"Colonnes manquantes: {missing_cols}"}), 400
-
-#         # Prédiction
-#         prediction = model.predict(df[features])[0]
-#         probability = model.predict_proba(df[features])[0][1]
-
-#         return jsonify({
-#             "shortage_predicted": int(prediction),
-#             "risk_probability": float(probability)
-#         })
-
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
-
-
-
-# # ==========================================
-# # Constants
-# # ==========================================
-
-# FEATURES = [
-#     "gender",
-#     "donor_blood_type",
-#     "age",
-#     "distance_km",
-#     "days_since_last_donation",
-#     "never_donated",
-#     "donor_reliability",
-#     "fatigue_score",
-#     "notified_hour",
-#     "notified_weekday",
-# ]
-
-
-# # ==========================================
-# # Request Schema
-# # ==========================================
-
-# class PredictTopKRequest(BaseModel):
-#     candidates: list[dict]
-#     k: int = 100
-
-
-# # ==========================================
-# # Health Check Endpoint
-# # ==========================================
-
-# @app.get("/health")
-# def health(x_api_key: str = Header(None)):
-
-#     # Vérification de la clé API pour les endpoints internes
-#     if x_api_key != INTERNAL_API_KEY:
-#         raise HTTPException(status_code=403, detail="Unauthorized")
-        
-#     return {
-#         "status": "ok",
-#         "service": "Donify ML Service",
-#         "model": "XGBoost Top-K Ranking"
-#     }
-
-
-# # ==========================================
-# # Top-K Prediction Endpoint
-# # ==========================================
-
 # @app.post("/predict-topk")
 # def predict_topk(payload: PredictTopKRequest, x_api_key: str = Header(None)):
-
-#     # Vérification de la clé API pour les endpoints internes
 #     if x_api_key != INTERNAL_API_KEY:
 #         raise HTTPException(status_code=403, detail="Unauthorized")
 
 #     if not payload.candidates:
 #         raise HTTPException(status_code=400, detail="Candidates list is empty")
 
-#     # Convert to DataFrame
-#     df = pd.DataFrame(payload.candidates)
-
-#     # Check required columns
-#     missing = [c for c in FEATURES if c not in df.columns]
-#     if missing:
-#         raise HTTPException(
-#             status_code=400,
-#             detail=f"Missing required columns: {missing}"
-#         )
-
 #     try:
+#         df = pd.DataFrame(payload.candidates)
+
+#         missing = [c for c in MATCHING_FEATURES if c not in df.columns]
+#         if missing:
+#             raise HTTPException(
+#                 status_code=400,
+#                 detail=f"Missing required columns: {missing}"
+#             )
+
+#         df = df[MATCHING_FEATURES]
+
 #         result_df = predict_top_k(df, k=payload.k)
+#         return result_df.to_dict(orient="records")
+
+#     except HTTPException:
+#         raise
 #     except Exception as e:
 #         raise HTTPException(status_code=500, detail=str(e))
-
-#     return result_df.to_dict(orient="records")
-
-
-# # =========================
-# # Lancement du serveur Flask
-# # =========================
-# if __name__ == "__main__":
-#     # Activation debug pour développement
-#     app.run(host='0.0.0.0', port=8000, debug=True)
+    

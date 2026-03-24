@@ -3,7 +3,8 @@ import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import HospitalDashboard from "./pages/HospitalDashboard";
-import DonorDashboard from "./pages/DonorDashboard";
+
+
 
 function App() {
   return (
@@ -17,4 +18,4 @@ function App() {
   );
 }
 
-export default App;
+export default App

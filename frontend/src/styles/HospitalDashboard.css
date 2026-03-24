@@ -1,0 +1,120 @@
+/**
+ * Style du dashboard hôpital
+ * Design moderne inspiré de la maquette :
+ * - Cartes larges et arrondies
+ * - Icônes centrées
+ * - Chiffres mis en valeur
+ * - Espacement équilibré
+ */
+
+.hospital-dashboard-page {
+  min-height: 80vh;
+  background: #f4f6f8;
+  padding: 40px 20px;
+  font-family: "Poppins", sans-serif;
+
+  /* centrage global */
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* ===== GRID ===== */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  align-items: stretch;
+}
+
+/* ===== CARD ===== */
+
+.card {
+  background: white; /* léger gris comme la maquette */
+  border: 1px solid #e0e3e7;
+  border-radius: 30px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+
+  min-height: 200px;
+  padding: 10px 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== ICON ===== */
+
+.card-icon {
+  font-size: 2rem;
+  color: #a2211b;
+  margin-bottom: 26px;
+}
+
+/* ===== TITLE ===== */
+
+.card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #5c6470;
+  margin-bottom: 26px;
+  text-align: center;
+}
+
+/* ===== VALUE ===== */
+
+.value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #a2211b;
+  line-height: 1;
+  text-align: center;
+}
+
+/* ===== MESSAGE ===== */
+
+.dashboard-message {
+  font-size: 16px;
+  color: #2c2c2c;
+  padding: 30px;
+  text-align: center;
+}
+
+.dashboard-message.error {
+  color: #a2211b;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 1200px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    min-height: 220px;
+    padding: 30px 20px;
+  }
+
+  .value {
+    font-size: 2.8rem;
+  }
+
+  .card-icon {
+    font-size: 2.2rem;
+  }
+}

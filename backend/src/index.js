@@ -5,18 +5,10 @@ import dotenv from "dotenv";
 // Config / DB
 import pool from "../config/database.js";
 import { env } from "../config/env.js";
-
-// Routes
-import authRoutes from "../routes/authRoutes.js";
-import aiRoutes from "../routes/ai.js";
-import matchingRoutes from "../routes/matching_model_routes.js";
-import donorRoutes from "../routes/donorRoutes.js";
-import hospitalRoutes from "../routes/hospitalRoutes.js";
-
-// Middleware
-import { errorHandler } from "../middleware/error.js";
+import aiRoutes from "./routes/ai.js";
+import { errorHandler } from "../middleware/error.js"; 
 import authMiddleware from "../middleware/auth.middleware.js";
-
+import matchingRoutes from "../routes/matching_model_routes.js";
 
 // --------------------------
 // Charger les variables d'environnement
@@ -117,19 +109,9 @@ getDataset();
 // --------------------------
 // Log counts (optionnel)
 // --------------------------
-async function logCounts() {
-  try {
-    const result1 = await pool.query("SELECT COUNT(*) FROM blood_requests");
-    const result2 = await pool.query("SELECT COUNT(*) FROM donations");
-
-    console.log("Blood Requests:", result1.rows[0].count);
-    console.log("Donations:", result2.rows[0].count);
-  } catch (err) {
-    console.error("Erreur lors du comptage initial:", err.message || err);
-  }
-}
-
-logCounts();
+app.use("/api/ai", aiRoutes); 
+app.use("/api/auth", authRoutes);
+app.use("/api/matching", matchingRoutes);
 
 // --------------------------
 // Error middleware (TOUJOURS À LA FIN)
