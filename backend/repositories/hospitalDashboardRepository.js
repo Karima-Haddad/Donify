@@ -11,7 +11,8 @@
  * pour construire les indicateurs du dashboard.
  */
 
-import pool  from "../config/database.js";
+import pool from "../config/database.js";
+
 
 export async function getHospitalDashboardRepository(hospitalId) {
   // 1. Demandes actives

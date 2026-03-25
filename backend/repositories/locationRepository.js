@@ -1,5 +1,5 @@
 // backend/src/repositories/locationRepository.js
-import pool from "../../config/database.js";
+import pool from "../config/database.js";
 import { v4 as uuidv4 } from "uuid";
 
 // ── Récupérer une location existante par city + governorate ───────────

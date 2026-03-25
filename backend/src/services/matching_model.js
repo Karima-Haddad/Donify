@@ -211,6 +211,43 @@ async function healthCheck() {
  * @returns 
  */
 
+// export async function validateDonation(donorId, requestId, volumeMl) {
+//   if (!donorId) {
+//     const err = new Error("donor_id is required");
+//     err.statusCode = 400;
+//     throw err;
+//   }
+
+//   if (!requestId) {
+//     const err = new Error("request_id is required");
+//     err.statusCode = 400;
+//     throw err;
+//   }
+
+//   if (volumeMl === undefined || volumeMl === null) {
+//     const err = new Error("volume_ml is required");
+//     err.statusCode = 400;
+//     throw err;
+//   }
+
+//   const parsedVolume = Number(volumeMl);
+
+//   if (Number.isNaN(parsedVolume) || parsedVolume <= 0) {
+//     const err = new Error("volume_ml must be a positive number");
+//     err.statusCode = 400;
+//     throw err;
+//   }
+
+//   const donation = await createValidatedDonation({
+//     donorId,
+//     requestId,
+//     volumeMl: parsedVolume,
+//   });
+
+//   return donation;
+// }
+
+
 export async function validateDonation(donorId, requestId, volumeMl) {
   if (!donorId) {
     const err = new Error("donor_id is required");

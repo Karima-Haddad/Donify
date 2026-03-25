@@ -1,14 +1,16 @@
 import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
-
-// Config / DB
-import pool from "../config/database.js";
+import pool from "../config/database.js"; 
+import authRoutes from "../routes/authRoutes.js";
 import { env } from "../config/env.js";
-import aiRoutes from "./routes/ai.js";
 import { errorHandler } from "../middleware/error.js"; 
-import authMiddleware from "../middleware/auth.middleware.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 import matchingRoutes from "../routes/matching_model_routes.js";
+import shortageRoutes from "../routes/shortage_model_routes.js";
+import hospitalDashboardRoutes from "../routes/hospitalDashoardRoutes.js";
+import donorRoutes from "../routes/donorRoutes.js";
+import hopitalRoutes from "../routes/hospitalRoutes.js";
 
 // --------------------------
 // Charger les variables d'environnement
@@ -17,8 +19,6 @@ dotenv.config();
 
 // --------------------------
 // Initialiser Express
-
-
 // --------------------------
 const app = express();
 
@@ -35,20 +35,6 @@ if (!AI_SERVICE_URL) {
   console.warn("⚠️ WARNING: AI_SERVICE_URL is not defined");
 }
 
-// --------------------------
-// Routes principales
-// --------------------------
-app.use("/api/auth", authRoutes);
-app.use("/api/ai", aiRoutes);
-app.use("/api/matching", matchingRoutes);
-
-// ✅ NOUVELLES ROUTES DASHBOARD
-app.use("/api/donor", donorRoutes);
-app.use("/api/hospital", hospitalRoutes);
-
-// --------------------------
-// Routes test / debug
-// --------------------------
 
 // Health check
 app.get("/health", async (req, res) => {
@@ -109,17 +95,22 @@ getDataset();
 // --------------------------
 // Log counts (optionnel)
 // --------------------------
-app.use("/api/ai", aiRoutes); 
 app.use("/api/auth", authRoutes);
 app.use("/api/matching", matchingRoutes);
+app.use("/api/shortage", shortageRoutes);
+app.use("/api", hospitalDashboardRoutes);
+app.use("/api/donor", donorRoutes);
+app.use("/api/hospital", hopitalRoutes);
+
 
 // --------------------------
-// Error middleware (TOUJOURS À LA FIN)
+// Error middleware 
 // --------------------------
 app.use(errorHandler);
 
+
 // --------------------------
-// Lancer serveur (TOUJOURS À LA FIN)
+// Lancer serveur 
 // --------------------------
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

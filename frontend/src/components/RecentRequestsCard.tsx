@@ -1,34 +1,15 @@
 /**
- * ============================================================
- * COMPONENT - RecentRequestsCard
- * ------------------------------------------------------------
  * Ce composant affiche les 5 dernières demandes de sang
  * d’un hôpital sous forme de tableau.
- *
- * Fonctionnalités :
- * - Appel API pour récupérer les données
- * - Affichage des demandes récentes
- * - Formatage des dates
- * - Affichage des statuts avec badges colorés
- * - Lien vers la page "Voir tout l’historique" avec l’id
- *   de l’hôpital dans l’URL
- *
- * Props :
- * - hospitalId : identifiant de l’hôpital connecté
  * ============================================================
  */
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchRecentBloodRequests } from "../api/bloodRequests";
 import type { RecentBloodRequest } from "../types/bloodRequest";
 import "../styles/RecentRequestsCard.css";
 
-type Props = {
-  hospitalId: string;
-};
-
-export default function RecentRequestsCard({ hospitalId }: Props) {
+export default function RecentRequestsCard() {
   const [requests, setRequests] = useState<RecentBloodRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -39,7 +20,14 @@ export default function RecentRequestsCard({ hospitalId }: Props) {
         setLoading(true);
         setError("");
 
-        const data = await fetchRecentBloodRequests(hospitalId);
+        const rawUser = localStorage.getItem("user");
+        const user = rawUser ? JSON.parse(rawUser) : null;
+
+        if (!user || user.role !== "hospital") {
+          throw new Error("Accès refusé.");
+        }
+
+        const data = await fetchRecentBloodRequests(user.id);
         setRequests(data);
       } catch (err) {
         console.error(err);
@@ -49,12 +37,9 @@ export default function RecentRequestsCard({ hospitalId }: Props) {
       }
     }
 
-    if (hospitalId) {
-      loadRequests();
-    }
-  }, [hospitalId]);
+    loadRequests();
+  }, []);
 
-  // Formatage de la date pour affichage
   function formatDate(dateString: string) {
     const date = new Date(dateString);
     return date.toLocaleDateString("fr-FR", {
@@ -64,7 +49,6 @@ export default function RecentRequestsCard({ hospitalId }: Props) {
     });
   }
 
-  // Conversion du statut backend → affichage utilisateur
   function getStatusLabel(status: RecentBloodRequest["status"]) {
     switch (status) {
       case "open":
@@ -80,7 +64,6 @@ export default function RecentRequestsCard({ hospitalId }: Props) {
     }
   }
 
-  // Classe CSS selon le statut
   function getStatusClass(status: RecentBloodRequest["status"]) {
     switch (status) {
       case "open":
@@ -100,11 +83,7 @@ export default function RecentRequestsCard({ hospitalId }: Props) {
     <div className="recent-requests-card">
       <div className="recent-requests-header">
         <h2>Demandes récentes</h2>
-
-        <Link
-          to={`/hospital/requests-history/${hospitalId}`}
-          className="history-link"
-        >
+        <Link to="/hospital/requests-history" className="history-link">
           Voir tout l’historique
         </Link>
       </div>
@@ -124,7 +103,6 @@ export default function RecentRequestsCard({ hospitalId }: Props) {
               <th>STATUT</th>
             </tr>
           </thead>
-
           <tbody>
             {requests.map((request) => (
               <tr key={request.id}>

@@ -1,5 +1,5 @@
 // backend/src/repositories/userRepository.js
-import pool from "../../config/database.js";
+import pool from "../config/database.js";
 import { v4 as uuidv4 } from "uuid";
 
 // ── Créer un utilisateur ──────────────────────────────────────────────

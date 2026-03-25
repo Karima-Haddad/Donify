@@ -1,30 +1,21 @@
-/**
- * Style du dashboard hôpital
- * Design moderne inspiré de la maquette :
- * - Cartes larges et arrondies
- * - Icônes centrées
- * - Chiffres mis en valeur
- * - Espacement équilibré
- */
-
 .hospital-dashboard-page {
   min-height: 80vh;
   background: #f4f6f8;
-  padding: 40px 20px;
+  padding: 40px 30px;
   font-family: "Poppins", sans-serif;
 
   /* centrage global */
-  max-width: 1300px;
+  max-width: 1400px !important;
   margin: 0 auto;
 }
 
 /* ===== GRID ===== */
 
 .stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px;
-  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ===== CARD ===== */
@@ -36,6 +27,7 @@
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
 
   min-height: 200px;
+  min-width: 300px  !important;
   padding: 10px 10px;
 
   display: flex;
