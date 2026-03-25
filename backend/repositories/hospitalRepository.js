@@ -1,5 +1,5 @@
-// backend/src/repositories/hospitalRepository.js
-import pool from "../../config/database.js";
+// backend/repositories/hospitalRepository.js
+import pool from "../config/database.js";
 
 // ── Créer un profil hospital ──────────────────────────────────────────
 export const createHospital = async (hospital, client = pool) => {

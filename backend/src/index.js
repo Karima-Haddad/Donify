@@ -3,11 +3,14 @@ import express from "express";
 import dotenv from "dotenv";
 import pool from "../config/database.js"; 
 import authRoutes from "../routes/auth.routes.js"; 
+import myAuthRoutes from "../routes/authRoutes.js";  //nadine
 import { env } from "../config/env.js";
 import aiRoutes from "./routes/ai.js";
 import { errorHandler } from "../middleware/error.js"; 
 import authMiddleware from "../middleware/auth.middleware.js";
 import matchingRoutes from "../routes/matching_model_routes.js";
+
+import bloodRequestRoutes from "../routes/bloodRequest.routes.js";
 
 // --------------------------
 //importer les variables d'environnement
@@ -124,7 +127,9 @@ getDataset();
 // --------------------------
 app.use("/api/ai", aiRoutes); 
 app.use("/api/auth", authRoutes);
+app.use("/api/auth", myAuthRoutes);  //nadine
 app.use("/api/matching", matchingRoutes);
+app.use("/api/blood-requests", bloodRequestRoutes);
 
 // --------------------------
 // Error middleware 

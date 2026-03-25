@@ -1,10 +1,23 @@
-// src/data/tunisiaLocations.js
-// Fichier de correspondance gouvernorats → villes → coordonnées GPS
+// src/data/tunisiaLocations.ts
 
-export const tunisiaLocations = {
+// ── Types ──────────────────────────────────────────────────────────────────
+interface CityData {
+  latitude: number;
+  longitude: number;
+}
+
+interface GovernorateData {
+  latitude: number;
+  longitude: number;
+  cities: Record<string, CityData>;
+}
+
+type TunisiaLocationsMap = Record<string, GovernorateData>;
+
+// ── Données ────────────────────────────────────────────────────────────────
+export const tunisiaLocations: TunisiaLocationsMap = {
   "Tunis": {
-    latitude: 36.8190,
-    longitude: 10.1658,
+    latitude: 36.8190, longitude: 10.1658,
     cities: {
       "Tunis": { latitude: 36.8190, longitude: 10.1658 },
       "La Marsa": { latitude: 36.8781, longitude: 10.3247 },
@@ -15,8 +28,7 @@ export const tunisiaLocations = {
     }
   },
   "Ariana": {
-    latitude: 36.8625,
-    longitude: 10.1956,
+    latitude: 36.8625, longitude: 10.1956,
     cities: {
       "Ariana": { latitude: 36.8625, longitude: 10.1956 },
       "Raoued": { latitude: 36.8978, longitude: 10.2317 },
@@ -26,8 +38,7 @@ export const tunisiaLocations = {
     }
   },
   "Ben Arous": {
-    latitude: 36.7531,
-    longitude: 10.2281,
+    latitude: 36.7531, longitude: 10.2281,
     cities: {
       "Ben Arous": { latitude: 36.7531, longitude: 10.2281 },
       "Hammam Lif": { latitude: 36.7333, longitude: 10.3333 },
@@ -39,8 +50,7 @@ export const tunisiaLocations = {
     }
   },
   "Manouba": {
-    latitude: 36.8078,
-    longitude: 10.0972,
+    latitude: 36.8078, longitude: 10.0972,
     cities: {
       "Manouba": { latitude: 36.8078, longitude: 10.0972 },
       "Den Den": { latitude: 36.8167, longitude: 10.1167 },
@@ -51,8 +61,7 @@ export const tunisiaLocations = {
     }
   },
   "Nabeul": {
-    latitude: 36.4561,
-    longitude: 10.7376,
+    latitude: 36.4561, longitude: 10.7376,
     cities: {
       "Nabeul": { latitude: 36.4561, longitude: 10.7376 },
       "Hammamet": { latitude: 36.4000, longitude: 10.6167 },
@@ -64,8 +73,7 @@ export const tunisiaLocations = {
     }
   },
   "Zaghouan": {
-    latitude: 36.4028,
-    longitude: 10.1428,
+    latitude: 36.4028, longitude: 10.1428,
     cities: {
       "Zaghouan": { latitude: 36.4028, longitude: 10.1428 },
       "Zriba": { latitude: 36.3667, longitude: 10.2500 },
@@ -74,8 +82,7 @@ export const tunisiaLocations = {
     }
   },
   "Bizerte": {
-    latitude: 37.2744,
-    longitude: 9.8739,
+    latitude: 37.2744, longitude: 9.8739,
     cities: {
       "Bizerte": { latitude: 37.2744, longitude: 9.8739 },
       "Menzel Bourguiba": { latitude: 37.1500, longitude: 9.7833 },
@@ -86,8 +93,7 @@ export const tunisiaLocations = {
     }
   },
   "Béja": {
-    latitude: 36.7256,
-    longitude: 9.1817,
+    latitude: 36.7256, longitude: 9.1817,
     cities: {
       "Béja": { latitude: 36.7256, longitude: 9.1817 },
       "Medjez el-Bab": { latitude: 36.6500, longitude: 9.6167 },
@@ -97,8 +103,7 @@ export const tunisiaLocations = {
     }
   },
   "Jendouba": {
-    latitude: 36.5011,
-    longitude: 8.7803,
+    latitude: 36.5011, longitude: 8.7803,
     cities: {
       "Jendouba": { latitude: 36.5011, longitude: 8.7803 },
       "Tabarka": { latitude: 36.9544, longitude: 8.7578 },
@@ -108,8 +113,7 @@ export const tunisiaLocations = {
     }
   },
   "Kef": {
-    latitude: 36.1826,
-    longitude: 8.7147,
+    latitude: 36.1826, longitude: 8.7147,
     cities: {
       "Kef": { latitude: 36.1826, longitude: 8.7147 },
       "Dahmani": { latitude: 35.9500, longitude: 8.8333 },
@@ -118,8 +122,7 @@ export const tunisiaLocations = {
     }
   },
   "Siliana": {
-    latitude: 36.0850,
-    longitude: 9.3708,
+    latitude: 36.0850, longitude: 9.3708,
     cities: {
       "Siliana": { latitude: 36.0850, longitude: 9.3708 },
       "Makthar": { latitude: 35.8556, longitude: 9.2028 },
@@ -129,8 +132,7 @@ export const tunisiaLocations = {
     }
   },
   "Sousse": {
-    latitude: 35.8333,
-    longitude: 10.6333,
+    latitude: 35.8333, longitude: 10.6333,
     cities: {
       "Sousse": { latitude: 35.8333, longitude: 10.6333 },
       "Msaken": { latitude: 35.7333, longitude: 10.5833 },
@@ -141,8 +143,7 @@ export const tunisiaLocations = {
     }
   },
   "Monastir": {
-    latitude: 35.7833,
-    longitude: 10.8333,
+    latitude: 35.7833, longitude: 10.8333,
     cities: {
       "Monastir": { latitude: 35.7833, longitude: 10.8333 },
       "Moknine": { latitude: 35.6333, longitude: 10.9000 },
@@ -153,8 +154,7 @@ export const tunisiaLocations = {
     }
   },
   "Mahdia": {
-    latitude: 35.5047,
-    longitude: 11.0622,
+    latitude: 35.5047, longitude: 11.0622,
     cities: {
       "Mahdia": { latitude: 35.5047, longitude: 11.0622 },
       "Ksour Essef": { latitude: 35.4167, longitude: 11.0000 },
@@ -164,8 +164,7 @@ export const tunisiaLocations = {
     }
   },
   "Sfax": {
-    latitude: 34.7406,
-    longitude: 10.7603,
+    latitude: 34.7406, longitude: 10.7603,
     cities: {
       "Sfax": { latitude: 34.7406, longitude: 10.7603 },
       "Sakiet Ezzit": { latitude: 34.8000, longitude: 10.7500 },
@@ -177,8 +176,7 @@ export const tunisiaLocations = {
     }
   },
   "Kairouan": {
-    latitude: 35.6781,
-    longitude: 10.0964,
+    latitude: 35.6781, longitude: 10.0964,
     cities: {
       "Kairouan": { latitude: 35.6781, longitude: 10.0964 },
       "Sbikha": { latitude: 35.9167, longitude: 9.9833 },
@@ -188,8 +186,7 @@ export const tunisiaLocations = {
     }
   },
   "Kasserine": {
-    latitude: 35.1722,
-    longitude: 8.8306,
+    latitude: 35.1722, longitude: 8.8306,
     cities: {
       "Kasserine": { latitude: 35.1722, longitude: 8.8306 },
       "Sbeitla": { latitude: 35.2333, longitude: 9.1167 },
@@ -199,8 +196,7 @@ export const tunisiaLocations = {
     }
   },
   "Sidi Bouzid": {
-    latitude: 35.0381,
-    longitude: 9.4858,
+    latitude: 35.0381, longitude: 9.4858,
     cities: {
       "Sidi Bouzid": { latitude: 35.0381, longitude: 9.4858 },
       "Meknassy": { latitude: 34.9833, longitude: 9.9667 },
@@ -210,8 +206,7 @@ export const tunisiaLocations = {
     }
   },
   "Gabès": {
-    latitude: 33.8833,
-    longitude: 10.1000,
+    latitude: 33.8833, longitude: 10.1000,
     cities: {
       "Gabès": { latitude: 33.8833, longitude: 10.1000 },
       "El Hamma": { latitude: 33.8833, longitude: 9.7833 },
@@ -221,8 +216,7 @@ export const tunisiaLocations = {
     }
   },
   "Medenine": {
-    latitude: 33.3547,
-    longitude: 10.5053,
+    latitude: 33.3547, longitude: 10.5053,
     cities: {
       "Medenine": { latitude: 33.3547, longitude: 10.5053 },
       "Zarzis": { latitude: 33.5000, longitude: 11.1167 },
@@ -233,8 +227,7 @@ export const tunisiaLocations = {
     }
   },
   "Tataouine": {
-    latitude: 32.9211,
-    longitude: 10.4511,
+    latitude: 32.9211, longitude: 10.4511,
     cities: {
       "Tataouine": { latitude: 32.9211, longitude: 10.4511 },
       "Ghomrassen": { latitude: 33.0667, longitude: 10.4500 },
@@ -243,8 +236,7 @@ export const tunisiaLocations = {
     }
   },
   "Gafsa": {
-    latitude: 34.4250,
-    longitude: 8.7842,
+    latitude: 34.4250, longitude: 8.7842,
     cities: {
       "Gafsa": { latitude: 34.4250, longitude: 8.7842 },
       "Metlaoui": { latitude: 34.3333, longitude: 8.4000 },
@@ -254,8 +246,7 @@ export const tunisiaLocations = {
     }
   },
   "Tozeur": {
-    latitude: 33.9197,
-    longitude: 8.1336,
+    latitude: 33.9197, longitude: 8.1336,
     cities: {
       "Tozeur": { latitude: 33.9197, longitude: 8.1336 },
       "Nefta": { latitude: 33.8667, longitude: 7.8833 },
@@ -264,8 +255,7 @@ export const tunisiaLocations = {
     }
   },
   "Kebili": {
-    latitude: 33.7044,
-    longitude: 8.9644,
+    latitude: 33.7044, longitude: 8.9644,
     cities: {
       "Kebili": { latitude: 33.7044, longitude: 8.9644 },
       "Douz": { latitude: 33.4500, longitude: 9.0167 },
@@ -275,17 +265,22 @@ export const tunisiaLocations = {
   }
 };
 
-// Liste des gouvernorats (pour le select)
-export const governoratesList = Object.keys(tunisiaLocations);
+// ── Fonctions utilitaires typées ───────────────────────────────────────────
 
-// Obtenir les villes d'un gouvernorat
-export const getCitiesByGovernorate = (governorate) => {
+// Liste des 24 gouvernorats
+export const governoratesList: string[] = Object.keys(tunisiaLocations);
+
+// Retourne les villes d'un gouvernorat
+export const getCitiesByGovernorate = (governorate: string): string[] => {
   if (!governorate || !tunisiaLocations[governorate]) return [];
   return Object.keys(tunisiaLocations[governorate].cities);
 };
 
-// Obtenir les coordonnées d'une ville
-export const getCoordinates = (governorate, city) => {
+// Retourne latitude et longitude d'une ville
+export const getCoordinates = (
+  governorate: string,
+  city: string
+): { latitude: number | null; longitude: number | null } => {
   if (!governorate || !city) return { latitude: null, longitude: null };
   const gov = tunisiaLocations[governorate];
   if (!gov) return { latitude: null, longitude: null };

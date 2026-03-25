@@ -1,6 +1,6 @@
-// backend/src/controllers/authController.js
-import * as authService from "../services/authService.js";
-import { validateDonor, validateHospital } from "../validations/authValidation.js";
+// backend/controllers/authController.js
+import * as authService from "../src/services/authService.js";
+import { validateDonor, validateHospital } from "../src/validators/authValidation.js";
 
 // -------------------- DONOR --------------------
 export const registerDonor = async (req, res) => {
