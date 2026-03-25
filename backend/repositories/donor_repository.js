@@ -65,6 +65,7 @@ export async function findAvailableDonorsByBloodType(bloodType, requestId) {
     LEFT JOIN resp_agg  ra ON ra.donor_id = d.id
 
     WHERE d.blood_type = $1
+      AND d.availability = true
       AND (d.next_eligible_date IS NULL OR d.next_eligible_date <= NOW())
   `;
 

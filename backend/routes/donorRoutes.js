@@ -1,22 +1,33 @@
 // routes/donorRoutes.js
+
 import express from "express";
-import pool from "../../config/database.js"; // attention à mettre .js si tu es en ESM
+import pool from "../config/database.js";
 
 const router = express.Router();
 
-// Récupérer le dashboard d'un donor
 router.get("/:donorId/dashboard", async (req, res) => {
   const donorId = req.params.donorId;
+
   try {
+    console.log("donorId reçu :", donorId);
+
     const donorQuery = `
       SELECT d.id, u.name, u.email, d.gender, d.blood_type, d.availability
       FROM donors d
       JOIN users u ON d.id = u.id
       WHERE d.id = $1
     `;
+
     const donorResult = await pool.query(donorQuery, [donorId]);
 
-    if (donorResult.rows.length === 0) return res.status(404).json({ error: "Donor not found" });
+    console.log("Résultat donor :", donorResult.rows);
+
+    if (donorResult.rows.length === 0) {
+      return res.status(404).json({
+        error: "Donor not found",
+        donorId: donorId
+      });
+    }
 
     const donor = donorResult.rows[0];
 
@@ -45,11 +56,10 @@ router.get("/:donorId/dashboard", async (req, res) => {
       responses: responsesResult.rows,
       notifications: notificationsResult.rows
     });
-
   } catch (err) {
-    console.error(err);
+    console.error("Erreur dashboard donor :", err);
     res.status(500).json({ error: "Server error" });
   }
 });
 
-export default router; // <-- export par défaut pour ESM
+export default router;

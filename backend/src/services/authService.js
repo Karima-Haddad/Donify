@@ -2,10 +2,10 @@
 
 import bcrypt from "bcrypt";
 
-import * as userRepo from "../repositories/userRepository.js";
+import * as userRepo from "../../repositories/userRepository.js";
 import * as donorRepo from "../../repositories/donorRepository.js";
-import * as hospitalRepo from "../repositories/hospitalRepository.js";
-import * as locationRepo from "../repositories/locationRepository.js";
+import * as hospitalRepo from "../../repositories/hospitalRepository.js";
+import * as locationRepo from "../../repositories/locationRepository.js";
 
 import pool from "../../config/database.js";
 

@@ -1,6 +1,6 @@
 // routes/hospitalRoutes.js
 import express from "express";
-import pool from "../../config/database.js"; // attention à mettre .js avec ESM
+import pool from "../config/database.js";
 
 const router = express.Router();
 

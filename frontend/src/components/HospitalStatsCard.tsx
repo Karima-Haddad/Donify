@@ -8,19 +8,33 @@ import { useEffect, useState } from "react";
 import { FaList, FaCheckCircle, FaChartLine, FaExclamationTriangle } from "react-icons/fa";
 import { fetchHospitalDashboard } from "../api/hospitalDashboard";
 import type { HospitalDashboardData } from "../types/dashboard";
-import "../styles/HospitalDashboard.css";
+import "../styles/HospitalStatsCard.css";
 
-export default function HospitalDashboard() {
+export default function HospitalStatsCard() {
   const [data, setData] = useState<HospitalDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const hospitalId = "f5dd3a9c-a553-4352-85e5-31208cf8355a";
 
   useEffect(() => {
     async function loadDashboard() {
       try {
-        const result = await fetchHospitalDashboard(hospitalId);
+
+        const rawUser = localStorage.getItem("user");
+        const user = rawUser ? JSON.parse(rawUser) : null;
+
+        if (!user || !user.id) {
+          throw new Error("Aucun utilisateur connecté.");
+        }
+
+        if (user.role !== "hospital") {
+          throw new Error("Accès refusé.");
+        }
+
+        if (!user.id) {
+          throw new Error("Aucun hôpital connecté.");
+        }
+        const result = await fetchHospitalDashboard(user.id);
         setData(result);
       } catch (err) {
         setError("Impossible de charger le dashboard.");
@@ -30,7 +44,7 @@ export default function HospitalDashboard() {
     }
 
     loadDashboard();
-  }, [hospitalId]);
+  }, []);
 
   if (loading) {
     return <p className="dashboard-message">Chargement du dashboard...</p>;

@@ -1,24 +1,80 @@
 import pool from "../config/database.js";
 
-export async function createValidatedDonation({ donorId, requestId, volumeMl }) {
-  const query = `
-    INSERT INTO donations (
-      donor_id,
-      request_id,
-      donation_date,
-      validated_by_hospital,
-      volume_ml
-    )
-    VALUES ($1, $2, CURRENT_DATE, true, $3)
-    RETURNING *
-  `;
+export async function createValidatedDonation({
+  donorId,
+  requestId,
+  volumeMl,
+}) {
+  const client = await pool.connect();
 
-  const values = [donorId, requestId, volumeMl];
-  const { rows } = await pool.query(query, values);
+  try {
+    await client.query("BEGIN");
 
-  return rows[0];
+    const donorResult = await client.query(
+      `
+      SELECT gender
+      FROM donors
+      WHERE id = $1
+      `,
+      [donorId]
+    );
+
+    if (donorResult.rowCount === 0) {
+      throw new Error("Donneur introuvable");
+    }
+
+    const donor = donorResult.rows[0];
+
+    const donationDate = new Date();
+
+    let nextEligibleDateQuery;
+    if (donor.gender?.toLowerCase() === "female") {
+      nextEligibleDateQuery = `CURRENT_DATE + INTERVAL '120 days'`;
+    } else {
+      nextEligibleDateQuery = `CURRENT_DATE + INTERVAL '90 days'`;
+    }
+
+    const donationResult = await client.query(
+      `
+      INSERT INTO donations (
+        donor_id,
+        request_id,
+        donation_date,
+        validated_by_hospital,
+        volume_ml
+      )
+      VALUES ($1, $2, CURRENT_DATE, true, $3)
+      RETURNING *
+      `,
+      [donorId, requestId, volumeMl]
+    );
+
+    await client.query(
+      `
+      UPDATE donors
+      SET
+        last_donation_date = CURRENT_DATE,
+        next_eligible_date = ${nextEligibleDateQuery}
+      WHERE id = $1
+      `,
+      [donorId]
+    );
+
+    await client.query("COMMIT");
+
+    return donationResult.rows[0];
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
+
+/**
+ * 
+ */
 export async function getValidatedDonationsByRequestId(requestId) {
   const query = `
     SELECT

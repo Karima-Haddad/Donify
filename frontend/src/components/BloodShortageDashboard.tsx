@@ -9,7 +9,6 @@ type CardRiskLevel = "Risque Critique" | "Risque Modéré" | "Risque Faible";
 
 const ALL_BLOOD_TYPES = ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"];
 
-const HOSPITAL_ID = "f5dd3a9c-a553-4352-85e5-31208cf8355a";
 
 export default function BloodShortageDashboard() {
   const [data, setData] = useState<Prediction[]>([]);
@@ -22,7 +21,14 @@ export default function BloodShortageDashboard() {
         setLoading(true);
         setError(null);
 
-        const result = await fetchHospitalShortagePredictions(HOSPITAL_ID);
+        const rawUser = localStorage.getItem("user");
+        const user = rawUser ? JSON.parse(rawUser) : null;
+
+        if (!user || !user.id) {
+          throw new Error("Aucun utilisateur connecté.");
+        }
+
+        const result = await fetchHospitalShortagePredictions(user.id);
         setData(result.predictions);
       } catch (err) {
         console.error(err);
