@@ -11,6 +11,9 @@ import shortageRoutes from "../routes/shortage_model_routes.js";
 import hospitalDashboardRoutes from "../routes/hospitalDashoardRoutes.js";
 import donorRoutes from "../routes/donorRoutes.js";
 import hopitalRoutes from "../routes/hospitalRoutes.js";
+import notificationRoutes from "../routes/notificationRoutes.js";
+import bloodRequestRoutes from "../routes/BloodRequestRoutes.js";
+
 
 // --------------------------
 // Charger les variables d'environnement
@@ -101,6 +104,9 @@ app.use("/api/shortage", shortageRoutes);
 app.use("/api", hospitalDashboardRoutes);
 app.use("/api/donor", donorRoutes);
 app.use("/api/hospital", hopitalRoutes);
+app.use("/api/notifications",notificationRoutes);
+app.use("/api/blood-requests", bloodRequestRoutes);
+
 
 
 // --------------------------

@@ -1,6 +1,6 @@
 .login-container {
   display: flex;
-  min-height: 100vh;
+  margin-bottom: -40px;
   font-family: sans-serif;
 }
 
@@ -31,7 +31,8 @@
 }
 
 .logo {
-  width: 20rem;
+  width: 18
+  rem !important;
   height: auto;
 }
 

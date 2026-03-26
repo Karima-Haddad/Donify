@@ -6,6 +6,17 @@ interface Props {
 }
 
 export default function ValidatedDonationsList({ donations }: Props) {
+  function formatGender(gender: string | null | undefined) {
+    if (!gender) return "N/A";
+
+    const value = gender.trim().toLowerCase();
+
+    if (value === "male" || value === "m") return "Homme";
+    if (value === "female" || value === "f") return "Femme";
+
+    return gender;
+  }
+
   return (
     <div className="card">
       <h2>Dons validés</h2>
@@ -30,7 +41,7 @@ export default function ValidatedDonationsList({ donations }: Props) {
               {donations.map((d) => (
                 <tr key={`${d.donor_id}-${d.request_id}-${d.donation_date}`}>
                   <td>{d.public_id}</td>
-                  <td>{d.gender}</td>
+                  <td>{formatGender(d.gender)}</td>
                   <td>{d.blood_type}</td>
                   <td>{d.age}</td>
                   <td>{d.phone || "N/A"}</td>

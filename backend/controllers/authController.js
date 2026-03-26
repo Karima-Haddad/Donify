@@ -70,6 +70,7 @@ export const loginUser = async (req, res) => {
       token,
       role: user.role,
       id: user.id,
+      name: user.name,
     });
   } catch (err) {
     console.error("LOGIN ERROR:", err);
