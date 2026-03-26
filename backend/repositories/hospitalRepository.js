@@ -1,4 +1,5 @@
 // backend/repositories/hospitalRepository.js
+// backend/src/repositories/hospitalRepository.js
 import pool from "../config/database.js";
 
 // ── Créer un profil hospital ──────────────────────────────────────────

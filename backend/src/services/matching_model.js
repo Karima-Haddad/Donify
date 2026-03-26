@@ -3,7 +3,7 @@ import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 import pool from "../../config/database.js";
 import { findAvailableDonorsByBloodType } from "../../repositories/donor_repository.js"; 
-
+import { createValidatedDonation,  getValidatedDonationsByRequestId, } from "../../repositories/donation_repository.js";
 
 // Charger les variables d'environnement
 const AI_SERVICE_URL = env.AI_SERVICE_URL;
@@ -137,6 +137,7 @@ export async function getTopKDonors(bloodType, k = 100, requestId) {
 
   // Construire réponse finale PROPRE
   const finalResults = topK.map(d => ({
+    donor_id: d.id,
     public_id: infoMap[d.id]?.public_id || null,
     gender: infoMap[d.id]?.gender || null,
     blood_type: infoMap[d.id]?.blood_type || null,
@@ -199,4 +200,106 @@ async function healthCheck() {
 }
 
 
-export { predictTopK, healthCheck };
+/**
+ * validateDonation
+ * ----------------
+ * Valide une donation en créant une entrée dans la table "donations"
+ * 
+ * @param {*} donorId 
+ * @param {*} requestId 
+ * @param {*} volumeMl 
+ * @returns 
+ */
+
+// export async function validateDonation(donorId, requestId, volumeMl) {
+//   if (!donorId) {
+//     const err = new Error("donor_id is required");
+//     err.statusCode = 400;
+//     throw err;
+//   }
+
+//   if (!requestId) {
+//     const err = new Error("request_id is required");
+//     err.statusCode = 400;
+//     throw err;
+//   }
+
+//   if (volumeMl === undefined || volumeMl === null) {
+//     const err = new Error("volume_ml is required");
+//     err.statusCode = 400;
+//     throw err;
+//   }
+
+//   const parsedVolume = Number(volumeMl);
+
+//   if (Number.isNaN(parsedVolume) || parsedVolume <= 0) {
+//     const err = new Error("volume_ml must be a positive number");
+//     err.statusCode = 400;
+//     throw err;
+//   }
+
+//   const donation = await createValidatedDonation({
+//     donorId,
+//     requestId,
+//     volumeMl: parsedVolume,
+//   });
+
+//   return donation;
+// }
+
+
+export async function validateDonation(donorId, requestId, volumeMl) {
+  if (!donorId) {
+    const err = new Error("donor_id is required");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  if (!requestId) {
+    const err = new Error("request_id is required");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  if (volumeMl === undefined || volumeMl === null) {
+    const err = new Error("volume_ml is required");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const parsedVolume = Number(volumeMl);
+
+  if (Number.isNaN(parsedVolume) || parsedVolume <= 0) {
+    const err = new Error("volume_ml must be a positive number");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const donation = await createValidatedDonation({
+    donorId,
+    requestId,
+    volumeMl: parsedVolume,
+  });
+
+  return donation;
+}
+
+/**
+ * getValidatedDonations
+ * ----------------------
+ * Récupère les donations validées pour une demande donnée.
+ * 
+ * @param {*} requestId 
+ * @returns 
+ */
+export async function getValidatedDonations(requestId) {
+  if (!requestId) {
+    const err = new Error("request_id is required");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  return await getValidatedDonationsByRequestId(requestId);
+}
+
+export { predictTopK, healthCheck};

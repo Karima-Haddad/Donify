@@ -1,0 +1,173 @@
+/**
+ * ============================================================
+ * STYLE - RecentRequestsCard
+ * ------------------------------------------------------------
+ * Ce fichier contient les styles du composant affichant
+ * les demandes récentes de l’hôpital.
+ *
+ * Objectifs :
+ * - Réduire la taille globale du tableau
+ * - Garder un design propre et moderne
+ * - Améliorer l’alignement du header
+ * - Conserver un rendu responsive
+ * ============================================================
+ */
+
+.recent-requests-card {
+  background: #ffffff;
+  border: 1px solid #d9dde3;
+  border-radius: 20px;
+  padding: 22px 26px;
+  margin: 20px auto;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+  width: 1300px;
+  box-sizing: border-box;
+}
+
+.recent-requests-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.recent-requests-header h2 {
+  margin: 0;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #173f73;
+  line-height: 1.2;
+}
+
+.history-link {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #173f73;
+  text-decoration: none;
+  padding: 6px 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+.history-link:hover {
+  text-decoration: underline;
+  color: #A2211B;
+}
+
+.recent-requests-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.recent-requests-table thead th {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #5e6673;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #d9dde3;
+}
+
+.recent-requests-table tbody td {
+  padding: 12px 14px;
+  font-size: 0.96rem;
+  color: #1f2937;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
+}
+
+.recent-requests-table tbody tr {
+  text-align: center;
+}
+
+
+.recent-requests-table tbody tr:hover {
+  background-color: #f8fafc;
+  transition: background-color 0.2s ease;
+}
+
+.recent-requests-table tbody tr:last-child td {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 92px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-badge.active {
+  background: #f3dede;
+  color: #a2211b;
+}
+
+.status-badge.progress {
+  background: #fff4d6;
+  color: #b7791f;
+}
+
+.status-badge.closed {
+  background: #dce9dd;
+  color: #2f7d32;
+}
+
+.status-badge.expired {
+  background: #ececec;
+  color: #6b7280;
+}
+
+.requests-message {
+  margin: 14px 0 6px;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.requests-message.error {
+  color: #b91c1c;
+}
+
+@media (max-width: 768px) {
+  .recent-requests-card {
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
+
+  .recent-requests-header {
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+
+  .recent-requests-header h2 {
+    font-size: 1.35rem;
+  }
+
+  .history-link {
+    font-size: 0.84rem;
+    padding: 5px 8px;
+  }
+
+  .recent-requests-table thead th {
+    font-size: 0.72rem;
+    padding: 10px 8px;
+  }
+
+  .recent-requests-table tbody td {
+    padding: 10px 8px;
+    font-size: 0.88rem;
+  }
+
+  .status-badge {
+    min-width: 78px;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+  }
+}

@@ -1,3 +1,5 @@
+
+
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../services/authService";
@@ -24,22 +26,38 @@ function Login() {
     try {
       const res = await loginUser({ email, password });
 
-      // 🔥 Récupérer token + role proprement
-      const { token, role } = res.data;
+      console.log("LOGIN RESPONSE :", res.data);
 
-      // 🔐 Sauvegarder dans localStorage
+      // ✅ récupérer token + role + userId
+      const { token, role, userId, id } = res.data;
+
+      // ✅ compatibilité si backend renvoie id au lieu de userId
+      const realUserId = userId || id;
+
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
 
+      if (realUserId) {
+        localStorage.setItem("userId", realUserId);
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: realUserId,
+            role,
+            token,
+          })
+        );
+      }
+
       alert("Login réussi !");
 
-      // 🚀 Redirection selon rôle
+      // 🚀 redirection selon rôle
       if (role === "hospital") {
         navigate("/hospital-dashboard");
       } else {
-        navigate("/user-dashboard");
+        navigate("/donor-dashboard");
       }
-
     } catch (error: any) {
       alert(error.response?.data?.message || "Erreur login");
     }
@@ -58,8 +76,9 @@ function Login() {
         <div className="presentation">
           <h2>Une plateforme intelligente de mise en relation</h2>
           <p>
-            Donify connecte rapidement donneurs volontaires et hôpitaux grâce à un matching intelligent
-            prenant en compte groupe sanguin, localisation et disponibilité réelle.
+            Donify connecte rapidement donneurs volontaires et hôpitaux grâce à
+            un matching intelligent prenant en compte groupe sanguin,
+            localisation et disponibilité réelle.
           </p>
 
           <div className="stats">
@@ -83,6 +102,7 @@ function Login() {
       <div className="login-right">
         <div className="form-card">
           <h2>Connexion</h2>
+
           <form onSubmit={handleLogin}>
             <div className="form-group">
               <label>Email</label>
@@ -115,12 +135,12 @@ function Login() {
               >
                 {showPassword ? (
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12a5 5 0 110-10 5 5 0 010 10z"/>
-                    <circle cx="12" cy="12" r="2.5"/>
+                    <path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12a5 5 0 110-10 5 5 0 010 10z" />
+                    <circle cx="12" cy="12" r="2.5" />
                   </svg>
                 ) : (
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M12 5c-7 0-10 7-10 7s1.5 3.5 4 5.5l-2.7 2.7 1.4 1.4 16-16-1.4-1.4L16.5 7.4C18 8.2 19 10 19 10s-3 7-7 7c-1.5 0-2.8-.5-3.9-1.3l-1.4 1.4A9.953 9.953 0 0012 19c7 0 10-7 10-7s-1.5-3.5-4-5.5l-1.6 1.6A5.014 5.014 0 0112 5z"/>
+                    <path d="M12 5c-7 0-10 7-10 7s1.5 3.5 4 5.5l-2.7 2.7 1.4 1.4 16-16-1.4-1.4L16.5 7.4C18 8.2 19 10 19 10s-3 7-7 7c-1.5 0-2.8-.5-3.9-1.3l-1.4 1.4A9.953 9.953 0 0012 19c7 0 10-7 10-7s-1.5-3.5-4-5.5l-1.6 1.6A5.014 5.014 0 0112 5z" />
                   </svg>
                 )}
               </span>

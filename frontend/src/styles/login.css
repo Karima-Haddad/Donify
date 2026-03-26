@@ -1,22 +1,27 @@
-/* ============================= */
-/* CONTAINER GLOBAL */
-/* ============================= */
 .login-container {
   display: flex;
   min-height: 100vh;
   font-family: sans-serif;
 }
 
-/* ============================= */
-/* LEFT – PRÉSENTATION */
-/* ============================= */
 .login-left {
-  flex: 1;
+  flex: 1.35;
   background: linear-gradient(to bottom, white, #fdf2f2);
   padding: 4rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-width: 0;
+}
+
+.login-right {
+  flex: 0.85;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .logo-container {
@@ -26,7 +31,7 @@
 }
 
 .logo {
-  width: 12rem;
+  width: 20rem;
   height: auto;
 }
 
@@ -36,6 +41,10 @@
   color: #a2211b;
   font-size: 1.25rem;
   margin-bottom: 2rem;
+}
+
+.presentation {
+  width: 100%;
 }
 
 .presentation h2 {
@@ -54,36 +63,34 @@
   margin: 0 auto 2.5rem;
 }
 
-/* ============================= */
-/* STATS CARDS */
-/* ============================= */
 .stats {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-top: 2rem;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  flex-direction: row !important;
+  gap: 35px !important;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .stat-card {
-  background: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
+  width: 60%;
+  min-width: 0;
+  height: 128px;
+  background: #fff;
+  border: 1px solid #d9dee5;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
   text-align: center;
-  flex: 1;
-  min-width: 9rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
 
 .stat-card h3 {
-  color: #a2211b;
-  font-size: 1.75rem;
+  color: #a2211b !important;
+  font-weight: 900 !important ;
+  font-size: 2rem !important;
   margin-bottom: 0.5rem;
 }
 
@@ -93,9 +100,13 @@
   font-size: 0.95rem;
 }
 
-/* ============================= */
-/* RIGHT – FORMULAIRE */
-/* ============================= */
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+
+
 .login-right {
   flex: 1;
   display: flex;
@@ -111,18 +122,17 @@
   padding: 3rem;
   border-radius: 1rem;
   border: 1px solid #ddd;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 5px 4px 12px rgba(0, 0, 0, 0.05) !important;
 }
 
 .form-card h2 {
+  font-size: 2rem;
+  font-weight: 700;
   text-align: center;
   color: #1e3a5f;
   margin-bottom: 2.5rem;
 }
 
-/* ============================= */
-/* FORM GROUP */
-/* ============================= */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -150,18 +160,12 @@
   border-color: #a2211b;
 }
 
-/* ============================= */
-/* MESSAGE D’ERREUR */
-/* ============================= */
 .error-msg {
   color: #d94f4f;
   font-size: 0.85rem;
   margin-top: 0.25rem;
 }
 
-/* ============================= */
-/* PASSWORD TOGGLE */
-/* ============================= */
 .password-group {
   position: relative;
 }
@@ -173,7 +177,7 @@
 .toggle-password {
   position: absolute;
   right: 0.75rem;
-  top: 60%;
+  top: 70%;
   transform: translateY(-50%);
   cursor: pointer;
   width: 1.4rem;
@@ -189,9 +193,6 @@
   fill: #a2211b;
 }
 
-/* ============================= */
-/* MOT DE PASSE OUBLIÉ */
-/* ============================= */
 .forgot-password {
   text-align: right;
   margin-bottom: 1.5rem;
@@ -207,9 +208,6 @@
   text-decoration: underline;
 }
 
-/* ============================= */
-/* BOUTON LOGIN */
-/* ============================= */
 .login-button {
   width: 100%;
   padding: 0.75rem;
@@ -227,9 +225,6 @@
   transform: scale(1.02);
 }
 
-/* ============================= */
-/* REGISTER LINK */
-/* ============================= */
 .register-link {
   text-align: center;
   margin-top: 1.5rem;
@@ -248,4 +243,14 @@
 
 .register-link a:hover {
   color: #d94f4f;
+}
+
+@media (max-width: 900px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
 }

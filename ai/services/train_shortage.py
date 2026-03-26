@@ -1,3 +1,9 @@
+'''
+Ce script entraîne un modèle de classification pour prédire les pénuries de sang à partir d'un dataset réaliste.
+Il utilise un Random Forest Classifier et prend en compte des features telles que le nombre de sacs demandés, donnés, le mois, les jours de la semaine, etc.
+Ce modèle a été testé et  évalué avant le modèle final XGboost utilisé dans l'API.
+'''
+
 import os
 import pandas as pd
 import numpy as np
@@ -6,6 +12,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, roc_auc_score
 from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import roc_curve
+import matplotlib.pyplot as plt
+
 
 # =========================
 # 1️⃣ Charger dataset
@@ -73,6 +82,18 @@ print("\n📊 Classification Report:\n")
 print(classification_report(y_test, y_pred))
 
 print("AUC:", roc_auc_score(y_test, y_prob))
+
+
+fpr, tpr, _ = roc_curve(y_test, y_prob)
+
+plt.figure()
+plt.plot(fpr, tpr)
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve")
+plt.savefig("roc_curve.png")  # sauvegarde image
+plt.show()
+
 
 # =========================
 # 7️⃣ Sauvegarde modèle
