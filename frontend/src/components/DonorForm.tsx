@@ -1,46 +1,59 @@
+// src/components/DonorForm.tsx
 import { useState } from "react";
-import { registerDonor } from "../services/authService";
+import { Link } from "react-router-dom";
+import { registerDonor } from "../services/auth-Service";
 import {
   governoratesList,
   getCitiesByGovernorate,
   getCoordinates
 } from "../data/tunisiaLocations";
 
-export default function DonorForm() {
-  const [formData, setFormData] = useState({
-    nom: "",
-    prenom: "",
-    email: "",
-    contact_phone: "",
-    blood_type: "",
-    gender: "",
-    date_of_birth: "",
-    weight: "",
-    availability: true,
-    city: "",
-    governorate: "",
-    hasDonatedBefore: "",
-    lastDonationDate: "",
-    chronicDisease: "",
-    chronicDiseaseDetails: "",
-    hasTattooOrPiercing: "",
-    password: "",
-    confirmPassword: ""
-  });
 
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+// ── Type de l'état du formulaire ──────────────────────────────────────────
+interface DonorFormState {
+  nom: string;
+  prenom: string;
+  email: string;
+  contact_phone: string;
+  blood_type: string;
+  gender: string;
+  date_of_birth: string;
+  weight: string;
+  availability: boolean;
+  city: string;
+  governorate: string;
+  hasDonatedBefore: string;
+  lastDonationDate: string;
+  chronicDisease: string;
+  chronicDiseaseDetails: string;
+  hasTattooOrPiercing: string;
+  password: string;
+  confirmPassword: string;
+}
 
-  const cities = getCitiesByGovernorate(formData.governorate);
+const initialState: DonorFormState = {
+  nom: "", prenom: "", email: "", contact_phone: "",
+  blood_type: "", gender: "", date_of_birth: "", weight: "",
+  availability: true, city: "", governorate: "",
+  hasDonatedBefore: "", lastDonationDate: "",
+  chronicDisease: "", chronicDiseaseDetails: "",
+  hasTattooOrPiercing: "", password: "", confirmPassword: ""
+};
+
+export default function DonorForm(): React.ReactElement {
+  const [formData, setFormData] = useState<DonorFormState>(initialState);
+  const [errors, setErrors] = useState<Partial<Record<keyof DonorFormState, string>>>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+
+  const cities: string[] = getCitiesByGovernorate(formData.governorate);
 
   const tunisianPhoneRegex = /^[0-9]{8}$/;
-  const strongPasswordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
   // ── Calcul de l'âge ───────────────────────────────────────────────────
-  const calculateAge = (dateOfBirth) => {
+  const calculateAge = (dateOfBirth: string): number => {
     const today = new Date();
     const birth = new Date(dateOfBirth);
     let age = today.getFullYear() - birth.getFullYear();
@@ -51,8 +64,12 @@ export default function DonorForm() {
     return age;
   };
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  // ── Gestion des changements ───────────────────────────────────────────
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ): void => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
 
     if (name === "governorate") {
       setFormData(prev => ({ ...prev, governorate: value, city: "" }));
@@ -65,89 +82,66 @@ export default function DonorForm() {
     }));
   };
 
-  const validateField = (name, value) => {
+  // ── Validation d'un seul champ ────────────────────────────────────────
+  const validateField = (name: string, value: string): void => {
     let error = "";
 
-    if (name === "nom" && !value.trim())
-      error = "Le nom est requis";
-
-    if (name === "prenom" && !value.trim())
-      error = "Le prénom est requis";
-
-    if (name === "email" && !/\S+@\S+\.\S+/.test(value))
-      error = "Email invalide";
-
+    if (name === "nom" && !value.trim()) error = "Le nom est requis";
+    if (name === "prenom" && !value.trim()) error = "Le prénom est requis";
+    if (name === "email" && !/\S+@\S+\.\S+/.test(value)) error = "Email invalide";
     if (name === "contact_phone" && !tunisianPhoneRegex.test(value))
       error = "Le numéro doit contenir exactement 8 chiffres";
-
-    if (name === "gender" && !value)
-      error = "Le sexe est requis";
+    if (name === "gender" && !value) error = "Le sexe est requis";
 
     if (name === "date_of_birth") {
       if (!value) {
         error = "La date de naissance est requise";
       } else {
         const age = calculateAge(value);
-        if (age < 18)
-          error = "Vous devez avoir au moins 18 ans pour donner votre sang";
-        else if (age > 65)
-          error = "Le don de sang n'est pas autorisé après 65 ans";
+        if (age < 18) error = "Vous devez avoir au moins 18 ans pour donner votre sang";
+        else if (age > 65) error = "Le don de sang n'est pas autorisé après 65 ans";
       }
     }
 
-    // ── Validation poids ─────────────────────────────────────────────
     if (name === "weight") {
-      if (!value)
-        error = "Le poids est requis";
-      else if (isNaN(value) || Number(value) <= 0)
-        error = "Veuillez entrer un poids valide";
-      else if (Number(value) < 50)
-        error = "Vous devez peser au moins 50 kg pour donner votre sang";
+      if (!value) error = "Le poids est requis";
+      else if (isNaN(Number(value)) || Number(value) <= 0) error = "Veuillez entrer un poids valide";
+      else if (Number(value) < 50) error = "Vous devez peser au moins 50 kg pour donner votre sang";
     }
 
-    if (name === "blood_type" && !value)
-      error = "Le groupe sanguin est requis";
-
-    if (name === "governorate" && !value)
-      error = "Le gouvernorat est requis";
-
-    if (name === "city" && !value)
-      error = "La ville est requise";
-
-    if (name === "hasDonatedBefore" && !value)
-      error = "Ce champ est requis";
-
+    if (name === "blood_type" && !value) error = "Le groupe sanguin est requis";
+    if (name === "governorate" && !value) error = "Le gouvernorat est requis";
+    if (name === "city" && !value) error = "La ville est requise";
+    if (name === "hasDonatedBefore" && !value) error = "Ce champ est requis";
     if (name === "lastDonationDate" && formData.hasDonatedBefore === "yes" && !value)
       error = "Veuillez entrer la date du dernier don";
-
-    if (name === "chronicDisease" && !value)
-      error = "Ce champ est requis";
-
+    if (name === "chronicDisease" && !value) error = "Ce champ est requis";
     if (name === "chronicDiseaseDetails" && formData.chronicDisease === "yes" && !value.trim())
       error = "Veuillez préciser la maladie";
-
-    if (name === "hasTattooOrPiercing" && !value)
-      error = "Ce champ est requis";
-
+    if (name === "hasTattooOrPiercing" && !value) error = "Ce champ est requis";
     if (name === "password" && !strongPasswordRegex.test(value))
       error = "Mot de passe faible (8 caractères min, maj, min, chiffre, symbole)";
-
     if (name === "confirmPassword" && value !== formData.password)
       error = "Les mots de passe ne correspondent pas";
 
     setErrors(prev => ({ ...prev, [name]: error }));
   };
 
-  const handleKeyDown = (e) => {
+  // ── Touche Entrée ─────────────────────────────────────────────────────
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement>
+  ): void => {
     if (e.key === "Enter") {
       e.preventDefault();
-      validateField(e.target.name, e.target.value);
-      e.target.focus();
+      const target = e.target as HTMLInputElement | HTMLSelectElement;
+      validateField(target.name, target.value);
+      target.focus();
     }
   };
 
-  const validateAll = () => {
-    let newErrors = {};
+  // ── Validation complète au submit ─────────────────────────────────────
+  const validateAll = (): boolean => {
+    const newErrors: Partial<Record<keyof DonorFormState, string>> = {};
 
     if (!formData.nom.trim()) newErrors.nom = "Le nom est requis";
     if (!formData.prenom.trim()) newErrors.prenom = "Le prénom est requis";
@@ -160,16 +154,13 @@ export default function DonorForm() {
       newErrors.date_of_birth = "La date de naissance est requise";
     } else {
       const age = calculateAge(formData.date_of_birth);
-      if (age < 18)
-        newErrors.date_of_birth = "Vous devez avoir au moins 18 ans pour donner votre sang";
-      else if (age > 65)
-        newErrors.date_of_birth = "Le don de sang n'est pas autorisé après 65 ans";
+      if (age < 18) newErrors.date_of_birth = "Vous devez avoir au moins 18 ans pour donner votre sang";
+      else if (age > 65) newErrors.date_of_birth = "Le don de sang n'est pas autorisé après 65 ans";
     }
 
-    // ── Validation poids dans validateAll ────────────────────────────
     if (!formData.weight) {
       newErrors.weight = "Le poids est requis";
-    } else if (isNaN(formData.weight) || Number(formData.weight) <= 0) {
+    } else if (isNaN(Number(formData.weight)) || Number(formData.weight) <= 0) {
       newErrors.weight = "Veuillez entrer un poids valide";
     } else if (Number(formData.weight) < 50) {
       newErrors.weight = "Vous devez peser au moins 50 kg pour donner votre sang";
@@ -194,36 +185,31 @@ export default function DonorForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  // ── Submit ────────────────────────────────────────────────────────────
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!validateAll()) return;
 
-    // Blocage maladie chronique
     if (formData.chronicDisease === "yes") {
       setErrors(prev => ({
         ...prev,
-        chronicDisease:
-          "Nous sommes désolés, les personnes souffrant d'une maladie chronique grave ne peuvent pas effectuer de don de sang."
+        chronicDisease: "Nous sommes désolés, les personnes souffrant d'une maladie chronique grave ne peuvent pas effectuer de don de sang."
       }));
       return;
     }
 
-    // Blocage tatouage/piercing
     if (formData.hasTattooOrPiercing === "yes") {
       setErrors(prev => ({
         ...prev,
-        hasTattooOrPiercing:
-          "Vous devez attendre 6 mois après un tatouage ou piercing avant de pouvoir donner votre sang."
+        hasTattooOrPiercing: "Vous devez attendre 6 mois après un tatouage ou piercing avant de pouvoir donner votre sang."
       }));
       return;
     }
 
     setLoading(true);
-
     try {
-      // Calcul next_eligible_date selon le sexe
-      let last_donation_date = null;
-      let next_eligible_date = null;
+      let last_donation_date: string | null = null;
+      let next_eligible_date: string | null = null;
 
       if (formData.hasDonatedBefore === "yes" && formData.lastDonationDate) {
         last_donation_date = formData.lastDonationDate;
@@ -236,12 +222,9 @@ export default function DonorForm() {
         next_eligible_date = nextDate.toISOString().split("T")[0];
       }
 
-      // Coordonnées GPS automatiques
       const { latitude, longitude } = getCoordinates(formData.governorate, formData.city);
 
-      // Le poids n'est pas envoyé au backend car il n'existe pas en base
-      // Il sert uniquement à valider l'éligibilité du donneur
-      const payload = {
+      await registerDonor({
         name: `${formData.nom} ${formData.prenom}`,
         email: formData.email,
         password: formData.password,
@@ -256,22 +239,14 @@ export default function DonorForm() {
         longitude,
         last_donation_date,
         next_eligible_date
-      };
-
-      await registerDonor(payload);
-      alert("Compte créé avec succès !");
-
-      setFormData({
-        nom: "", prenom: "", email: "", contact_phone: "",
-        blood_type: "", gender: "", date_of_birth: "", weight: "",
-        availability: true, city: "", governorate: "",
-        hasDonatedBefore: "", lastDonationDate: "",
-        chronicDisease: "", chronicDiseaseDetails: "",
-        hasTattooOrPiercing: "", password: "", confirmPassword: ""
       });
+
+      alert("Compte créé avec succès !");
+      setFormData(initialState);
       setErrors({});
-    } catch (error) {
-      alert(error.response?.data?.error || "Erreur lors de l'inscription");
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } } };
+      alert(err.response?.data?.error || "Erreur lors de l'inscription");
     } finally {
       setLoading(false);
     }
@@ -350,8 +325,7 @@ export default function DonorForm() {
           onChange={handleChange}
           onBlur={(e) => validateField(e.target.name, e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder=" "
-          min="1" max="300" />
+          placeholder=" " min="1" max="300" />
         <label className="floating-label">Poids (kg)</label>
         {errors.weight && <small className="error">{errors.weight}</small>}
       </div>
@@ -364,14 +338,9 @@ export default function DonorForm() {
           onBlur={(e) => validateField(e.target.name, e.target.value)}
           onKeyDown={handleKeyDown}>
           <option value="">Sélectionner</option>
-          <option>A+</option>
-          <option>A-</option>
-          <option>B+</option>
-          <option>B-</option>
-          <option>O+</option>
-          <option>O-</option>
-          <option>AB+</option>
-          <option>AB-</option>
+          {["A+","A-","B+","B-","O+","O-","AB+","AB-"].map(t => (
+            <option key={t}>{t}</option>
+          ))}
         </select>
         {errors.blood_type && <small className="error">{errors.blood_type}</small>}
       </div>
@@ -384,7 +353,7 @@ export default function DonorForm() {
           onBlur={(e) => validateField(e.target.name, e.target.value)}
           onKeyDown={handleKeyDown}>
           <option value="">Sélectionner</option>
-          {governoratesList.map((gov) => (
+          {governoratesList.map(gov => (
             <option key={gov} value={gov}>{gov}</option>
           ))}
         </select>
@@ -402,7 +371,7 @@ export default function DonorForm() {
           <option value="">
             {formData.governorate ? "Sélectionner" : "Choisir d'abord un gouvernorat"}
           </option>
-          {cities.map((city) => (
+          {cities.map(city => (
             <option key={city} value={city}>{city}</option>
           ))}
         </select>
@@ -510,7 +479,7 @@ export default function DonorForm() {
       </button>
 
       <div className="form-footer">
-        Déjà inscrit ? <a href="#">Se connecter</a>
+        Déjà inscrit ? <Link to="/login">Se connecter</Link>
       </div>
 
     </form>

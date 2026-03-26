@@ -2,6 +2,8 @@ import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
 import pool from "../config/database.js"; 
+import authRoutes from "../routes/auth.routes.js"; 
+import myAuthRoutes from "../routes/authRoutes.js";  //nadine
 import authRoutes from "../routes/authRoutes.js";
 import { env } from "../config/env.js";
 import { errorHandler } from "../middleware/error.js"; 
@@ -11,6 +13,8 @@ import shortageRoutes from "../routes/shortage_model_routes.js";
 import hospitalDashboardRoutes from "../routes/hospitalDashoardRoutes.js";
 import donorRoutes from "../routes/donorRoutes.js";
 import hopitalRoutes from "../routes/hospitalRoutes.js";
+
+import bloodRequestRoutes from "../routes/bloodRequest.routes.js";
 
 // --------------------------
 // Charger les variables d'environnement
@@ -96,7 +100,9 @@ getDataset();
 // Log counts (optionnel)
 // --------------------------
 app.use("/api/auth", authRoutes);
+app.use("/api/auth", myAuthRoutes);  //nadine
 app.use("/api/matching", matchingRoutes);
+app.use("/api/blood-requests", bloodRequestRoutes);
 app.use("/api/shortage", shortageRoutes);
 app.use("/api", hospitalDashboardRoutes);
 app.use("/api/donor", donorRoutes);

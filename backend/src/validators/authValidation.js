@@ -1,5 +1,3 @@
-// backend/src/validations/authValidation.js
-
 const tunisianPhoneRegex = /^\+216[0-9]{8}$|^[0-9]{8}$/;
 // Accepte soit "+21612345678" (envoyé par le frontend) soit "12345678"
 

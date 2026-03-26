@@ -1,3 +1,14 @@
+// backend/controllers/authController.js
+import * as authService from "../src/services/authService.js";
+import { validateDonor, validateHospital } from "../src/validators/authValidation.js";
+
+// -------------------- DONOR --------------------
+export const registerDonor = async (req, res) => {
+  try {
+    // Validation des champs
+    validateDonor(req.body);
+
+    // Appel du service pour enregistrer le donor
 // backend/src/controllers/authController.js
 import * as authService from "../src/services/authService.js";
 import { validateDonor, validateHospital } from "../src/validations/authValidation.js";
@@ -17,6 +28,28 @@ export const registerDonor = async (req, res) => {
   } catch (err) {
     console.error(err);
 
+    // Email déjà utilisé
+    if (err.message.includes("already exists") || err.message.includes("duplicate")) {
+      return res.status(409).json({ error: err.message });
+    }
+
+    // Erreur de validation
+    if (err.message.includes("requis") || err.message.includes("invalide")) {
+      return res.status(400).json({ error: err.message });
+    }
+
+    // Erreur serveur
+    res.status(500).json({ error: "Erreur interne du serveur" });
+  }
+};
+
+// -------------------- HOSPITAL --------------------
+export const registerHospital = async (req, res) => {
+  try {
+    // Validation des champs
+    validateHospital(req.body);
+
+    // Appel du service pour enregistrer l'hôpital
     if (err.message.includes("exists")) {
       return res.status(409).json({ error: err.message });
     }
@@ -39,6 +72,23 @@ export const registerHospital = async (req, res) => {
   } catch (err) {
     console.error(err);
 
+    // Email déjà utilisé
+    if (err.message.includes("already exists") || err.message.includes("duplicate")) {
+      return res.status(409).json({ error: err.message });
+    }
+
+    // Erreur de validation
+    if (err.message.includes("requis") || err.message.includes("invalide")) {
+      return res.status(400).json({ error: err.message });
+    }
+
+    // Erreur serveur
+    res.status(500).json({ error: "Erreur interne du serveur" });
+  }
+};
+
+// -------------------- GET TEST --------------------
+// Ces endpoints sont uniquement pour tester avec Postman si les données sont bien enregistrées
     if (err.message.includes("exists")) {
       return res.status(409).json({ error: err.message });
     }
@@ -171,4 +221,5 @@ export const getAllHospitals = async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch hospitals" });
   }
+};
 };

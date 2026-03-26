@@ -1,0 +1,248 @@
+/* src/styles/CreateBloodRequest.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+/* ── Wrapper ─────────────────────────────────────────────────────────────── */
+.cr-wrapper {
+  font-family: 'Poppins', sans-serif;
+  background: #F4F6F8;
+  min-height: 100vh;
+  color: #2C2C2C;
+}
+
+/* ── Container ───────────────────────────────────────────────────────────── */
+.cr-container {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+/* ── Page Title ──────────────────────────────────────────────────────────── */
+.cr-page-title {
+  margin-bottom: 40px;
+}
+
+.cr-page-title h1 {
+  font-size: 2.4rem;
+  color: #1E3A5F;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.cr-page-title h1 i {
+  color: #A2211B;
+  margin-right: 10px;
+}
+
+.cr-page-title p {
+  color: #555;
+  font-size: 1rem;
+}
+
+/* ── Form Card ───────────────────────────────────────────────────────────── */
+.cr-form-card {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  border: 1px solid #E0E3E7;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+}
+
+/* ── Form Grid ───────────────────────────────────────────────────────────── */
+.cr-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+/* ── Input Group ─────────────────────────────────────────────────────────── */
+.cr-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.cr-input-group label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: #2C2C2C;
+}
+
+.cr-optional {
+  font-weight: 400;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+/* Inputs, selects, textarea */
+.cr-input-group input,
+.cr-input-group select,
+.cr-input-group textarea {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 2px solid #E0E3E7;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  color: #2C2C2C;
+  background: white;
+  transition: 0.3s;
+}
+
+.cr-input-group input:focus,
+.cr-input-group select:focus,
+.cr-input-group textarea:focus {
+  outline: none;
+  border-color: #A2211B;
+  box-shadow: 0 0 0 4px rgba(162, 33, 27, 0.12);
+}
+
+.cr-input-group select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Date picker thème clair */
+.cr-input-group input[type="date"] {
+  color-scheme: light;
+  cursor: pointer;
+}
+
+.cr-input-group input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+  filter: invert(18%) sepia(82%) saturate(1200%) hue-rotate(340deg);
+}
+
+/* Textarea */
+.cr-input-group textarea {
+  resize: none;
+  height: 110px;
+}
+
+/* ── Erreurs ─────────────────────────────────────────────────────────────── */
+.cr-error {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: #D94F4F;
+  font-weight: 500;
+}
+
+.cr-input-group.has-error input,
+.cr-input-group.has-error select {
+  border-color: #D94F4F;
+}
+
+.cr-input-group.has-error label {
+  color: #D94F4F;
+}
+
+/* ── Boutons ─────────────────────────────────────────────────────────────── */
+.cr-button-group {
+  margin-top: 35px;
+  display: flex;
+  gap: 20px;
+}
+
+.cr-btn-primary {
+  flex: 1;
+  padding: 15px;
+  background: #A2211B;
+  border: none;
+  border-radius: 14px;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 10px 28px rgba(162, 33, 27, 0.28);
+}
+
+.cr-btn-primary:hover:not(:disabled) {
+  background: #D94F4F;
+  transform: translateY(-2px);
+}
+
+.cr-btn-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.cr-btn-primary i {
+  margin-right: 8px;
+}
+
+.cr-btn-secondary {
+  flex: 1;
+  padding: 15px;
+  border-radius: 14px;
+  border: 2px solid #A2211B;
+  background: white;
+  color: #A2211B;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cr-btn-secondary:hover {
+  background: #A2211B;
+  color: white;
+}
+
+/* ── Message de succès ───────────────────────────────────────────────────── */
+.cr-success {
+  background: white;
+  padding: 60px 40px;
+  border-radius: 20px;
+  border: 1px solid #E0E3E7;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.cr-success-icon {
+  font-size: 4rem;
+  color: #A2211B;
+  margin-bottom: 24px;
+}
+
+.cr-success h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1E3A5F;
+  margin-bottom: 12px;
+}
+
+.cr-success p {
+  color: #555;
+  font-size: 1rem;
+  max-width: 420px;
+  margin: 0 auto 32px;
+  line-height: 1.7;
+}
+
+.cr-success-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .cr-form-grid { grid-template-columns: 1fr; }
+  .cr-button-group { flex-direction: column; }
+  .cr-success-buttons { flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+  .cr-form-card { padding: 30px 20px; }
+  .cr-page-title h1 { font-size: 1.8rem; }
+}

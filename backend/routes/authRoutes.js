@@ -1,3 +1,4 @@
+// backend/src/routes/authRoutes.js
 // // backend/src/routes/authRoutes.js
 // import express from "express";
 // import { loginUser } from "../controllers/authController.js";
@@ -47,6 +48,11 @@ import {
 
 const router = express.Router();
 
+// POST
+router.post("/register/donor", registerDonor);
+router.post("/register/hospital", registerHospital);
+
+// GET (tests uniquement)
 router.post("/register/donor", registerDonor);
 router.post("/register/hospital", registerHospital);
 router.post("/login", loginUser);
