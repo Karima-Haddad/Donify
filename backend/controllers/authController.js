@@ -1,24 +1,15 @@
-// backend/controllers/authController.js
+// backend/src/controllers/authController.js
 import * as authService from "../src/services/authService.js";
 import { validateDonor, validateHospital } from "../src/validators/authValidation.js";
+import jwt from "jsonwebtoken";
 
-// -------------------- DONOR --------------------
+// -------------------- REGISTER DONOR --------------------
 export const registerDonor = async (req, res) => {
   try {
     // Validation des champs
     validateDonor(req.body);
 
     // Appel du service pour enregistrer le donor
-// backend/src/controllers/authController.js
-import * as authService from "../src/services/authService.js";
-import { validateDonor, validateHospital } from "../src/validations/authValidation.js";
-import jwt from "jsonwebtoken";
-
-// -------------------- REGISTER DONOR --------------------
-export const registerDonor = async (req, res) => {
-  try {
-    validateDonor(req.body);
-
     const donor = await authService.registerDonor(req.body);
 
     res.status(201).json({
@@ -43,6 +34,8 @@ export const registerDonor = async (req, res) => {
   }
 };
 
+
+
 // -------------------- HOSPITAL --------------------
 export const registerHospital = async (req, res) => {
   try {
@@ -50,19 +43,6 @@ export const registerHospital = async (req, res) => {
     validateHospital(req.body);
 
     // Appel du service pour enregistrer l'hôpital
-    if (err.message.includes("exists")) {
-      return res.status(409).json({ error: err.message });
-    }
-
-    return res.status(500).json({ error: "Erreur interne du serveur" });
-  }
-};
-
-// -------------------- REGISTER HOSPITAL --------------------
-export const registerHospital = async (req, res) => {
-  try {
-    validateHospital(req.body);
-
     const hospital = await authService.registerHospital(req.body);
 
     res.status(201).json({
@@ -87,15 +67,42 @@ export const registerHospital = async (req, res) => {
   }
 };
 
+
+
+
 // -------------------- GET TEST --------------------
 // Ces endpoints sont uniquement pour tester avec Postman si les données sont bien enregistrées
-    if (err.message.includes("exists")) {
-      return res.status(409).json({ error: err.message });
-    }
-
-    return res.status(500).json({ error: "Erreur interne du serveur" });
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await authService.getAllUsers();
+    res.status(200).json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch users" });
   }
 };
+
+export const getAllDonors = async (req, res) => {
+  try {
+    const donors = await authService.getAllDonors();
+    res.status(200).json(donors);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch donors" });
+  }
+};
+
+export const getAllHospitals = async (req, res) => {
+  try {
+    const hospitals = await authService.getAllHospitals();
+    res.status(200).json(hospitals);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch hospitals" });
+  }
+};
+
+
 
 // -------------------- LOGIN --------------------
 export const loginUser = async (req, res) => {
@@ -120,6 +127,7 @@ export const loginUser = async (req, res) => {
       token,
       role: user.role,
       id: user.id,
+      name: user.name,
     });
   } catch (err) {
     console.error("LOGIN ERROR:", err);
@@ -192,34 +200,3 @@ export const resetPassword = async (req, res) => {
   }
 };
 
-// -------------------- GET (TEST) --------------------
-export const getAllUsers = async (req, res) => {
-  try {
-    const users = await authService.getAllUsers();
-    res.status(200).json(users);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch users" });
-  }
-};
-
-export const getAllDonors = async (req, res) => {
-  try {
-    const donors = await authService.getAllDonors();
-    res.status(200).json(donors);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch donors" });
-  }
-};
-
-export const getAllHospitals = async (req, res) => {
-  try {
-    const hospitals = await authService.getAllHospitals();
-    res.status(200).json(hospitals);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch hospitals" });
-  }
-};
-};

@@ -29,13 +29,16 @@ function Login() {
       console.log("LOGIN RESPONSE :", res.data);
 
       // ✅ récupérer token + role + userId
-      const { token, role, userId, id } = res.data;
+      const { token, role, userId, id, name } = res.data;
 
       // ✅ compatibilité si backend renvoie id au lieu de userId
       const realUserId = userId || id;
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
+      if (name) {
+        localStorage.setItem("userName", name);
+      }
 
       if (realUserId) {
         localStorage.setItem("userId", realUserId);

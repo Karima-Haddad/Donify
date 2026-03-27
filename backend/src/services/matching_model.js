@@ -3,6 +3,7 @@ import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 import pool from "../../config/database.js";
 import { findAvailableDonorsByBloodType } from "../../repositories/donor_repository.js"; 
+import { findBloodRequestById } from "../../repositories/bloodRequestRepository.js";
 import { createValidatedDonation,  getValidatedDonationsByRequestId, } from "../../repositories/donation_repository.js";
 
 // Charger les variables d'environnement
@@ -99,6 +100,24 @@ export async function getTopKDonors(bloodType, k = 100, requestId) {
   if (!requestId) {
     const err = new Error("request_id is required to compute distance_km");
     err.statusCode = 400;
+    throw err;
+  }
+
+  // Vérifier que la demande existe
+  const bloodRequest = await findBloodRequestById(requestId);
+
+  if (!bloodRequest) {
+    const err = new Error("Blood request not found");
+    err.statusCode = 404;
+    throw err;
+  }
+
+  // 2) Bloquer si la demande est clôturée
+  const closedStatuses = ["satisfied", "expired"];
+
+  if (closedStatuses.includes(bloodRequest.status)) {
+    const err = new Error("This blood request is closed. Matching unavailable.");
+    err.statusCode = 409;
     throw err;
   }
 
@@ -210,43 +229,6 @@ async function healthCheck() {
  * @param {*} volumeMl 
  * @returns 
  */
-
-// export async function validateDonation(donorId, requestId, volumeMl) {
-//   if (!donorId) {
-//     const err = new Error("donor_id is required");
-//     err.statusCode = 400;
-//     throw err;
-//   }
-
-//   if (!requestId) {
-//     const err = new Error("request_id is required");
-//     err.statusCode = 400;
-//     throw err;
-//   }
-
-//   if (volumeMl === undefined || volumeMl === null) {
-//     const err = new Error("volume_ml is required");
-//     err.statusCode = 400;
-//     throw err;
-//   }
-
-//   const parsedVolume = Number(volumeMl);
-
-//   if (Number.isNaN(parsedVolume) || parsedVolume <= 0) {
-//     const err = new Error("volume_ml must be a positive number");
-//     err.statusCode = 400;
-//     throw err;
-//   }
-
-//   const donation = await createValidatedDonation({
-//     donorId,
-//     requestId,
-//     volumeMl: parsedVolume,
-//   });
-
-//   return donation;
-// }
-
 
 export async function validateDonation(donorId, requestId, volumeMl) {
   if (!donorId) {
