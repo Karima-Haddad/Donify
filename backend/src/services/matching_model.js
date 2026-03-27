@@ -3,7 +3,7 @@ import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 import pool from "../../config/database.js";
 import { findAvailableDonorsByBloodType } from "../../repositories/donor_repository.js"; 
-import { findBloodRequestById } from "../../repositories/BloodRequestsRepository.js";
+import { findBloodRequestById } from "../../repositories/bloodRequestRepository.js";
 import { createValidatedDonation,  getValidatedDonationsByRequestId, } from "../../repositories/donation_repository.js";
 
 // Charger les variables d'environnement

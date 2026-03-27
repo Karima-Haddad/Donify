@@ -1,53 +1,59 @@
+// src/components/HospitalForm.tsx
 import { useState } from "react";
-import { registerHospital } from "../services/authService";
+import { Link } from "react-router-dom";
+import { registerHospital } from "../services/auth-Service";
 import {
   governoratesList,
   getCitiesByGovernorate,
   getCoordinates
 } from "../data/tunisiaLocations";
 
-export default function HospitalForm() {
-  const [formData, setFormData] = useState({
-    name: "",
-    responsible_name: "",
-    email: "",
-    contact_phone: "",
-    city: "",
-    governorate: "",
-    password: "",
-    confirmPassword: ""
-  });
+// ── Type de l'état du formulaire ──────────────────────────────────────────
+interface HospitalFormState {
+  name: string;
+  responsible_name: string;
+  email: string;
+  contact_phone: string;
+  city: string;
+  governorate: string;
+  password: string;
+  confirmPassword: string;
+}
 
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+const initialState: HospitalFormState = {
+  name: "", responsible_name: "", email: "",
+  contact_phone: "", city: "", governorate: "",
+  password: "", confirmPassword: ""
+};
 
-  // Liste des villes selon le gouvernorat sélectionné
-  const cities = getCitiesByGovernorate(formData.governorate);
+export default function HospitalForm(): React.ReactElement {
+  const [formData, setFormData] = useState<HospitalFormState>(initialState);
+  const [errors, setErrors] = useState<Partial<Record<keyof HospitalFormState, string>>>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+
+  const cities: string[] = getCitiesByGovernorate(formData.governorate);
 
   const tunisianPhoneRegex = /^[0-9]{8}$/;
-  const strongPasswordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
-  const handleChange = (e) => {
+  // ── Gestion des changements ───────────────────────────────────────────
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ): void => {
     const { name, value } = e.target;
-
-    // Si on change le gouvernorat → reset la ville
     if (name === "governorate") {
-      setFormData(prev => ({
-        ...prev,
-        governorate: value,
-        city: ""  // reset ville quand gouvernorat change
-      }));
+      setFormData(prev => ({ ...prev, governorate: value, city: "" }));
       return;
     }
-
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const validateField = (name, value) => {
+  // ── Validation d'un seul champ ────────────────────────────────────────
+  const validateField = (name: string, value: string): void => {
     let error = "";
+
     if (name === "name" && !value.trim()) error = "Le nom de l'établissement est requis";
     if (name === "responsible_name" && !value.trim()) error = "Le nom du responsable est requis";
     if (name === "email" && !/\S+@\S+\.\S+/.test(value)) error = "Email invalide";
@@ -59,19 +65,26 @@ export default function HospitalForm() {
       error = "Mot de passe faible (8 caractères min, maj, min, chiffre, symbole)";
     if (name === "confirmPassword" && value !== formData.password)
       error = "Les mots de passe ne correspondent pas";
+
     setErrors(prev => ({ ...prev, [name]: error }));
   };
 
-  const handleKeyDown = (e) => {
+  // ── Touche Entrée ─────────────────────────────────────────────────────
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement>
+  ): void => {
     if (e.key === "Enter") {
       e.preventDefault();
-      validateField(e.target.name, e.target.value);
-      e.target.focus();
+      const target = e.target as HTMLInputElement | HTMLSelectElement;
+      validateField(target.name, target.value);
+      target.focus();
     }
   };
 
-  const validateAll = () => {
-    let newErrors = {};
+  // ── Validation complète au submit ─────────────────────────────────────
+  const validateAll = (): boolean => {
+    const newErrors: Partial<Record<keyof HospitalFormState, string>> = {};
+
     if (!formData.name.trim()) newErrors.name = "Le nom de l'établissement est requis";
     if (!formData.responsible_name.trim()) newErrors.responsible_name = "Le nom du responsable est requis";
     if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email invalide";
@@ -83,39 +96,36 @@ export default function HospitalForm() {
       newErrors.password = "Mot de passe faible (8 caractères min, maj, min, chiffre, symbole)";
     if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  // ── Submit ────────────────────────────────────────────────────────────
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!validateAll()) return;
     setLoading(true);
     try {
-      // Récupération automatique des coordonnées GPS
       const { latitude, longitude } = getCoordinates(formData.governorate, formData.city);
 
-      const payload = {
+      await registerHospital({
         name: formData.name,
         email: formData.email,
         password: formData.password,
         contact_phone: `+216${formData.contact_phone}`,
         city: formData.city,
         governorate: formData.governorate,
-        latitude,    // ← coordonnées automatiques
-        longitude    // ← coordonnées automatiques
-      };
-
-      await registerHospital(payload);
-      alert("Compte créé avec succès !");
-
-      setFormData({
-        name: "", responsible_name: "", email: "", contact_phone: "",
-        city: "", governorate: "", password: "", confirmPassword: ""
+        latitude,
+        longitude
       });
+
+      alert("Compte créé avec succès !");
+      setFormData(initialState);
       setErrors({});
-    } catch (error) {
-      alert(error.response?.data?.error || "Erreur lors de l'inscription");
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } } };
+      alert(err.response?.data?.error || "Erreur lors de l'inscription");
     } finally {
       setLoading(false);
     }
@@ -164,7 +174,7 @@ export default function HospitalForm() {
         {errors.contact_phone && <small className="error">{errors.contact_phone}</small>}
       </div>
 
-      {/* Gouvernorat — affiché AVANT ville */}
+      {/* Gouvernorat */}
       <div className={`input-group ${errors.governorate ? "has-error" : ""}`}>
         <label className="select-label">Gouvernorat</label>
         <select name="governorate" value={formData.governorate}
@@ -172,26 +182,25 @@ export default function HospitalForm() {
           onBlur={(e) => validateField(e.target.name, e.target.value)}
           onKeyDown={handleKeyDown}>
           <option value="">Sélectionner</option>
-          {governoratesList.map((gov) => (
+          {governoratesList.map(gov => (
             <option key={gov} value={gov}>{gov}</option>
           ))}
         </select>
         {errors.governorate && <small className="error">{errors.governorate}</small>}
       </div>
 
-      {/* Ville — liste dynamique selon gouvernorat */}
+      {/* Ville */}
       <div className={`input-group ${errors.city ? "has-error" : ""}`}>
         <label className="select-label">Ville</label>
         <select name="city" value={formData.city}
           onChange={handleChange}
           onBlur={(e) => validateField(e.target.name, e.target.value)}
           onKeyDown={handleKeyDown}
-          disabled={!formData.governorate}
-        >
+          disabled={!formData.governorate}>
           <option value="">
             {formData.governorate ? "Sélectionner" : "Choisir d'abord un gouvernorat"}
           </option>
-          {cities.map((city) => (
+          {cities.map(city => (
             <option key={city} value={city}>{city}</option>
           ))}
         </select>
@@ -233,7 +242,7 @@ export default function HospitalForm() {
       </button>
 
       <div className="form-footer">
-        Déjà inscrit ? <a href="#">Se connecter</a>
+        Déjà inscrit ? <Link to="/login">Se connecter</Link>
       </div>
 
     </form>

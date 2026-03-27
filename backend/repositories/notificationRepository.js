@@ -6,7 +6,7 @@ import pool from "../config/database.js";
  */
 export async function getNotificationsByUserId(userId) {
   const query = `
-    SELECT id, title, message, status, sent_at, read_at, type
+    SELECT id, request_id, title, message, status, sent_at, read_at, type
     FROM notifications
     WHERE user_id = $1
     ORDER BY sent_at DESC

@@ -58,6 +58,7 @@
   font-weight: 600;
   padding-bottom: 8px;
   transition: color 0.3s ease;
+  white-space: nowrap;
 }
 
 .donor-header__link::after {
@@ -237,7 +238,7 @@
 
 .donor-header__notification-item--unread {
   background: #fff7f7;
-  border: 1px solid rgba(162, 33, 27, 0.15);
+  border: 1px solid rgba(172, 18, 10, 0.15);
 }
 
 .donor-header__notification-item-top {
@@ -391,7 +392,191 @@
 }
 
 /* =========================================================
-   RESPONSIVE
+   NOTIFICATION ACTIONS
+   ========================================================= */
+
+.donor-header__notification-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.donor-header__action-btn {
+  min-width: 105px;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 18px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.donor-header__action-btn:focus-visible {
+  outline: 2px solid #1a6fb3;
+  outline-offset: 3px;
+}
+
+.donor-header__action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.donor-header__action-btn--accept {
+  background-color: #1e8a4a;
+  color: #ffffff;
+}
+
+.donor-header__action-btn--accept:hover:not(:disabled) {
+  background-color: #176e3b;
+  box-shadow: 0 2px 8px rgba(30, 138, 74, 0.28);
+}
+
+.donor-header__action-btn--accept:active:not(:disabled) {
+  background-color: #125c31;
+  box-shadow: none;
+}
+
+.donor-header__action-btn--refuse {
+  background-color: #c0392b;
+  color: #ffffff;
+}
+
+.donor-header__action-btn--refuse:hover:not(:disabled) {
+  background-color: #a93226;
+  box-shadow: 0 2px 8px rgba(192, 57, 43, 0.28);
+}
+
+.donor-header__action-btn--refuse:active:not(:disabled) {
+  background-color: #922b21;
+  box-shadow: none;
+}
+
+.donor-header__response-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.donor-header__response-badge--accepted {
+  background-color: #eaf6ee;
+  color: #1e6e3b;
+  border: 1px solid #a8d9b8;
+}
+
+.donor-header__response-badge--accepted::before {
+  content: "✓";
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e8a4a;
+}
+
+.donor-header__response-badge--refused {
+  background-color: #fdf0ef;
+  color: #922b21;
+  border: 1px solid #f0b8b3;
+}
+
+.donor-header__response-badge--refused::before {
+  content: "✕";
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #c0392b;
+}
+
+/* =========================================================
+   HAMBURGER (mobile) — caché par défaut
+   ========================================================= */
+
+.donor-header__hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 1100;
+}
+
+.donor-header__hamburger span {
+  display: block;
+  width: 24px;
+  height: 2.5px;
+  background-color: #1f3b69;
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* Croix quand ouvert */
+.donor-header__hamburger--open span:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+}
+.donor-header__hamburger--open span:nth-child(2) {
+  opacity: 0;
+}
+.donor-header__hamburger--open span:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* =========================================================
+   MOBILE MENU DRAWER
+   ========================================================= */
+
+.donor-header__mobile-menu {
+  display: none;
+  position: fixed;
+  top: 85px;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-bottom: 3px solid #b3201f;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  z-index: 998;
+  flex-direction: column;
+  padding: 16px 24px 24px;
+  gap: 4px;
+}
+
+.donor-header__mobile-menu--open {
+  display: flex;
+}
+
+.donor-header__mobile-link {
+  text-decoration: none;
+  color: #2c2c2c;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: color 0.2s ease;
+}
+
+.donor-header__mobile-link:last-of-type {
+  border-bottom: none;
+}
+
+.donor-header__mobile-link:hover,
+.donor-header__mobile-link--active {
+  color: #b3201f;
+}
+
+/* =========================================================
+   RESPONSIVE — Tablet  ≤ 1100px
    ========================================================= */
 
 @media (max-width: 1100px) {
@@ -404,13 +589,17 @@
   }
 
   .donor-header__link {
-    font-size: 17px;
+    font-size: 16px;
   }
 }
 
+/* =========================================================
+   RESPONSIVE — Small tablet  ≤ 900px
+   ========================================================= */
+
 @media (max-width: 900px) {
   .donor-header {
-    height: 88px;
+    height: 72px;
     padding: 0 18px;
   }
 
@@ -427,22 +616,141 @@
   }
 
   .donor-header__right {
-    gap: 18px;
+    gap: 16px;
     min-width: auto;
   }
 
   .donor-header__avatar {
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
   }
 
   .donor-header__profile-menu {
-    width: 260px;
+    width: 240px;
   }
 
+  /* Panel notifications : centré sous la cloche */
   .donor-header__notifications-panel {
-    width: 320px;
-    right: -70px;
+    width: 310px;
+    right: -60px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — Mobile  ≤ 640px
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .donor-header {
+    height: 64px;
+    padding: 0 16px;
+  }
+
+  /* Cacher la nav desktop, afficher hamburger */
+  .donor-header__nav {
+    display: none;
+  }
+
+  .donor-header__hamburger {
+    display: flex;
+  }
+
+  /* Logo plus petit */
+  .donor-header__logo {
+    width: 6rem;
+  }
+
+  .donor-header__left {
+    min-width: auto;
+  }
+
+  /* Avatar plus compact */
+  .donor-header__avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 15px;
+    border-width: 2px;
+  }
+
+  .donor-header__right {
+    gap: 12px;
+  }
+
+  /* Cloche plus petite */
+  .donor-header__bell-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* Panel notifications : pleine largeur sur mobile */
+  .donor-header__notifications-panel {
+    position: fixed;
+    top: 64px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    border-radius: 14px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+
+  .donor-header__notifications-list {
+    max-height: calc(100vh - 160px);
+  }
+
+  /* Boutons actions : pleine largeur sur très petits écrans */
+  .donor-header__notification-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .donor-header__action-btn {
+    width: 100%;
+    min-width: unset;
+    text-align: center;
+    padding: 10px 16px;
+  }
+
+  /* Dropdown profil : pleine largeur */
+  .donor-header__profile-menu {
+    position: fixed;
+    top: 64px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    border-radius: 14px;
+  }
+
+  .donor-header__menu-item {
+    font-size: 15px;
+    padding: 16px 20px;
+  }
+
+  /* Mobile menu drawer : hauteur header */
+  .donor-header__mobile-menu {
+    top: 64px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — Very small  ≤ 380px
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .donor-header {
+    padding: 0 12px;
+  }
+
+  .donor-header__logo {
+    width: 5rem;
+  }
+
+  .donor-header__badge {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    top: -6px;
+    right: -8px;
   }
 }

@@ -6,7 +6,7 @@
 
 import express from "express";
 import { getHospitalDashboardController } from "../controllers/hospitalDashboardController.js";
-import { getRecentRequests } from "../controllers/BloodRequestsController.js";
+import { getRecentRequests } from "../controllers/bloodRequestController.js";
 
 const router = express.Router();
 

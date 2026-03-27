@@ -1,13 +1,16 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
+
 export type HospitalNotification = {
   id: string;
+  user_id: string;
+  request_id: string | null;
+  type: string;
   title: string | null;
   message: string;
   status: "read" | "unread";
   sent_at: string | null;
-  read_at: string | null;
-  type: string | null;
+  read_at?: string | null;
 };
 
 export async function fetchUnreadNotificationsCount(userId: string): Promise<number> {
