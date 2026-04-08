@@ -12,6 +12,7 @@ import HospitalLayout from "./layouts/HospitalLayout";
 import DonorLayout from "./layouts/DonorLayout";
 import Footer from "./components/footer";
 import BloodRequestDetailsPage from "./pages/bloodRequestDetailsPage";
+import RegisterPage from "./pages/RegisterPage";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/register" element={ <RegisterPage/>} />
 
         {/* Hospital */}
         <Route element={<HospitalLayout />}>

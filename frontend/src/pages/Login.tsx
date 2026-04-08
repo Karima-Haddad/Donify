@@ -71,10 +71,10 @@ function Login() {
       {/* LEFT – Présentation */}
       <div className="login-left">
         <div className="logo-container">
-          <img src={logo} alt="Donify Logo" className="logo" />
+          <img src={logo} alt="Donify Logo" className="logo-login" />
         </div>
 
-        <div className="tagline">Connecting Blood. Saving Lives.</div>
+        <div className="tagline">Votre sang leur espoir</div>
 
         <div className="presentation">
           <h2>Une plateforme intelligente de mise en relation</h2>
