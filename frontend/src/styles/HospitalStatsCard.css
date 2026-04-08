@@ -1,34 +1,30 @@
-.hospital-dashboard-page {
-  min-height: 80vh;
-  background: #f4f6f8;
-  padding: 40px 30px;
-  font-family: "Poppins", sans-serif;
 
-  /* centrage global */
-  max-width: 1400px !important;
-  margin: 0 auto;
-}
 
-/* ===== GRID ===== */
-
+/* ===== WRAPPER STATS ===== */
 .stats {
+  max-width: 1200px;
+  margin: 45px auto 0px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: center;
+  align-items: stretch;
+  box-sizing: border-box;
 }
 
 /* ===== CARD ===== */
-
 .card {
-  background: white; /* léger gris comme la maquette */
+  width: 100%;
+  max-width: 1200px;
+  background: #ffffff;
   border: 1px solid #e0e3e7;
-  border-radius: 30px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+  border-radius: 24px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  padding: 25px 20px;
+  box-sizing: border-box;
 
+  /* très important */
+  height: auto !important;
   min-height: 200px;
-  min-width: 300px  !important;
-  padding: 10px 10px;
+  max-height: none !important;
 
   display: flex;
   flex-direction: column;
@@ -40,29 +36,26 @@
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 22px 50px rgba(15, 23, 42, 0.12);
 }
 
 /* ===== ICON ===== */
-
 .card-icon {
   font-size: 2rem;
   color: #a2211b;
-  margin-bottom: 26px;
+  margin-bottom: 20px;
 }
 
 /* ===== TITLE ===== */
-
 .card h3 {
   font-size: 1rem;
   font-weight: 700;
   color: #5c6470;
-  margin-bottom: 26px;
+  margin-bottom: 20px;
   text-align: center;
 }
 
 /* ===== VALUE ===== */
-
 .value {
   font-size: 2.5rem;
   font-weight: 800;
@@ -72,7 +65,6 @@
 }
 
 /* ===== MESSAGE ===== */
-
 .dashboard-message {
   font-size: 16px;
   color: #2c2c2c;
@@ -85,28 +77,20 @@
 }
 
 /* ===== RESPONSIVE ===== */
-
-@media (max-width: 1200px) {
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 650px) {
-  .stats {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .hospital-dashboard-page {
+    padding: 30px 12px;
   }
 
   .card {
-    min-height: 220px;
-    padding: 30px 20px;
+    padding: 22px 16px;
   }
 
   .value {
-    font-size: 2.8rem;
+    font-size: 2.2rem;
   }
 
   .card-icon {
-    font-size: 2.2rem;
+    font-size: 1.9rem;
   }
 }

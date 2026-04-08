@@ -28,8 +28,7 @@ export default function DonorHeader({ donorId, donorName = "Donneur" }: Props) {
   const [answeredNotifications, setAnsweredNotifications] = useState<
     Record<string, "accepted" | "refused">
   >({});
-  const [seenNotificationIds, setSeenNotificationIds] = useState<Set<string>>(new Set());
-  const [panelOpenedOnce, setPanelOpenedOnce] = useState(false);
+
 
   const notificationRef = useRef<HTMLDivElement | null>(null);
 
@@ -89,42 +88,6 @@ export default function DonorHeader({ donorId, donorName = "Donneur" }: Props) {
 
     return () => clearInterval(intervalId);
   }, [donorId, isNotificationsOpen]);
-
-//   async function handleToggleNotifications() {
-//   const nextOpenState = !isNotificationsOpen;
-//   setIsNotificationsOpen(nextOpenState);
-
-//   if (nextOpenState) {
-//     try {
-//       setLoadingNotifications(true);
-
-//       const data = await fetchUserNotifications(donorId);
-//       setNotifications(data);
-
-//       // 🔥 IMPORTANT : marquer comme read côté backend
-//       if (unreadCount > 0) {
-//         await markAllNotificationsAsRead(donorId);
-
-//         // mettre à jour le badge
-//         setUnreadCount(0);
-//         setUnreadCount(0);
-
-//         // mettre à jour les notifications localement
-//         setNotifications((prev) =>
-//           prev.map((notification) => ({
-//             ...notification,
-//             status: "read",
-//             read_at: new Date().toISOString(),
-//           }))
-//         );
-//       }
-//     } catch (error) {
-//       console.error("Erreur notifications :", error);
-//     } finally {
-//       setLoadingNotifications(false);
-//     }
-//   }
-// }
 
 
 async function handleToggleNotifications() {

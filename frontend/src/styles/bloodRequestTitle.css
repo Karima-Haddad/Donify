@@ -64,6 +64,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: 0.2s;
+  max-width: 250px;
 }
 
 .request-header__btn:hover {

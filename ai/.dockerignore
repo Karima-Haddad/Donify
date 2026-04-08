@@ -1,0 +1,29 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Environnement
+.env
+.env.*
+
+# Notebooks & analysis
+notebooks/
+
+# Reports
+reports/
+
+
+# Git
+.git
+.gitignore
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Excel files
+*.xlsx

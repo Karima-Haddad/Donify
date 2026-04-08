@@ -38,7 +38,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export async function fetchBloodRequestById(requestId: string) {
   const response = await http.get(
-    `${API_URL}/api/blood-requests/${requestId}`
+    `${API_URL}/api/blood-requests/getdetails/${requestId}`
   );
 
   return response.data.data;

@@ -9,7 +9,7 @@
     "skipLibCheck": true,
 
     /* Résolution des imports pour VSCode */
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
     "moduleDetection": "force",
@@ -24,8 +24,8 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    /* Base pour imports relatifs */
-    "baseUrl": "./src"
+    
+    
   },
   "include": ["src"]
 }
