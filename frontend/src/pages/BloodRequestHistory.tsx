@@ -48,7 +48,7 @@ export default function BloodRequestHistory() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "open":        return <span className="bh-badge bh-open">Active</span>;
-      case "in_progress": return <span className="bh-badge bh-progress">En cours</span>;
+      case "in_progress": return <span className="bh-badge bh-progress">Active</span>;
       case "satisfied":   return <span className="bh-badge bh-satisfied">Clôturée</span>;
       default:            return <span className="bh-badge">{status}</span>;
     }
@@ -79,8 +79,7 @@ export default function BloodRequestHistory() {
             onChange={(e) => setFilterStatus(e.target.value)}
           >
             <option value="all">Toutes les demandes</option>
-            <option value="open">Actives</option>
-            <option value="in_progress">En cours</option>
+            <option value="in_progress">Actives</option>
             <option value="satisfied">Clôturées</option>
           </select>
 

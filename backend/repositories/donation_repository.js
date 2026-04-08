@@ -121,6 +121,7 @@ export const getDonationsByDonor = async (donor_id, client = pool) => {
     LEFT JOIN locations l        ON u.location_id   = l.id
     LEFT JOIN donors don         ON d.donor_id      = don.id
     WHERE d.donor_id = $1
+    AND validated_by_hospital = 'true'
     ORDER BY d.donation_date DESC;
   `;
   const res = await client.query(query, [donor_id]);

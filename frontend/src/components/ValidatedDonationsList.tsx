@@ -19,7 +19,9 @@ export default function ValidatedDonationsList({ donations }: Props) {
 
   return (
     <div className="card">
-      <h2>Dons validés</h2>
+      <div className="header_card">
+        <h2>Dons validés</h2>
+      </div>
 
       {donations.length === 0 ? (
         <p>Aucun don validé pour le moment.</p>

@@ -149,6 +149,7 @@ export default function HospitalHeader({
         </div>
       </div>
 
+      <div className="hospital-header__center">
       <NavLink
         to="/hospital-dashboard"
         className={({ isActive }) =>
@@ -181,6 +182,8 @@ export default function HospitalHeader({
       >
         Mes demandes
       </NavLink>
+
+      </div>
 
       <div className="hospital-header__right">
         <div className="hospital-header__notification-wrapper" ref={notificationRef}>
