@@ -84,7 +84,52 @@ npm run build
 
 Les fichiers de build seront générés dans le dossier `dist/`.
 
-## 📚 Fonctionnalités principales
+## � Dockerisation
+
+### Construction de l'image
+
+Depuis le dossier `frontend/` :
+```bash
+docker build -t donify-frontend .
+```
+
+### Lancement du conteneur
+
+```bash
+docker run -d -p 5173:80 --name donify-frontend-container donify-frontend
+```
+
+### Vérification
+
+```bash
+docker ps
+```
+
+Exemple de sortie :
+```bash
+CONTAINER ID   IMAGE             COMMAND                  CREATED             STATUS             PORTS                                         NAMES
+b110b95999a4   donify-frontend   "/docker-entrypoint.…"   4 seconds ago       Up 3 seconds       0.0.0.0:5173->80/tcp, [::]:5173->80/tcp       donify-frontend-container
+```
+
+### Logs
+
+```bash
+docker logs donify-frontend-container
+```
+
+### Arrêt du conteneur
+
+```bash
+docker stop donify-frontend-container
+```
+
+### Démarrage du conteneur
+
+```bash
+docker start donify-frontend-container
+```
+
+## �📚 Fonctionnalités principales
 
 ### Authentification
 - Inscription et connexion des utilisateurs

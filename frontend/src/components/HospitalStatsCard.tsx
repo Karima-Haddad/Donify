@@ -59,7 +59,6 @@ export default function HospitalStatsCard() {
   }
 
   return (
-    <div className="hospital-dashboard-page">
       <div className="stats">
         <div className="card">
           <FaList className="card-icon" />
@@ -87,6 +86,5 @@ export default function HospitalStatsCard() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

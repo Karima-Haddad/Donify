@@ -70,8 +70,8 @@ export default function BloodShortageDashboard() {
     <div
       style={{
         padding: "40px",
-        backgroundColor: "#F9FAFB",
-        minHeight: "100vh",
+        backgroundColor: "#f5f7fa",
+        minHeight: "80vh",
       }}
     >
       <div

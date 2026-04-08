@@ -12,6 +12,9 @@ export type HospitalNotification = {
   sent_at: string | null;
   read_at?: string | null;
 };
+if (!API_URL) {
+  throw new Error("VITE_API_URL est non définie.");
+}
 
 export async function fetchUnreadNotificationsCount(userId: string): Promise<number> {
   const response = await fetch(`${API_URL}/api/notifications/${userId}/unread-count`);

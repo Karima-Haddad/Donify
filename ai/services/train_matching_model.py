@@ -42,12 +42,11 @@ from xgboost import XGBClassifier
 # 1) Paramètres généraux
 # =========================
 
-DATA_PATH = ".\data\matching_training_dataset.csv"  # Mets ici le chemin si le fichier est ailleurs
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(BASE_DIR, "..", "data", "matching_training_dataset.csv")
 TARGET_COL = "accepted_label"
 RANDOM_SEED = 42
-
-# Où sauvegarder les modèles 
-OUTPUT_DIR = "models"
+OUTPUT_DIR = os.path.join(BASE_DIR, "..", "models")
 
 
 # =========================

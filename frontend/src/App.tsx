@@ -7,6 +7,7 @@ import HospitalDashboard from "./pages/HospitalDashboard";
 import BloodShortageDashboard from "./components/BloodShortageDashboard";
 import HospitalStatsCard from "./components/HospitalStatsCard";
 import RecentRequestsCard from "./components/RecentRequestsCard";
+import HospitalDashboardPage from "./pages/hospitalDashboradPage";
 import HospitalLayout from "./layouts/HospitalLayout";
 import DonorLayout from "./layouts/DonorLayout";
 import Footer from "./components/footer";
@@ -14,6 +15,8 @@ import RegisterPage from "./pages/RegisterPage";
 import CreateBloodRequest from "./pages/CreateBloodRequest"; 
 import BloodRequestHistory from "./pages/BloodRequestHistory";
 import DonationHistory from "./pages/DonationHistory";
+import BloodRequestDetailsPage from "./pages/bloodRequestDetailsPage";
+import RegisterPage from "./pages/RegisterPage";
 
 export default function App() {
   return (
@@ -24,6 +27,7 @@ export default function App() {
         <Route path="/register" element={<RegisterPage />} />  {/* ← ajouté */}
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/register" element={ <RegisterPage/>} />
 
         {/* Hospital */}
         <Route element={<HospitalLayout />}>
@@ -33,6 +37,10 @@ export default function App() {
           <Route path="/stats-card" element={<HospitalStatsCard />} />
           <Route path="/recent-requests" element={<RecentRequestsCard />} />
           <Route path="/my-requests" element={<BloodRequestHistory />} />
+          <Route path="/stats-card" element={<HospitalStatsCard/>}/>
+          <Route path="/recent-requests" element={<RecentRequestsCard/>} />
+          <Route path="/hospital-dashboard-page" element={<HospitalDashboardPage />} />
+          <Route path="/blood-request/:requestId" element={<BloodRequestDetailsPage />} />
         </Route>
 
         {/* Donor */}

@@ -25,7 +25,7 @@ router.get("/:id", authMiddleware, getBloodRequestById);
 
 
 // Récupérer les détails d’une demande
-router.get("/:requestId", getMyBloodRequestById);
+router.get("/getdetails/:requestId", getMyBloodRequestById);
 
 // Clôturer une demande
 router.patch("/:requestId/close", closeBloodRequestController);
