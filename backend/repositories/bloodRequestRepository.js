@@ -11,9 +11,12 @@ export async function createBloodRequest(data, client) {
       quantity,
       location_id,
       status,
+      needed_date,
+      service,
+      notes,
       created_at
     )
-    VALUES ($1, $2, $3, $4, 'open', NOW())
+    VALUES ($1, $2, $3, $4, 'open', $5, $6, $7, NOW())
     RETURNING *;
   `;
 
@@ -22,6 +25,9 @@ export async function createBloodRequest(data, client) {
     data.blood_type,
     data.quantity,
     data.location_id,
+    data.needed_date   ,
+    data.service       || null,
+    data.notes         || null,
   ];
 
   const result = await client.query(query, values);

@@ -3,7 +3,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { Bell, User, LogOut } from "lucide-react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "../styles/donorHeader.css";
 import logo from "../assets/donify-logo.jpeg";
 import {
@@ -205,18 +205,27 @@ async function handleToggleNotifications() {
         </div>
       </div>
 
-      <nav className="donor-header__nav">
-        <Link
-          to="/donor-dashboard"
-          className="donor-header__link donor-header__link--active"
-        >
-          Acceuil
-        </Link>
+      <NavLink
+        to="/donor-dashboard"
+        className={({ isActive }) =>
+          isActive
+            ? "donor-header__link donor-header__link--active"
+            : "donor-header__link"
+        }
+      >
+        Accueil
+      </NavLink>
 
-        <Link to="/donor-notifications" className="donor-header__link">
-          Mes Dons
-        </Link>
-      </nav>
+      <NavLink
+        to="/my-donations"
+        className={({ isActive }) =>
+          isActive
+            ? "donor-header__link donor-header__link--active"
+            : "donor-header__link"
+        }
+      >
+        Mes Dons
+      </NavLink>
 
       <div className="donor-header__right">
         <div

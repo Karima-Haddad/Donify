@@ -15,7 +15,7 @@ import hopitalRoutes from "../routes/hospitalRoutes.js";
 import notificationRoutes from "../routes/notificationRoutes.js";
 import bloodRequestRoutes from "../routes/bloodRequest.routes.js";
 import donorResponseRoutes from "../routes/donorResponseRoutes.js";
-
+import donationRoutes from "../routes/donationRoutes.js";
 
 
 // --------------------------
@@ -112,7 +112,7 @@ app.use("/api/hospital", hopitalRoutes);
 app.use("/api/notifications",notificationRoutes);
 app.use("/api/blood-requests", bloodRequestRoutes);
 app.use("/api/donor-responses", donorResponseRoutes);
-
+app.use("/api/donations", donationRoutes);
 
 // --------------------------
 // Error middleware 

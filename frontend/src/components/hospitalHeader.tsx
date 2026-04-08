@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import { NavLink } from "react-router-dom";
 import "../styles/hospitalHeader.css";
 import logo from "../assets/donify-logo.jpeg";
 import { Bell, User, LogOut } from "lucide-react";
@@ -148,17 +149,38 @@ export default function HospitalHeader({
         </div>
       </div>
 
-      <nav className="hospital-header__nav">
-        <a href="#" className="hospital-header__link hospital-header__link--active">
-          Accueil
-        </a>
-        <a href="#" className="hospital-header__link">
-          Nouvelle demande
-        </a>
-        <a href="#" className="hospital-header__link">
-          Mes demandes
-        </a>
-      </nav>
+      <NavLink
+        to="/hospital-dashboard"
+        className={({ isActive }) =>
+          isActive
+            ? "hospital-header__link hospital-header__link--active"
+            : "hospital-header__link"
+        }
+      >
+        Accueil
+      </NavLink>
+
+      <NavLink
+        to="/create-request"
+        className={({ isActive }) =>
+          isActive
+            ? "hospital-header__link hospital-header__link--active"
+            : "hospital-header__link"
+        }
+      >
+        Nouvelle demande
+      </NavLink>
+
+      <NavLink
+        to="/my-requests"
+        className={({ isActive }) =>
+          isActive
+            ? "hospital-header__link hospital-header__link--active"
+            : "hospital-header__link"
+        }
+      >
+        Mes demandes
+      </NavLink>
 
       <div className="hospital-header__right">
         <div className="hospital-header__notification-wrapper" ref={notificationRef}>

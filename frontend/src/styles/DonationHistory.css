@@ -1,0 +1,165 @@
+/* src/styles/DonationHistory.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+.dh-wrapper {
+  font-family: 'Poppins', sans-serif;
+  background: #F4F6F8;
+  min-height: 100vh;
+  color: #2C2C2C;
+}
+
+/* ── Page Header ─────────────────────────────────────────────────────────── */
+.dh-page-header {
+  background: #EEF1F4;
+  padding: 70px 20px;
+  text-align: center;
+}
+
+.dh-page-header h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #1E3A5F;
+  margin-bottom: 15px;
+}
+
+.dh-page-header p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* ── Container ───────────────────────────────────────────────────────────── */
+.dh-container {
+  max-width: 1100px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+/* ── Summary ─────────────────────────────────────────────────────────────── */
+.dh-summary {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 18px;
+  border: 1px solid #E0E3E7;
+  margin-bottom: 35px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dh-summary-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2C2C2C;
+}
+
+.dh-summary-count {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #A2211B;
+}
+
+/* ── Table ───────────────────────────────────────────────────────────────── */
+.dh-table-container {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #E0E3E7;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #F9FAFB;
+}
+
+th {
+  text-align: left;
+  padding: 18px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #666;
+  border-bottom: 1px solid #E0E3E7;
+}
+
+td {
+  padding: 20px;
+  border-bottom: 1px solid #E0E3E7;
+  font-size: 0.95rem;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover {
+  background: #F4F6F8;
+}
+
+/* ── Status badges ───────────────────────────────────────────────────────── */
+.dh-status {
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.dh-validated {
+  background: rgba(46, 125, 50, 0.15);
+  color: #2E7D32;
+}
+
+.dh-pending {
+  background: rgba(255, 152, 0, 0.12);
+  color: #FF9800;
+}
+
+/* ── États vide / chargement ─────────────────────────────────────────────── */
+.dh-loading,
+.dh-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #888;
+  font-size: 1rem;
+}
+
+.dh-empty i {
+  font-size: 3rem;
+  color: #E0E3E7;
+  display: block;
+  margin-bottom: 16px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dh-page-header h1 { font-size: 2rem; }
+
+  table, thead, tbody, th, td, tr { display: block; }
+  thead { display: none; }
+
+  tr {
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #E0E3E7;
+    padding: 15px;
+  }
+
+  td {
+    border: none;
+    padding: 10px 0;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    color: #666;
+  }
+}

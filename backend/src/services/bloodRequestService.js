@@ -7,82 +7,37 @@ import { createNotificationsForDonors } from "./notificationService.js";
 
 
 // ── Créer une demande de sang ─────────────────────────────────────────────
-export async function createBloodRequest(hospital_id, data) {
-  const client = await pool.connect();
-
-  try {
-    const userResult = await client.query(
-      "SELECT location_id FROM users WHERE id = $1 AND role = 'hospital'",
-      [hospital_id]
-    );
-
-    if (userResult.rows.length === 0) {
-      throw new Error("Hôpital introuvable");
-    }
-
-    const location_id = userResult.rows[0].location_id;
-
-    if (!location_id) {
-      throw new Error("Localisation de l'hôpital non définie");
-    }
-
-    await client.query("BEGIN");
-
-    const bloodRequest = await bloodRequestRepo.createBloodRequest(
-      {
-        hospital_id,
-        blood_type: data.blood_type,
-        quantity: data.quantity,
-        location_id,
-      },
-      client
-    );
-
-    // rendre la demande visible en base
-    await client.query("COMMIT");
-
-    let donors = [];
-
-    try {
-      donors = await getTopKDonors(
-        bloodRequest.blood_type,
-        100,
-        bloodRequest.id
-      );
-
-      const notifClient = await pool.connect();
-      try {
-        await notifClient.query("BEGIN");
-
-        await createNotificationsForDonors(notifClient, {
-          bloodRequest,
-          donors,
-        });
-
-        await notifClient.query("COMMIT");
-      } catch (error) {
-        await notifClient.query("ROLLBACK");
-        console.error("Erreur lors de la création des notifications :", error);
-      } finally {
-        notifClient.release();
-      }
-    } catch (error) {
-      console.error("Erreur lors du process TopK/notifications :", error);
-    }
-
-    return {
-      bloodRequest,
-      notifiedDonorsCount: donors.length,
-    };
-  } catch (error) {
-    try {
-      await client.query("ROLLBACK");
-    } catch {}
-    throw error;
-  } finally {
-    client.release();
+export const createBloodRequest = async (hospital_id, data) => {
+ 
+  // 1️⃣ Récupérer le location_id de l'hôpital depuis la table users
+  const userResult = await pool.query(
+    "SELECT location_id FROM users WHERE id = $1 AND role = 'hospital'",
+    [hospital_id]
+  );
+ 
+  if (userResult.rows.length === 0) {
+    throw new Error("Hôpital introuvable");
   }
-}
+ 
+  const location_id = userResult.rows[0].location_id;
+ 
+  if (!location_id) {
+    throw new Error("Localisation de l'hôpital non définie");
+  }
+ 
+  // 2️⃣ Créer la demande de sang avec tous les champs
+  const bloodRequest = await bloodRequestRepo.createBloodRequest({
+    hospital_id,
+    blood_type:  data.blood_type,
+    quantity:    data.quantity,
+    location_id,
+    needed_date: data.needed_date ,  
+    service:     data.service     || null,  
+    notes:       data.notes       || null,  
+  }, pool);
+ 
+  return bloodRequest;
+};
 
 // ── Récupérer les demandes d'un hôpital ──────────────────────────────────
 export const getBloodRequestsByHospital = async (hospital_id) => {
@@ -95,7 +50,6 @@ export const getBloodRequestById = async (id) => {
   if (!request) throw new Error("Demande introuvable");
   return request;
 };
-
 
 
 
