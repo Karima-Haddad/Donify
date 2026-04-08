@@ -51,6 +51,40 @@ python -m uvicorn main:app --reload
 
 L'API sera disponible sur `http://localhost:8000`.
 
+### Utilisation avec Docker
+
+Pour lancer le service AI avec Docker :
+
+1. **Construisez l'image Docker** (si nécessaire) :
+   ```bash
+   docker build -t donify-ai .
+   ```
+
+2. **Lancez le conteneur** :
+   ```bash
+   docker run -d -p 8000:8000 --name donify-ai-container --env-file .env donify-ai
+   ```
+
+3. **Démarrez le conteneur** (si arrêté) :
+   ```bash
+   docker start donify-ai-container
+   ```
+
+4. **Vérifiez le statut du conteneur** :
+   ```bash
+   docker ps
+   ```
+   Exemple de sortie :
+   ```
+   CONTAINER ID   IMAGE       COMMAND                  CREATED              STATUS         PORTS                                         NAMES
+   27f2358bdef0   donify-ai   "uvicorn main:app --…"   About a minute ago   Up 4 seconds   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp   donify-ai-container
+   ```
+
+5. **Arrêtez le conteneur** :
+   ```bash
+   docker stop donify-ai-container
+   ```
+
 ### Entraînement des modèles
 
 Exécutez le script d'entraînement de prédiction des pénuries :

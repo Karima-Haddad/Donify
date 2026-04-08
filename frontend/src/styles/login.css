@@ -7,11 +7,13 @@
 .login-left {
   flex: 1.35;
   background: linear-gradient(to bottom, white, #fdf2f2);
-  padding: 4rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-width: 0;
+  align-items: center;
+  width: 100% !important;
 }
 
 .login-right {
@@ -27,13 +29,20 @@
 .logo-container {
   display: flex;
   justify-content: center;
+  align-items: center;
+  width: 100% !important;
   margin-bottom: 2.5rem;
+  min-height: 100px;
 }
 
-.logo {
-  width: 18rem !important;
-  height: auto;
+
+.logo-login{
+  height: 150px;                    /* hauteur fixe que tu veux garder */
+  width: 300px !important;                     /* ← important : laisse le navigateur calculer la largeur proportionnelle */                /* empêche l’image de déborder du conteneur sur mobile */
+  object-fit: contain;
+  display: block;                  /* évite les petits espaces blancs en bas parfois */
 }
+
 
 .tagline {
   text-align: center;

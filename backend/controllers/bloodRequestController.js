@@ -117,7 +117,10 @@ export async function getRecentRequests(req, res, next) {
 
 export async function getMyBloodRequestById(req, res) {
   try {
+    console.log("params =", req.params); // ici
     const { requestId } = req.params;
+    console.log("requestId =", requestId); // ici
+    
 
     const request = await findBloodRequestById(requestId);
 

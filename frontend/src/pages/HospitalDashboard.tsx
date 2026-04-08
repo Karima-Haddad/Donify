@@ -26,7 +26,7 @@ type NotificationData = {
 
 function HospitalDashboard() {
   const [hospital, setHospital] = useState<Hospital | null>(null);
-  const [requests, setRequests] = useState<RequestStat[]>([]);
+  const [, setRequests] = useState<RequestStat[]>([]);
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -60,11 +60,7 @@ function HospitalDashboard() {
     fetchData();
   }, [hospitalId]);
 
-  const requestCount = requests.length;
-  const validatedCount = requests.filter(
-    (r) => r.status === "satisfied" || r.status === "in_progress"
-  ).length;
-  const memberSince = hospital ? new Date().getFullYear() : new Date().getFullYear();
+
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "-";

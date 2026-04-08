@@ -79,7 +79,53 @@ Le serveur tournera sur : `http://localhost:4000`
 
 Point de terminaison de vérification de santé : `GET /health`
 
-## 📚 Documentation API
+## � Dockerisation
+
+### Construction de l'image
+
+Depuis le dossier `backend/` :
+```bash
+docker build -t donify-backend .
+```
+
+### Lancement du conteneur
+
+```bash
+docker run -d -p 4000:4000 --name donify-backend-container --env-file .env donify-backend
+```
+
+### Vérification
+
+```bash
+docker ps
+```
+
+Exemple de sortie :
+```bash
+CONTAINER ID   IMAGE            COMMAND                  CREATED          STATUS          PORTS                                         NAMES
+7dd5b81ca9be   donify-backend   "docker-entrypoint.s…"   16 seconds ago   Up 16 seconds   0.0.0.0:4000->4000/tcp, [::]:4000->4000/tcp   donify-backend-container
+```
+
+### Logs
+
+```bash
+docker logs donify-backend-container
+```
+
+### Arrêt du conteneur
+
+```bash
+docker stop donify-backend-container
+```
+
+
+### Démarrage du conteneur
+
+```bash
+docker start donify-backend-container
+```
+
+## �📚 Documentation API
 
 ### Points de terminaison d'authentification
 

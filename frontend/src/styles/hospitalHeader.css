@@ -323,7 +323,7 @@
 
 
 .logo {
-  width: 8rem;
+  width: 6rem !important;
   height: auto;
 }
 

@@ -129,6 +129,56 @@ python -m uvicorn main:app --reload
 
 Le service IA tournera sur : `http://localhost:8000`
 
+## 🐳 Docker Compose
+
+Pour lancer toute l'application avec Docker Compose :
+
+```bash
+docker compose up --build
+```
+
+Cette commande :
+- Construit les images pour le frontend, backend et IA
+- Lance tous les services avec les bonnes configurations réseau
+- Monte les volumes pour le développement
+
+### Services démarrés
+
+- **Frontend** : `http://localhost:5173` (Nginx)
+- **Backend** : `http://localhost:4000` (Node.js)
+- **IA** : `http://localhost:8000` (Python FastAPI)
+
+### Exemple de logs au démarrage
+
+```
+[+] up 6/6
+ ✔ Image project-root-ai       Built
+ ✔ Image project-root-backend  Built
+ ✔ Image project-root-frontend Built
+ ✔ Container donify-ai         Recreated
+ ✔ Container donify-backend    Recreated
+ ✔ Container donify-frontend   Recreated
+Attaching to donify-ai, donify-backend, donify-frontend
+donify-ai  | === Vérification des datasets ===
+donify-ai  | ✅ Dataset shortage déjà existant
+donify-ai  | ✅ Dataset matching déjà existant
+donify-ai  | === Vérification des modèles ===
+donify-ai  | ✅ Modèle shortage déjà existant
+donify-ai  | ✅ Modèle matching déjà existant
+donify-ai  | === Lancement API ===
+donify-ai  | INFO:     Uvicorn running on http://0.0.0.0:8000
+donify-backend  | 🚀 Server running on port 4000
+donify-backend  | 🤖 AI Service URL: http://ai:8000
+donify-frontend  | nginx/1.29.7
+donify-frontend  | start worker processes
+```
+
+### Arrêt des services
+
+```bash
+docker compose down
+```
+
 ## 🌍 Workflow de développement
 
 - `main` → Code prêt pour la production
