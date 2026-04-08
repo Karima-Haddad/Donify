@@ -479,7 +479,7 @@ export default function DonorForm(): React.ReactElement {
       </button>
 
       <div className="form-footer">
-        Déjà inscrit ? <Link to="/login">Se connecter</Link>
+        Déjà inscrit ? <Link to="/">Se connecter</Link>
       </div>
 
     </form>

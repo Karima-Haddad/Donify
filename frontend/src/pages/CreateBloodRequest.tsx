@@ -7,25 +7,25 @@ import "../styles/CreateBloodRequest.css";
 
 // ── Types ─────────────────────────────────────────────────────────────────
 interface FormState {
-  blood_type: string;
-  quantity: string;
+  blood_type:   string;
+  quantity:     string;
   desired_date: string;
-  service: string;
-  notes: string;
+  service:      string;
+  notes:        string;
 }
 
 interface FormErrors {
-  blood_type?: string;
-  quantity?: string;
+  blood_type?:   string;
+  quantity?:     string;
   desired_date?: string;
 }
 
 const initialState: FormState = {
-  blood_type: "",
-  quantity: "",
+  blood_type:   "",
+  quantity:     "",
   desired_date: "",
-  service: "",
-  notes: ""
+  service:      "",
+  notes:        ""
 };
 
 // Liste fixe des services hospitaliers
@@ -43,10 +43,10 @@ const HOSPITAL_SERVICES = [
 ];
 
 export default function CreateBloodRequest() {
-  const [formData, setFormData] = useState<FormState>(initialState);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [loading, setLoading] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
+  const [formData, setFormData]   = useState<FormState>(initialState);
+  const [errors, setErrors]       = useState<FormErrors>({});
+  const [loading, setLoading]     = useState<boolean>(false);
+  const [success, setSuccess]     = useState<boolean>(false);
   const navigate = useNavigate();
 
   // ── Gestion des changements ─────────────────────────────────────────────
@@ -106,8 +106,11 @@ export default function CreateBloodRequest() {
     setLoading(true);
     try {
       await createBloodRequest({
-        blood_type: formData.blood_type,
-        quantity: Number(formData.quantity)
+        blood_type:  formData.blood_type,
+        quantity:    Number(formData.quantity),
+        needed_date: formData.desired_date ,  // ← envoyé au backend
+        service:     formData.service      || null,  // ← envoyé au backend
+        notes:       formData.notes        || null,  // ← envoyé au backend
       });
       setSuccess(true);
       setFormData(initialState);

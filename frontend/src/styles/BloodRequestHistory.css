@@ -1,0 +1,243 @@
+/* src/styles/BloodRequestHistory.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+.bh-wrapper {
+  font-family: 'Poppins', sans-serif;
+  background: #F4F6F8;
+  min-height: 100vh;
+  color: #2C2C2C;
+}
+
+.bh-container {
+  max-width: 1200px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.bh-header {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 32px;
+  gap: 20px;
+}
+
+.bh-header h1 {
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: #1E3A5F;
+  margin-bottom: 6px;
+}
+
+.bh-header p {
+  color: #555;
+  font-size: 1rem;
+}
+
+/* ── Bouton Nouvelle demande ─────────────────────────────────────────────── */
+.bh-btn-primary {
+  display: inline-flex !important;
+  align-items: center;
+  width: fit-content !important;
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 11px 22px;
+  border-radius: 14px;
+  background: #A2211B;
+  border: none;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 8px 24px rgba(162, 33, 27, 0.25);
+}
+
+.bh-btn-primary:hover {
+  background: #D94F4F;
+  transform: translateY(-2px);
+}
+
+.bh-btn-primary i {
+  margin-right: 8px;
+}
+
+/* ── Filtres ─────────────────────────────────────────────────────────────── */
+.bh-filters {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 16px;
+  margin-bottom: 28px;
+  align-items: center;
+}
+
+.bh-filters select,
+.bh-filters input[type="month"] {
+  padding: 12px 18px;
+  border-radius: 20px;
+  border: 2px solid #A2211B;
+  background: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #2C2C2C;
+  outline: none;
+  cursor: pointer;
+  transition: 0.3s;
+  min-width: 180px;
+  flex-shrink: 0;
+}
+
+.bh-filters select:focus,
+.bh-filters input[type="month"]:focus {
+  box-shadow: 0 0 0 4px rgba(162, 33, 27, 0.15);
+}
+
+/* ── Bouton Réinitialiser : texte gris, tout à droite, même ligne ────────── */
+.bh-btn-reset {
+  display: inline-flex !important;
+  align-items: center;
+  margin-left: auto !important;
+  width: fit-content !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #999 !important;
+  cursor: pointer;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.bh-btn-reset:hover {
+  color: #A2211B !important;
+  background: transparent !important;
+  transform: none !important;
+}
+
+.bh-btn-reset i {
+  margin-right: 5px;
+}
+
+/* ── Table ───────────────────────────────────────────────────────────────── */
+.bh-table-card {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #E0E3E7;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #F9FAFB;
+}
+
+th {
+  text-align: left;
+  padding: 16px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border-bottom: 1px solid #E0E3E7;
+}
+
+td {
+  padding: 18px 20px;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #E0E3E7;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover {
+  background: #F4F6F8;
+}
+
+/* ── Badges ──────────────────────────────────────────────────────────────── */
+.bh-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.bh-open {
+  background: rgba(162, 33, 27, 0.12);
+  color: #A2211B;
+}
+
+.bh-progress {
+  background: rgba(255, 152, 0, 0.12);
+  color: #FF9800;
+}
+
+.bh-satisfied {
+  background: rgba(46, 125, 50, 0.12);
+  color: #2E7D32;
+}
+
+/* ── Bouton voir détails ─────────────────────────────────────────────────── */
+.bh-btn-view {
+  display: inline-flex !important;
+  align-items: center;
+  width: fit-content !important;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 2px solid #A2211B !important;
+  background: white !important;
+  color: #A2211B !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.bh-btn-view:hover {
+  background: #A2211B !important;
+  color: white !important;
+}
+
+/* ── États vide / chargement ─────────────────────────────────────────────── */
+.bh-loading,
+.bh-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #888;
+  font-size: 1rem;
+}
+
+.bh-empty i {
+  font-size: 3rem;
+  color: #E0E3E7;
+  display: block;
+  margin-bottom: 16px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .bh-header { flex-direction: column !important; align-items: flex-start !important; }
+  .bh-filters { flex-wrap: wrap !important; }
+  .bh-filters select,
+  .bh-filters input[type="month"] { min-width: 100%; }
+  .bh-btn-reset { margin-left: 0 !important; }
+  table { font-size: 0.85rem; }
+  th, td { padding: 12px 14px; }
+}

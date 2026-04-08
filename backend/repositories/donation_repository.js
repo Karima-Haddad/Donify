@@ -98,3 +98,40 @@ export async function getValidatedDonationsByRequestId(requestId) {
   const { rows } = await pool.query(query, [requestId]);
   return rows;
 }
+
+/*================================================================================================================================
+NADINE
+================================================================================================================================*/
+
+// ── Récupérer tous les dons d'un donneur ──────────────────────────────────
+export const getDonationsByDonor = async (donor_id, client = pool) => {
+  const query = `
+    SELECT
+      d.id,
+      d.donation_date,
+      d.validated_by_hospital,
+      d.volume_ml,
+      d.created_at,
+      u.name         AS hospital_name,
+      l.city         AS city,
+      don.blood_type AS blood_type
+    FROM donations d
+    LEFT JOIN blood_requests br  ON d.request_id   = br.id
+    LEFT JOIN users u            ON br.hospital_id  = u.id
+    LEFT JOIN locations l        ON u.location_id   = l.id
+    LEFT JOIN donors don         ON d.donor_id      = don.id
+    WHERE d.donor_id = $1
+    ORDER BY d.donation_date DESC;
+  `;
+  const res = await client.query(query, [donor_id]);
+  return res.rows;
+};
+ 
+// ── Compter le total des dons d'un donneur ────────────────────────────────
+export const countDonationsByDonor = async (donor_id, client = pool) => {
+  const res = await client.query(
+    "SELECT COUNT(*) FROM donations WHERE donor_id = $1",
+    [donor_id]
+  );
+  return parseInt(res.rows[0].count, 10);
+};
