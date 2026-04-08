@@ -16,7 +16,7 @@ export async function createBloodRequest(data, client) {
       notes,
       created_at
     )
-    VALUES ($1, $2, $3, $4, 'open', $5, $6, $7, NOW())
+    VALUES ($1, $2, $3, $4, 'in_progress', $5, $6, $7, NOW())
     RETURNING *;
   `;
 

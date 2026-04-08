@@ -8,6 +8,8 @@
 
 /* ── Wrapper ─────────────────────────────────────────────────────────────── */
 .cr-wrapper {
+  width: 1100px !important;
+  margin: auto auto;
   font-family: 'Poppins', sans-serif;
   background: #F4F6F8;
   min-height: 100vh;
@@ -16,7 +18,7 @@
 
 /* ── Container ───────────────────────────────────────────────────────────── */
 .cr-container {
-  max-width: 900px;
+  width: 1100px;
   margin: 60px auto;
   padding: 0 20px;
 }

@@ -265,6 +265,14 @@
   background-color: #fff6f6 !important;
 }
 
+ .hospital-header__center{
+    width: 35% !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+ }
+
+
 /* =========================================================
    RESPONSIVE
    ========================================================= */
@@ -304,6 +312,8 @@
   .hospital-header__left {
     min-width: auto;
   }
+
+
 
   .hospital-header__right {
     gap: 18px;

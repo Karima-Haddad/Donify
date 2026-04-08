@@ -150,6 +150,8 @@ async function handleToggleNotifications() {
     requestId: string | null,
     responseStatus: "accepted" | "refused"
   ) {
+    if (submittingId) return;
+    
     if (!requestId) {
       alert("Cette notification n’est liée à aucune demande.");
       return;
@@ -205,6 +207,7 @@ async function handleToggleNotifications() {
         </div>
       </div>
 
+    <div className="donor-header__center">
       <NavLink
         to="/donor-dashboard"
         className={({ isActive }) =>
@@ -226,6 +229,7 @@ async function handleToggleNotifications() {
       >
         Mes Dons
       </NavLink>
+      </div>
 
       <div className="donor-header__right">
         <div
@@ -291,53 +295,51 @@ async function handleToggleNotifications() {
 
                         <p>{notification.message}</p>
 
-                        {notification.type === "blood_request_match" &&
+                        {
                           notification.request_id && (
                             <div className="donor-header__notification-actions">
                               {answeredNotifications[notification.id] ? (
-                                <span className="donor-header__response-badge">
-                                  {answeredNotifications[notification.id] ===
-                                  "accepted"
-                                    ? "Demande acceptée"
-                                    : "Demande refusée"}
-                                </span>
-                              ) : (
-                                <>
-                                  <button
-                                    type="button"
-                                    className="donor-header__action-btn donor-header__action-btn--accept"
-                                    onClick={() =>
-                                      handleRespondToNotification(
-                                        notification.id,
-                                        notification.request_id,
-                                        "accepted"
-                                      )
-                                    }
-                                    disabled={submittingId === notification.id}
-                                  >
-                                    {submittingId === notification.id
-                                      ? "Envoi..."
-                                      : "Accepter"}
-                                  </button>
+  <span className="donor-header__response-badge">
+    {answeredNotifications[notification.id] === "accepted"
+      ? "Demande acceptée"
+      : "Demande refusée"}
+  </span>
+) : submittingId === notification.id ? (
+  <div className="donor-header__sending-state">
+    <span className="donor-header__spinner"></span>
+    <span>Envoi...</span>
+  </div>
+) : (
+  <>
+    <button
+      type="button"
+      className="donor-header__action-btn donor-header__action-btn--accept"
+      onClick={() =>
+        handleRespondToNotification(
+          notification.id,
+          notification.request_id,
+          "accepted"
+        )
+      }
+    >
+      Accepter
+    </button>
 
-                                  <button
-                                    type="button"
-                                    className="donor-header__action-btn donor-header__action-btn--refuse"
-                                    onClick={() =>
-                                      handleRespondToNotification(
-                                        notification.id,
-                                        notification.request_id,
-                                        "refused"
-                                      )
-                                    }
-                                    disabled={submittingId === notification.id}
-                                  >
-                                    {submittingId === notification.id
-                                      ? "Envoi..."
-                                      : "Refuser"}
-                                  </button>
-                                </>
-                              )}
+    <button
+      type="button"
+      className="donor-header__action-btn donor-header__action-btn--refuse"
+      onClick={() =>
+        handleRespondToNotification(
+          notification.id,
+          notification.request_id,
+          "refused"
+        )
+      }
+    >
+      Refuser
+    </button>
+  </>
+)}
                             </div>
                           )}
                       </div>

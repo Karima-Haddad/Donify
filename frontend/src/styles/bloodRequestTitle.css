@@ -47,12 +47,31 @@
   color: #2e7d32;
 }
 
-/* Status */
 .badge--status {
-  background: #e8f5e9;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 16px;
+  border-radius: 999px;
+
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  background: rgba(46, 125, 50, 0.1);
   color: #2e7d32;
+
+  border: 1px solid rgba(46, 125, 50, 0.25);
 }
 
+/* Petit point indicateur (style dashboard pro) */
+.badge--status::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2e7d32;
+}
 /* ===== BUTTON ===== */
 
 .request-header__btn {
@@ -77,4 +96,9 @@
   color: #aaa;
   cursor: not-allowed;
   background: #f5f5f5;
+  transition: none;
+}
+
+.request-header__btn:disabled:hover {
+  transform: none;
 }
