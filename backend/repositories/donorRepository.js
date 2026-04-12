@@ -46,3 +46,36 @@ export const getAllDonors = async (client = pool) => {
   const res = await client.query(query);
   return res.rows;
 };
+
+
+export const updateDonorProfilRepository = async (donorId, data) => {
+  const { firstName, lastName, email, phone, city, lastDonation, availability, newPassword } = data;
+
+  const fullName = `${lastName} ${firstName}`;
+
+  await pool.query(
+    `UPDATE users u
+     SET name=$1, email=$2, contact_phone=$3
+     WHERE id=$4`,
+    [fullName, email, phone, donorId]
+  );
+
+  await pool.query(
+    `UPDATE donors d
+     SET last_donation_date=$1, availability=$2
+     WHERE id=$3`,
+    [lastDonation, availability, donorId]
+  );
+
+  if (newPassword) {
+    // Hash password avant update
+    const bcrypt = await import("bcrypt");
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await pool.query(
+      `UPDATE users SET password_hash=$1 WHERE id=$2`,
+      [hashed, donorId]
+    );
+  }
+
+  return { message: "Profil mis à jour avec succès" };
+};

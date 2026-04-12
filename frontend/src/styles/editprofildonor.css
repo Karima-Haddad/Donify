@@ -1,0 +1,144 @@
+/* Reset simple */
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background-color: #f5f7fa;
+}
+
+/* ✅ CENTRAGE DU BLOC */
+.container {
+  max-width: 700px;
+  margin: 40px auto; /* centre horizontalement */
+  padding: 20px;
+ 
+}
+
+/* Titre */
+.page-title h1 {
+  margin: 0;
+  color: #1e3a5f;
+}
+
+.page-title p {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* Carte du formulaire */
+.form-card {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Grille */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Inputs */
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.input-group input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  outline: none;
+  transition: 0.2s;
+}
+
+.input-group input:focus {
+  border-color: #1e3a5f !important;
+}
+
+/* Toggle switch */
+.toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Switch style */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #a2211b;
+  border-radius: 20px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.3s;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.switch input:checked + .slider {
+  background-color: #1e3a5f;
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+/* Bouton */
+.button-group {
+  margin-top: 30px;
+  text-align: right;
+}
+
+.btn-save {
+  background-color: #1e3a5f;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+  width: 20%;
+}
+
+.btn-save:hover {
+  background-color: #a2211b;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

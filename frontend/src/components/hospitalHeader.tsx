@@ -151,7 +151,7 @@ export default function HospitalHeader({
 
       <div className="hospital-header__center">
       <NavLink
-        to="/hospital-dashboard"
+        to="/hospital-dashboard-page"
         className={({ isActive }) =>
           isActive
             ? "hospital-header__link hospital-header__link--active"
@@ -252,7 +252,7 @@ export default function HospitalHeader({
           <div className="hospital-header__avatar">{hospitalInitial}</div>
 
           <div className="hospital-header__profile-menu">
-            <button className="hospital-header__menu-item" type="button">
+            <button className="hospital-header__menu-item" type="button" onClick={() => navigate("/hospital-profil")}>
               <User
                 size={20}
                 strokeWidth={2.3}

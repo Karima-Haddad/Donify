@@ -53,13 +53,13 @@ function Login() {
         );
       }
 
-      alert("Login réussi !");
+  
 
       // 🚀 redirection selon rôle
       if (role === "hospital") {
-        navigate("/hospital-dashboard");
+        navigate("/hospital-dashboard-page");
       } else {
-        navigate("/donor-dashboard");
+        navigate("/donor-profil");
       }
     } catch (error: any) {
       alert(error.response?.data?.message || "Erreur login");
@@ -85,15 +85,15 @@ function Login() {
           </p>
 
           <div className="stats">
-            <div className="stat-card">
+            <div className="stats-card">
               <h3>+1 200</h3>
               <span>Donneurs actifs</span>
             </div>
-            <div className="stat-card">
+            <div className="stats-card">
               <h3>+350</h3>
               <span>Dons validés</span>
             </div>
-            <div className="stat-card">
+            <div className="stats-card">
               <h3>98%</h3>
               <span>Taux de réponse</span>
             </div>

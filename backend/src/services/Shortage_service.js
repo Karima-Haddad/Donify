@@ -44,11 +44,11 @@ export function buildShortagePayload(rows) {
       row.blood_type,
       {
         blood_type: row.blood_type,
-        total_requested_bags: Number(row.total_requested_bags ?? 0),
-        total_donated_bags: Number(row.total_donated_bags ?? 0),
-        current_stock_bags: Number(row.current_stock_bags ?? 0),
-        req_7d: Number(row.req_7d ?? 0),
-        don_7d: Number(row.don_7d ?? 0),
+        total_requested_bags: Math.round(Number(row.total_requested_bags ?? 0)),
+        total_donated_bags: Math.round(Number(row.total_donated_bags ?? 0)),
+        current_stock_bags: Math.round(Number(row.current_stock_bags ?? 0)),
+        req_7d: Math.round(Number(row.req_7d ?? 0)),
+        don_7d: Math.round(Number(row.don_7d ?? 0)),
       },
     ])
   );
@@ -116,12 +116,19 @@ export async function predictShortage(payload) {
 
     return response.data;
   } catch (error) {
-    const detail =
-      error.response?.data?.detail || error.message || "AI service error";
-    const err = new Error(detail);
-    err.statusCode = error.response?.status || 500;
-    throw err;
-  }
+  console.error("Erreur IA complète =", error.response?.data || error.message);
+
+  const detail = error.response?.data?.detail ?? error.response?.data ?? error.message ?? "AI service error";
+
+  const message =
+    typeof detail === "string"
+      ? detail
+      : JSON.stringify(detail, null, 2);
+
+  const err = new Error(message);
+  err.statusCode = error.response?.status || 500;
+  throw err;
+}
 }
 
 

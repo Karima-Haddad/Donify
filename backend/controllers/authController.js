@@ -1,7 +1,21 @@
 // backend/src/controllers/authController.js
+
 import * as authService from "../src/services/authService.js";
 import { validateDonor, validateHospital } from "../src/validators/authValidation.js";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+
+// -------------------- CONFIG EMAIL --------------------
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
 
 // -------------------- REGISTER DONOR --------------------
 export const registerDonor = async (req, res) => {
@@ -70,37 +84,37 @@ export const registerHospital = async (req, res) => {
 
 
 
-// -------------------- GET TEST --------------------
-// Ces endpoints sont uniquement pour tester avec Postman si les données sont bien enregistrées
-export const getAllUsers = async (req, res) => {
-  try {
-    const users = await authService.getAllUsers();
-    res.status(200).json(users);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch users" });
-  }
-};
+// // -------------------- GET TEST --------------------
+// // Ces endpoints sont uniquement pour tester avec Postman si les données sont bien enregistrées
+// export const getAllUsers = async (req, res) => {
+//   try {
+//     const users = await authService.getAllUsers();
+//     res.status(200).json(users);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Failed to fetch users" });
+//   }
+// };
 
-export const getAllDonors = async (req, res) => {
-  try {
-    const donors = await authService.getAllDonors();
-    res.status(200).json(donors);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch donors" });
-  }
-};
+// export const getAllDonors = async (req, res) => {
+//   try {
+//     const donors = await authService.getAllDonors();
+//     res.status(200).json(donors);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Failed to fetch donors" });
+//   }
+// };
 
-export const getAllHospitals = async (req, res) => {
-  try {
-    const hospitals = await authService.getAllHospitals();
-    res.status(200).json(hospitals);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch hospitals" });
-  }
-};
+// export const getAllHospitals = async (req, res) => {
+//   try {
+//     const hospitals = await authService.getAllHospitals();
+//     res.status(200).json(hospitals);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Failed to fetch hospitals" });
+//   }
+// };
 
 
 
@@ -150,7 +164,7 @@ export const forgotPassword = async (req, res) => {
       return res.status(400).json({ message: "Utilisateur non trouvé" });
     }
 
-    // Générer token reset
+    // Générer token
     const token = jwt.sign(
       { id: user.id, email: user.email, purpose: "reset" },
       process.env.JWT_SECRET,
@@ -159,14 +173,27 @@ export const forgotPassword = async (req, res) => {
 
     const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
 
-    res.status(200).json({
-      message: "Lien de réinitialisation généré",
-      resetLink,
-      token, // pour test (à supprimer en prod)
+    // ✅ ENVOI EMAIL
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER, // TON email
+      to: email,                    // email utilisateur
+      subject: "Réinitialisation du mot de passe",
+      html: `
+        <h2>Réinitialisation du mot de passe</h2>
+        <p>Bonjour,</p>
+        <p>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>Ce lien expire dans 15 minutes.</p>
+      `,
     });
+
+    res.status(200).json({
+      message: "Email envoyé avec succès",
+    });
+
   } catch (err) {
     console.error("FORGOT PASSWORD ERROR:", err);
-    res.status(500).json({ message: "Erreur interne du serveur" });
+    res.status(500).json({ message: "Erreur envoi email" });
   }
 };
 
@@ -200,3 +227,33 @@ export const resetPassword = async (req, res) => {
   }
 };
 
+// -------------------- GET USERS --------------------
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await authService.getAllUsers();
+    res.status(200).json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
+};
+
+export const getAllDonors = async (req, res) => {
+  try {
+    const donors = await authService.getAllDonors();
+    res.status(200).json(donors);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch donors" });
+  }
+};
+
+export const getAllHospitals = async (req, res) => {
+  try {
+    const hospitals = await authService.getAllHospitals();
+    res.status(200).json(hospitals);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch hospitals" });
+  }
+};

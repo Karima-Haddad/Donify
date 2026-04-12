@@ -81,8 +81,8 @@
   margin-top: 10px;
 }
 
-.stat-card {
-  width: 60%;
+.stats-card {
+  width: 25%;
   min-width: 0;
   height: 128px;
   background: #fff;
@@ -94,24 +94,25 @@
   align-items: center;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
   text-align: center;
+  transition: all 0.2s ease;
 }
 
-.stat-card h3 {
+.stats-card h3 {
   color: #a2211b !important;
   font-weight: 900 !important ;
   font-size: 2rem !important;
   margin-bottom: 0.5rem;
 }
 
-.stat-card span {
+.stats-card span {
   color: #555;
   font-weight: 500;
   font-size: 0.95rem;
 }
 
-.stat-card:hover {
+.stats-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 16px rgba(15, 33, 57, 0.159);
 }
 
 

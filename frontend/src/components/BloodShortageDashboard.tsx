@@ -1,46 +1,15 @@
-import { useEffect, useState } from "react";
 import BloodShortageCard from "./BloodShortageCard";
-import {
-  fetchHospitalShortagePredictions,
-  type Prediction,
-} from "../api/shortage";
+import type { Prediction } from "../api/shortage";
 
 type CardRiskLevel = "Risque Critique" | "Risque Modéré" | "Risque Faible";
 
 const ALL_BLOOD_TYPES = ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"];
 
+type Props = {
+  data: Prediction[];
+};
 
-export default function BloodShortageDashboard() {
-  const [data, setData] = useState<Prediction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function loadPredictions() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const rawUser = localStorage.getItem("user");
-        const user = rawUser ? JSON.parse(rawUser) : null;
-
-        if (!user || !user.id) {
-          throw new Error("Aucun utilisateur connecté.");
-        }
-
-        const result = await fetchHospitalShortagePredictions(user.id);
-        setData(result.predictions);
-      } catch (err) {
-        console.error(err);
-        setError("Impossible de charger les prédictions.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadPredictions();
-  }, []);
-
+export default function BloodShortageDashboard({ data }: Props) {
   const estimateDays = (risk: number) => {
     return Math.max(1, Math.round((1 - risk) * 14));
   };
@@ -58,25 +27,17 @@ export default function BloodShortageDashboard() {
     }
   };
 
-  if (loading) {
-    return <p style={{ padding: "40px" }}>Chargement...</p>;
-  }
-
-  if (error) {
-    return <p style={{ padding: "40px", color: "red" }}>{error}</p>;
-  }
-
   return (
     <div
       style={{
-        padding: "40px",
+        padding: "0px",
         backgroundColor: "#f5f7fa",
         minHeight: "80vh",
       }}
     >
       <div
         style={{
-          maxWidth: "1200px",
+          maxWidth: "1100px",
           margin: "0 auto",
           backgroundColor: "white",
           borderRadius: "16px",
