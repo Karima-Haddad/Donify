@@ -29,8 +29,9 @@
 }
 
 .hospital-header__logo-icon {
-  font-size: 28px;
-  line-height: 1;
+  /* font-size: 28px;
+  line-height: 1; */
+  width: 8rem !important;
 }
 
 .hospital-header__logo-text {
@@ -333,7 +334,7 @@
 
 
 .logo {
-  width: 6rem !important;
+  width: 8rem !important;
   height: auto;
 }
 

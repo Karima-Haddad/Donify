@@ -13,6 +13,7 @@ export type HospitalShortageResponse = {
 export async function fetchHospitalShortagePredictions(
   hospitalId: string
 ): Promise<HospitalShortageResponse> {
+  console.log("hospitalId envoyé :", hospitalId);
   const response = await fetch("http://localhost:4000/api/shortage/predict", {
     method: "POST",
     headers: {

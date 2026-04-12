@@ -46,12 +46,12 @@ export async function getTodayDonations(hospitalId) {
       COALESCE(
         SUM(
           CASE
-            WHEN d.volume_ml IS NOT NULL THEN d.volume_ml / 450.0
+            WHEN d.volume_ml IS NOT NULL THEN ROUND(d.volume_ml / 450.0)
             ELSE 0
           END
         ),
         0
-      )::numeric AS total_donated_bags
+      )::int AS total_donated_bags
     FROM donations d
     JOIN blood_requests br ON br.id = d.request_id
     WHERE br.hospital_id = $1
@@ -92,12 +92,12 @@ export async function getDonationsLast7Days(hospitalId) {
       COALESCE(
         SUM(
           CASE
-            WHEN d.volume_ml IS NOT NULL THEN d.volume_ml / 450.0
+            WHEN d.volume_ml IS NOT NULL THEN ROUND(d.volume_ml / 450.0)
             ELSE 0
           END
         ),
         0
-      )::numeric AS don_7d
+      )::int AS don_7d
     FROM donations d
     JOIN blood_requests br ON br.id = d.request_id
     WHERE br.hospital_id = $1

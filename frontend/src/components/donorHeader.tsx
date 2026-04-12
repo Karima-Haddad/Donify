@@ -209,7 +209,7 @@ async function handleToggleNotifications() {
 
     <div className="donor-header__center">
       <NavLink
-        to="/donor-dashboard"
+        to="/donor-profil"
         className={({ isActive }) =>
           isActive
             ? "donor-header__link donor-header__link--active"
@@ -355,7 +355,7 @@ async function handleToggleNotifications() {
           <div className="donor-header__avatar">{initial}</div>
 
           <div className="donor-header__profile-menu">
-            <button className="donor-header__menu-item" type="button">
+            <button className="donor-header__menu-item" type="button" onClick={() => navigate("/donor-profil")}>
               <User
                 size={20}
                 strokeWidth={2.3}

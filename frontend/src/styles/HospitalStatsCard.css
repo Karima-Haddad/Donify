@@ -2,8 +2,8 @@
 
 /* ===== WRAPPER STATS ===== */
 .stats {
-  max-width: 1200px;
-  margin: 45px auto 0px;
+  max-width: 1100px;
+  margin: 10px auto 30px;
   display: flex;
   justify-content: center;
   align-items: stretch;
@@ -12,7 +12,7 @@
 
 /* ===== CARD ===== */
 .card {
-  width: 100%;
+  width: 22%;
   max-width: 1200px;
   background: #ffffff;
   border: 1px solid #e0e3e7;
@@ -57,10 +57,10 @@
 
 /* ===== VALUE ===== */
 .value {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #a2211b;
-  line-height: 1;
+  font-size: 2.5rem !important;
+  font-weight: 800 !important;
+  color: #a2211b !important;
+  line-height: 1 !important;
   text-align: center;
 }
 

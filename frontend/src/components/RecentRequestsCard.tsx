@@ -1,45 +1,12 @@
-/**
- * Ce composant affiche les 5 dernières demandes de sang
- * d’un hôpital sous forme de tableau.
- * ============================================================
- */
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { fetchRecentBloodRequests } from "../api/bloodRequests";
 import type { RecentBloodRequest } from "../types/bloodRequest";
 import "../styles/RecentRequestsCard.css";
 
-export default function RecentRequestsCard() {
-  const [requests, setRequests] = useState<RecentBloodRequest[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+type Props = {
+  requests: RecentBloodRequest[];
+};
 
-  useEffect(() => {
-    async function loadRequests() {
-      try {
-        setLoading(true);
-        setError("");
-
-        const rawUser = localStorage.getItem("user");
-        const user = rawUser ? JSON.parse(rawUser) : null;
-
-        if (!user || user.role !== "hospital") {
-          throw new Error("Accès refusé.");
-        }
-
-        const data = await fetchRecentBloodRequests(user.id);
-        setRequests(data);
-      } catch (err) {
-        console.error(err);
-        setError("Impossible de charger les demandes récentes.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadRequests();
-  }, []);
-
+export default function RecentRequestsCard({ requests }: Props) {
   function formatDate(dateString: string) {
     const date = new Date(dateString);
     return date.toLocaleDateString("fr-FR", {
@@ -83,16 +50,12 @@ export default function RecentRequestsCard() {
     <div className="recent-requests-card">
       <div className="recent-requests-header">
         <h2>Demandes récentes</h2>
-        <Link to="/hospital/requests-history" className="history-link">
+        <Link to="/my-requests" className="history-link">
           Voir tout l’historique
         </Link>
       </div>
 
-      {loading ? (
-        <p className="requests-message">Chargement...</p>
-      ) : error ? (
-        <p className="requests-message error">{error}</p>
-      ) : requests.length === 0 ? (
+      {requests.length === 0 ? (
         <p className="requests-message">Aucune demande récente.</p>
       ) : (
         <table className="recent-requests-table">
