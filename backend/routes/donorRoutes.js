@@ -2,10 +2,11 @@
 
 import express from "express";
 import pool from "../config/database.js";
+import { updateDonorProfilController } from "../controllers/donorController.js";
 
 const router = express.Router();
 
-router.get("/:donorId/dashboard", async (req, res) => {
+router.get("/:donorId/profil", async (req, res) => {
   const donorId = req.params.donorId;
 
   try {
@@ -61,5 +62,8 @@ router.get("/:donorId/dashboard", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+
+
+router.put("/:id/profil", updateDonorProfilController);
 
 export default router;

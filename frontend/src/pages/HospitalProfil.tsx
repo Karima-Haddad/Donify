@@ -1,6 +1,7 @@
 import "../styles/hospital.css";
 import { useEffect, useState } from "react";
-import { getHospitalDashboard } from "../services/dashboardService";
+import { useNavigate } from "react-router-dom";
+import { getHospitalProfil } from "../services/profilService";
 
 type Hospital = {
   id: string;
@@ -24,34 +25,32 @@ type NotificationData = {
   sent_at: string;
 };
 
-function HospitalDashboard() {
+function HospitalProfil() {
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [requests, setRequests] = useState<RequestStat[]>([]);
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 Récupération dynamique de l'ID depuis le login
+  const navigate = useNavigate(); // 🔥 navigation
+
   const hospitalId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchData = async () => {
       if (!hospitalId) {
-        console.error("Aucun userId trouvé dans localStorage !");
+        console.error("Aucun userId trouvé !");
         setLoading(false);
         return;
       }
 
-      setLoading(true);
-
       try {
-        const data = await getHospitalDashboard(hospitalId);
-        console.log("HOSPITAL DATA :", data); // debug
+        const data = await getHospitalProfil(hospitalId);
 
         setHospital(data.hospital ?? null);
         setRequests(data.requests ?? []);
         setNotifications(data.notifications ?? []);
       } catch (err) {
-        console.error("Erreur hospital dashboard :", err);
+        console.error("Erreur hospital profil :", err);
       } finally {
         setLoading(false);
       }
@@ -61,17 +60,23 @@ function HospitalDashboard() {
   }, [hospitalId]);
 
   const requestCount = requests.length;
+
   const validatedCount = requests.filter(
     (r) => r.status === "satisfied" || r.status === "in_progress"
   ).length;
-  const memberSince = hospital ? new Date().getFullYear() : new Date().getFullYear();
+
+  const memberSince = new Date().getFullYear();
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "-";
     const d = new Date(dateStr);
     return Number.isNaN(d.getTime())
       ? dateStr
-      : d.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+      : d.toLocaleDateString("fr-FR", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        });
   };
 
   if (loading) return <div>Chargement...</div>;
@@ -90,33 +95,57 @@ function HospitalDashboard() {
             <div className="subtitle">{hospital.email}</div>
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+
+        <div style={{ display: "flex", gap: "20px" }}>
           <span className="badge">Compte Actif</span>
-          <button className="btn-outline">
+
+          {/* 🔥 BOUTON MODIFIER */}
+          <button
+            className="btn-outline"
+            onClick={() => navigate("/hospital-profile-edit")}
+          >
             <i className="fas fa-edit"></i> Modifier Profil
           </button>
         </div>
       </div>
 
-      {/* INFORMATIONS GENERALES */}
+      {/* INFOS */}
       <div className="card">
         <h2>Informations générales</h2>
         <div className="info-grid">
           <div className="info-item">
-            <span>Responsable</span>
-            <strong>—</strong>
-          </div>
-          <div className="info-item">
             <span>Email</span>
             <strong>{hospital.email}</strong>
           </div>
+
           <div className="info-item">
-            <span>Téléphone</span>
-            <strong>—</strong>
+            <span>ID</span>
+            <strong>{hospital.id}</strong>
           </div>
-          <div className="info-item">
-            <span>Adresse</span>
-            <strong>—</strong>
+        </div>
+      </div>
+
+      {/* STATS */}
+      <div className="card">
+        <h2>Statistiques globales</h2>
+
+        <div className="stats">
+          <div className="stat-card">
+            <div className="icon">📋</div>
+            <h3>Demandes publiées</h3>
+            <div className="value">{requestCount}</div>
+          </div>
+
+          <div className="stat-card">
+            <div className="icon">✅</div>
+            <h3>Dons validés</h3>
+            <div className="value">{validatedCount}</div>
+          </div>
+
+          <div className="stat-card">
+            <div className="icon">📅</div>
+            <h3>Membre depuis</h3>
+            <div className="value">{memberSince}</div>
           </div>
         </div>
       </div>
@@ -124,6 +153,7 @@ function HospitalDashboard() {
       {/* NOTIFICATIONS */}
       <div className="card">
         <h2>Notifications récentes</h2>
+
         {notifications.length > 0 ? (
           <ul className="notification-list">
             {notifications.slice(0, 5).map((notif) => (
@@ -141,4 +171,4 @@ function HospitalDashboard() {
   );
 }
 
-export default HospitalDashboard;
+export default HospitalProfil;

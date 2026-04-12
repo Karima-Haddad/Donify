@@ -113,40 +113,49 @@ body{
   font-size:1rem;
 }
 
-/* STATS */
+/* STATISTIQUES - VERSION COMPACTE */
 .stats{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:25px;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:10px;
   margin-top:10px;
 }
 
 .stat-card{
   background:#F9FAFB;
-  padding:25px;
+  padding:8px; /* padding réduit */
   border-radius:16px;
   border:1px solid #E0E3E7;
   text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:70px; /* hauteur compacte */
+  word-break:break-word;
+  overflow:hidden;
 }
 
-.stat-card i{
-  font-size:1.6rem;
-  color:#A2211B;
-  margin-bottom:10px;
+.stat-card .icon {
+  font-size:16px; /* emoji plus petit */
+  margin-bottom:4px;
 }
 
 .stat-card h3{
-  font-size:0.9rem;
+  font-size:0.9rem !important; /* titre plus petit */
   color:#666;
-  margin-bottom:8px;
+  margin-bottom:2px;
 }
 
 .stat-card .value{
-  font-size:1.8rem;
+  font-size:0.9rem !important; /* valeur plus petite */
   font-weight:700;
   color:#A2211B;
+  line-height:1.1;
 }
 
+
+/* MEDIA QUERY */
 @media(max-width:768px){
   .profile-header{
     flex-direction:column;

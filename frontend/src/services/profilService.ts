@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = "http://localhost:4000/api";
 
-export type DonorDashboard = {
+export type DonorProfil = {
   donor: {
     id: string;
     name: string;
@@ -34,12 +34,12 @@ export type DonorDashboard = {
   notifications?: Array<any>;
 };
 
-export const getDonorDashboard = async (donorId: string): Promise<DonorDashboard> => {
-  const res = await axios.get(`${API_URL}/donor/${donorId}/dashboard`);
+export const getDonorProfil = async (donorId: string): Promise<DonorProfil> => {
+  const res = await axios.get(`${API_URL}/donor/${donorId}/profil`);
   return res.data;
 };
 
-export type HospitalDashboard = {
+export type HospitalProfil = {
   hospital: {
     id: string;
     name: string;
@@ -61,7 +61,20 @@ export type HospitalDashboard = {
   }>;
 };
 
-export const getHospitalDashboard = async (hospitalId: string): Promise<HospitalDashboard> => {
-  const res = await axios.get(`${API_URL}/hospital/${hospitalId}/dashboard`);
+export const getHospitalProfil = async (hospitalId: string): Promise<HospitalProfil> => {
+  const res = await axios.get(`${API_URL}/hospitals/${hospitalId}/profil`);
+  return res.data;
+};
+
+
+
+export const updateDonorProfil = async (donorId: string, data: any) => {
+  const res = await axios.put(`${API_URL}/donor/${donorId}/profil`, data);
+  return res.data;
+};
+
+
+export const updateHospitalProfil = async (hospitalId: string, data: any) => {
+  const res = await axios.put(`${API_URL}/hospital/${hospitalId}/profil`, data);
   return res.data;
 };

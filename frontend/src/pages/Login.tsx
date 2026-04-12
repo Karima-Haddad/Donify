@@ -54,9 +54,9 @@ function Login() {
 
       // 🚀 redirection selon rôle
       if (role === "hospital") {
-        navigate("/hospital-dashboard");
+        navigate("/hospital-profil");
       } else {
-        navigate("/donor-dashboard");
+        navigate("/donor-profil");
       }
     } catch (error: any) {
       alert(error.response?.data?.message || "Erreur login");

@@ -8,9 +8,9 @@ import { errorHandler } from "../middleware/error.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import matchingRoutes from "../routes/matching_model_routes.js";
 import shortageRoutes from "../routes/shortage_model_routes.js";
-import hospitalDashboardRoutes from "../routes/hospitalDashoardRoutes.js";
+import hospitalProfilRoutes from "../routes/hospitalProfilRoutes.js";
 import donorRoutes from "../routes/donorRoutes.js";
-import hopitalRoutes from "../routes/hospitalRoutes.js";
+import hospitalRoutes from "../routes/hospitalRoutes.js";
 
 // --------------------------
 // Charger les variables d'environnement
@@ -98,9 +98,9 @@ getDataset();
 app.use("/api/auth", authRoutes);
 app.use("/api/matching", matchingRoutes);
 app.use("/api/shortage", shortageRoutes);
-app.use("/api", hospitalDashboardRoutes);
+app.use("/api", hospitalProfilRoutes);
 app.use("/api/donor", donorRoutes);
-app.use("/api/hospital", hopitalRoutes);
+app.use("/api/hospital", hospitalRoutes);
 
 
 // --------------------------
