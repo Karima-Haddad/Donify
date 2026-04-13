@@ -42,16 +42,7 @@ Le répertoire `ai/` contient les composants d'apprentissage automatique du proj
 
 ## Utilisation
 
-### Lancement du service API
-
-Démarrez le serveur FastAPI :
-```bash
-python -m uvicorn main:app --reload
-```
-
-L'API sera disponible sur `http://localhost:8000`.
-
-### Utilisation avec Docker
+### Lancement avec Docker
 
 Pour lancer le service AI avec Docker :
 
@@ -85,7 +76,21 @@ Pour lancer le service AI avec Docker :
    docker stop donify-ai-container
    ```
 
-### Entraînement des modèles
+### Lancement du service API
+
+1. Génération d'ensembles de données
+
+Utilisez le script de génération d'ensembles de données pour le modèle de punérie :
+```bash
+python generate_big_dataset.py
+```
+
+Utilisez le script de génération d'ensembles de données pour le modèle de matching :
+```bash
+python generate_matching_dataset.py
+```
+
+2. Entraînement des modèles
 
 Exécutez le script d'entraînement de prédiction des pénuries :
 ```bash
@@ -99,18 +104,13 @@ python services/train_matchig_model.py
 ```
 Cela entraînera les 3 modèles testés (Logistic Regression, Random Forest, XGBoost) et les sauvegardera dans `models`.
 
-
-### Génération d'ensembles de données
-
-Utilisez le script de génération d'ensembles de données pour le modèle de punérie :
+3. Démarrez le serveur FastAPI :
 ```bash
-python generate_big_dataset.py
+python -m uvicorn main:app --reload
 ```
 
-Utilisez le script de génération d'ensembles de données pour le modèle de matching :
-```bash
-python generate_big_dataset.py
-```
+L'API sera disponible sur `http://localhost:8000`.
+
 
 
 ### Points de terminaison API
@@ -128,6 +128,7 @@ python generate_big_dataset.py
   - Corps : Liste des candidats donneurs et valeur `k`.
   - Retourne les K meilleurs donneurs correspondants.
 
+
 ### Exécution des cahiers
 
 Ouvrez les cahiers Jupyter pour l'analyse des métriques :
@@ -139,24 +140,32 @@ jupyter notebook notebooks/matching_model_analysis.ipynb
 
 ```
 ai/
+├── .dockerignore
+├── .env                    # Variables d'environnement local (non versionnées)
+├── Dockerfile
+├── entrypoint.sh
 ├── main.py                 # Application FastAPI
-├── train_shortage.py       # Script d'entraînement du modèle de pénurie
-├── generate_big_dataset.py # Script de génération d'ensembles de données
 ├── requirements.txt        # Dépendances Python
+├── shortage_model_features.json
 ├── data/
 │   └── candidates.csv      # Données d'exemple des candidats
 ├── models/
 │   ├── xgboost.joblib      # Modèle XGBoost entraîné
 │   └── experiments/        # Modèles expérimentaux
 ├── notebooks/
-│   └── matching_model_analysis.ipynb  # Cahier d'analyse
+│   ├── matching_model_analysis.ipynb  # Cahier d'analyse
+│   └── shortage_model_evaluation.ipynb
 ├── reports/
 │   └── metrics/
 │       └── metrics_results.csv  # Métriques des modèles
 ├── services/
-│   ├── topk_matching.py    # Logique de mise en correspondance Top-K
-│   ├── create_excel_report.py  # Génération de rapports
-│   └── train_matchig_model.py  # Utilitaires d'entraînement des modèles
+│   ├── create_excel_report.py    # Génération de rapports
+│   ├── generate_matching_dataset.py
+│   ├── generate_shortage_dataset.py
+│   ├── topk_matching.py          # Logique de mise en correspondance Top-K
+│   ├── train_matching_model.py   # Utilitaires d'entraînement des modèles
+│   ├── train_shortage_model.py
+│   └── train_test_shortage.py
 ├── src/                    # Code source
 └── tests/                  # Tests unitaires
 ```

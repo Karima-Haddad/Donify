@@ -28,16 +28,16 @@
 }
 
 .label {
-  font-size: 13px;
+  font-size: 17px;
   color: #777;
   margin-bottom: 5px;
 }
 
 .value {
-  font-size: 16px;
-  font-weight: 600;
-  color: #2c2c2c;
-  text-align: left;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: #2c2c2c !important;
+  text-align: left !important;
 }
 
 .request-card__notes {

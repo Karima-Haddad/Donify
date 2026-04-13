@@ -1,5 +1,5 @@
 /* ===== PAGE ===== */
-.container {
+.container-donor {
   min-height: 100vh;
   background-color: #f5f7fa;
   padding: 30px 20px 50px;
@@ -39,7 +39,7 @@
 
 /* ===== BADGE ===== */
 .badge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px 18px;
@@ -50,10 +50,14 @@
   color: #b91c1c;
   border: 1px solid #fecaca;
   min-width: 120px;
+  height: 045px;
 }
 
 /* ===== BUTTON ===== */
 .btn-outline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, #b32017, #dc2626);
   color: #ffffff;
   border: none;
@@ -64,12 +68,28 @@
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
   box-shadow: 0 10px 20px rgba(220, 38, 38, 0.18);
+  align-self: center;
+  height: 045px;
 }
 
 .btn-outline:hover {
   transform: translateY(-2px);
   box-shadow: 0 14px 24px rgba(220, 38, 38, 0.22);
   opacity: 0.96;
+}
+
+.badge,
+.btn-outline {
+  display: flex;
+  align-items: center;
+  height: 40px; /* 🔥 même hauteur */
+}
+
+.profile-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
 }
 
 /* ===== GENERIC CARD ===== */

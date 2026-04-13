@@ -1,4 +1,4 @@
-.card {
+.card-compatible {
   background: white;
   padding: 35px;
   border-radius: 20px;
@@ -12,7 +12,7 @@
   margin-bottom: 30px;
 }
 
-.card h2 {
+.card-compatible h2 {
   text-align: left;
   margin-bottom: 25px;
   color: #1E3A5F;

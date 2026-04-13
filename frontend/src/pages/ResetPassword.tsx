@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { resetPassword } from "../services/authService";
+import Swal from "sweetalert2";
 import "../styles/resetPassword.css";
 
 function ResetPassword() {
-  // ✅ Récupération du token depuis l'URL (?token=...)
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
-
+  const { token } = useParams();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -15,27 +13,36 @@ function ResetPassword() {
 
   const navigate = useNavigate();
 
-  // 🔍 DEBUG (très important)
-  console.log("URL:", window.location.href);
-  console.log("TOKEN:", token);
-
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ❗ Vérification token
     if (!token) {
-      alert("Lien invalide ou expiré !");
+      Swal.fire({
+        icon: "error",
+        title: "Lien invalide",
+        text: "Le lien est invalide ou expiré.",
+        confirmButtonText: "OK",
+      });
       return;
     }
 
-    // ❗ Vérification mots de passe
     if (password !== confirmPassword) {
-      alert("Les mots de passe ne correspondent pas !");
+      Swal.fire({
+        icon: "warning",
+        title: "Mots de passe différents",
+        text: "Les mots de passe ne correspondent pas.",
+        confirmButtonText: "Réessayer",
+      });
       return;
     }
 
     if (password.length < 6) {
-      alert("Le mot de passe doit contenir au moins 6 caractères !");
+      Swal.fire({
+        icon: "info",
+        title: "Mot de passe trop court",
+        text: "Le mot de passe doit contenir au moins 6 caractères.",
+        confirmButtonText: "D'accord",
+      });
       return;
     }
 
@@ -44,15 +51,24 @@ function ResetPassword() {
 
       await resetPassword(token, password);
 
-      alert("Mot de passe modifié avec succès !");
+      await Swal.fire({
+        icon: "success",
+        title: "Succès",
+        text: "Votre mot de passe a été modifié avec succès.",
+        confirmButtonText: "Se connecter",
+        confirmButtonColor: "#dc2626",
+        background: "#ffffff",
+        color: "#1f2937",
+      });
 
-      // 🔁 redirection vers login
       navigate("/");
     } catch (error: any) {
-      alert(
-        error.response?.data?.message ||
-          "Erreur lors de la réinitialisation du mot de passe."
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Lien invalide",
+        text: "Le lien est invalide ou expiré.",
+        confirmButtonColor: "#dc2626",
+      });
     } finally {
       setLoading(false);
     }
@@ -93,9 +109,7 @@ function ResetPassword() {
               checked={showPassword}
               onChange={() => setShowPassword(!showPassword)}
             />
-            <label htmlFor="showPassword">
-              Afficher les mots de passe
-            </label>
+            <label htmlFor="showPassword">Afficher les mots de passe</label>
           </div>
 
           <button type="submit" className="reset-button" disabled={loading}>

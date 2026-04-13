@@ -49,7 +49,7 @@ function DonorProfil() {
     active_requests: 0,
     reliability_score: 0,
   });
-  const [recentRequests, setRecentRequests] = useState<RecentRequest[]>([]);
+  const [, setRecentRequests] = useState<RecentRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -131,7 +131,7 @@ function DonorProfil() {
   if (!donor) return <div className="container">Erreur : donneur introuvable</div>;
 
   return (
-    <div className="container">
+    <div className="container-donor">
       <div className="header fade-in delay-1">
         <div>
           <h1>Bonjour, {donor.name}</h1>
@@ -142,7 +142,8 @@ function DonorProfil() {
           style={{
             display: "flex",
             gap: "15px",
-            alignItems: "center",
+            justifyContent: "center",
+            alignItems: "center", 
             flexWrap: "nowrap",
           }}
         >

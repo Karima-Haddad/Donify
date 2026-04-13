@@ -126,7 +126,7 @@ export default function CompatibleDonorsTable({
   );
 
   return (
-    <div className="card">
+    <div className="card-compatible">
 
       <div className="card-header">
         <h2>Donneurs compatibles</h2>

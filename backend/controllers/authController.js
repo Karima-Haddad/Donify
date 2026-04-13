@@ -83,41 +83,6 @@ export const registerHospital = async (req, res) => {
 
 
 
-
-// // -------------------- GET TEST --------------------
-// // Ces endpoints sont uniquement pour tester avec Postman si les données sont bien enregistrées
-// export const getAllUsers = async (req, res) => {
-//   try {
-//     const users = await authService.getAllUsers();
-//     res.status(200).json(users);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: "Failed to fetch users" });
-//   }
-// };
-
-// export const getAllDonors = async (req, res) => {
-//   try {
-//     const donors = await authService.getAllDonors();
-//     res.status(200).json(donors);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: "Failed to fetch donors" });
-//   }
-// };
-
-// export const getAllHospitals = async (req, res) => {
-//   try {
-//     const hospitals = await authService.getAllHospitals();
-//     res.status(200).json(hospitals);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: "Failed to fetch hospitals" });
-//   }
-// };
-
-
-
 // -------------------- LOGIN --------------------
 export const loginUser = async (req, res) => {
   try {
@@ -171,7 +136,8 @@ export const forgotPassword = async (req, res) => {
       { expiresIn: "15m" }
     );
 
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+
 
     // ✅ ENVOI EMAIL
     await transporter.sendMail({
@@ -179,12 +145,77 @@ export const forgotPassword = async (req, res) => {
       to: email,                    // email utilisateur
       subject: "Réinitialisation du mot de passe",
       html: `
-        <h2>Réinitialisation du mot de passe</h2>
-        <p>Bonjour,</p>
-        <p>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :</p>
-        <a href="${resetLink}">${resetLink}</a>
-        <p>Ce lien expire dans 15 minutes.</p>
-      `,
+      <div style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, sans-serif;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f4f6f8; padding:40px 0;">
+          <tr>
+            <td align="center">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                
+                <tr>
+                  <td style="background:linear-gradient(135deg, #b32017, #dc2626); padding:30px; text-align:center; color:white;">
+                    <h1 style="margin:0; font-size:28px;">Donify</h1>
+                    <p style="margin:8px 0 0; font-size:14px; opacity:0.95;">
+                      Plateforme intelligente de don de sang
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:40px 30px; color:#1f2937;">
+                    <h2 style="margin-top:0; font-size:24px; color:#b32017;">
+                      Réinitialisation du mot de passe
+                    </h2>
+
+                    <p style="font-size:16px; line-height:1.6; margin:16px 0;">
+                      Bonjour,
+                    </p>
+
+                    <p style="font-size:16px; line-height:1.6; margin:16px 0;">
+                      Nous avons reçu une demande de réinitialisation de votre mot de passe.
+                      Cliquez sur le bouton ci-dessous pour définir un nouveau mot de passe.
+                    </p>
+
+                    <div style="text-align:center; margin:30px 0;">
+                      <a 
+                        href="${resetLink}" 
+                        style="display:inline-block; background:linear-gradient(135deg, #b32017, #dc2626); color:#ffffff; text-decoration:none; padding:14px 28px; border-radius:10px; font-size:16px; font-weight:bold;"
+                      >
+                        Réinitialiser mon mot de passe
+                      </a>
+                    </div>
+
+                    <p style="font-size:14px; line-height:1.6; color:#6b7280; margin:16px 0;">
+                      Ce lien expirera dans <strong>15 minutes</strong>.
+                    </p>
+
+                    <p style="font-size:14px; line-height:1.6; color:#6b7280; margin:16px 0;">
+                      Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :
+                    </p>
+
+                    <p style="word-break:break-all; font-size:14px; color:#2563eb;">
+                      <a href="${resetLink}" style="color:#2563eb; text-decoration:none;">
+                        ${resetLink}
+                      </a>
+                    </p>
+
+                    <p style="font-size:14px; line-height:1.6; color:#6b7280; margin-top:30px;">
+                      Si vous n’êtes pas à l’origine de cette demande, vous pouvez ignorer cet email en toute sécurité.
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="background:#f9fafb; padding:20px 30px; text-align:center; font-size:12px; color:#9ca3af;">
+                    © ${new Date().getFullYear()} Donify — Tous droits réservés
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    `,
     });
 
     res.status(200).json({

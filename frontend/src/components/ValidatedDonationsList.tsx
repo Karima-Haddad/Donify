@@ -18,7 +18,7 @@ export default function ValidatedDonationsList({ donations }: Props) {
   }
 
   return (
-    <div className="card">
+    <div className="card-validated">
       <div className="header_card">
         <h2>Dons validés</h2>
       </div>

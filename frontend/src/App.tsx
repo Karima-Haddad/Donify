@@ -14,6 +14,7 @@ import DonorProfileEdit from "./pages/DonorProfileEdit";
 import HospitalProfileEdit from "./pages/HospitalProfileEdit";
 import HospitalProfil from "./pages/HospitalProfil";
 import BloodRequestHistory from "./pages/BloodRequestHistory";
+import RegisterPage from "./pages/RegisterPage";
 
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/register" element={<RegisterPage />} />
 
         {/* Hospital */}
         <Route element={<HospitalLayout />}>
