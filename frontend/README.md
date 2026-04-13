@@ -8,43 +8,46 @@ Le frontend fournit une interface utilisateur moderne et réactive pour la gesti
 
 ## 🏗 Architecture
 
-- **Framework** : React 18 avec hooks
+- **Framework** : React 19 avec hooks
 - **Outil de build** : Vite pour un développement rapide
 - **Langage** : TypeScript pour la sécurité des types
-- **Routing** : React Router pour la navigation
+- **Routing** : React Router DOM pour la navigation
 - **HTTP Client** : Axios pour les appels API
-- **Styling** : CSS modules et composants stylisés
-- **État** : Context API et hooks personnalisés
+- **Styling** : Tailwind CSS et CSS natif
+- **Configuration** : Vite + TypeScript
 
 ## 📂 Structure du projet
 
 ```
 frontend/
-├── public/
-│   └── assets/          # Images et ressources statiques
-├── src/
-│   ├── components/      # Composants réutilisables
-│   │   ├── common/      # Composants génériques (boutons, modales)
-│   │   ├── forms/       # Composants de formulaires
-│   │   └── layout/      # Composants de mise en page
-│   ├── pages/           # Pages principales de l'application
-│   │   ├── auth/        # Pages d'authentification
-│   │   ├── dashboard/   # Tableaux de bord
-│   │   └── profile/     # Gestion des profils
-│   ├── services/        # Services API et utilitaires
-│   │   ├── api/         # Clients API
-│   │   └── auth/        # Services d'authentification
-│   ├── hooks/           # Hooks personnalisés React
-│   ├── types/           # Interfaces et types TypeScript
-│   ├── utils/           # Fonctions utilitaires
-│   ├── contexts/        # Contextes React pour l'état global
-│   ├── App.tsx          # Composant racine
-│   └── main.tsx         # Point d'entrée
-├── .env                 # Variables d'environnement
+├── .dockerignore
+├── .env
+├── .gitignore
+├── Dockerfile
+├── index.html
 ├── package.json
+├── package-lock.json
+├── README.md
+├── tsconfig.app.json
 ├── tsconfig.json
+├── tsconfig.node.json
 ├── vite.config.ts
-└── README.md
+├── public/
+│   └── assets/          # Ressources statiques
+└── src/
+    ├── api/             # Clients et helpers API
+    ├── assets/          # Images et médias
+    ├── components/      # Composants réutilisables
+    ├── data/            # Jeux de données de démonstration
+    ├── layouts/         # Composants de mise en page
+    ├── pages/           # Pages de l'application
+    ├── services/        # Logique de services
+    ├── styles/          # Styles et utilitaires CSS
+    ├── types/           # Types TypeScript
+    ├── App.css
+    ├── App.tsx
+    ├── index.css
+    └── main.tsx
 ```
 
 ## 🚀 Démarrage
@@ -84,22 +87,21 @@ npm run build
 
 Les fichiers de build seront générés dans le dossier `dist/`.
 
-## � Dockerisation
+## 🐳 Dockerisation
 
-### Construction de l'image
+1. Construction de l'image
 
 Depuis le dossier `frontend/` :
 ```bash
 docker build -t donify-frontend .
 ```
 
-### Lancement du conteneur
+2. Lancement du conteneur
 
 ```bash
 docker run -d -p 5173:80 --name donify-frontend-container donify-frontend
 ```
-
-### Vérification
+3. Vérification
 
 ```bash
 docker ps
@@ -111,19 +113,19 @@ CONTAINER ID   IMAGE             COMMAND                  CREATED             ST
 b110b95999a4   donify-frontend   "/docker-entrypoint.…"   4 seconds ago       Up 3 seconds       0.0.0.0:5173->80/tcp, [::]:5173->80/tcp       donify-frontend-container
 ```
 
-### Logs
+4. Logs
 
 ```bash
 docker logs donify-frontend-container
 ```
 
-### Arrêt du conteneur
+5. Arrêt du conteneur
 
 ```bash
 docker stop donify-frontend-container
 ```
 
-### Démarrage du conteneur
+6. Démarrage du conteneur
 
 ```bash
 docker start donify-frontend-container
@@ -151,18 +153,6 @@ docker start donify-frontend-container
 - Recommandations d'appariement
 - Analyses et rapports
 
-## 🧪 Tests
-
-Exécuter les tests :
-```bash
-npm test
-```
-
-Exécuter avec couverture :
-```bash
-npm run test:coverage
-```
-
 ## 📦 Dépendances
 
 ### Production
@@ -170,41 +160,23 @@ npm run test:coverage
 - `react-dom` - Rendu React
 - `react-router-dom` - Routing
 - `axios` - Client HTTP
-- `uuid` - Génération d'identifiants uniques
+- `lucide-react` - Icônes React
+- `react-icons` - Icônes React
+- `sweetalert2` - Alert React
 
 ### Développement
-- `@types/react` - Types TypeScript pour React
-- `@types/react-dom` - Types pour React DOM
+- `@eslint/js` - Config ESLint pour JavaScript
+- `@types/node` - Types Node.js
+- `@types/react` - Types React
+- `@types/react-dom` - Types React DOM
 - `@vitejs/plugin-react` - Plugin Vite pour React
+- `autoprefixer` - Gestion CSS pour Tailwind
 - `eslint` - Linting
-- `prettier` - Formatage du code
-- `@typescript-eslint/eslint-plugin` - Règles ESLint pour TypeScript
-
-## 🧠 Standards de codage
-
-- **Composants** : Utilisez des composants fonctionnels avec hooks
-- **Types** : Définissez des interfaces TypeScript pour toutes les props
-- **État** : Préférez les hooks useState et useEffect locaux
-- **API** : Centralisez les appels API dans des services dédiés
-- **Styling** : Utilisez des classes CSS modulaires
-- **Performance** : Utilisez React.memo et useMemo pour l'optimisation
-
-## 🔮 Fonctionnalités planifiées
-
-- [ ] Interface d'authentification complète
-- [ ] Tableaux de bord pour hôpitaux et donneurs
-- [ ] Gestion des profils utilisateurs
-- [ ] Notifications en temps réel
-- [ ] Visualisation des prédictions IA
-- [ ] Interface mobile responsive
-- [ ] Mode hors ligne
-- [ ] Intégration avec des cartes pour la localisation
-
-## 🤝 Contribution
-
-1. Suivez les standards de codage ci-dessus
-2. Créez des composants réutilisables
-3. Ajoutez des types TypeScript appropriés
-4. Testez vos composants
-5. Utilisez des messages de commit descriptifs
-
+- `eslint-plugin-react-hooks` - Règles React Hooks
+- `eslint-plugin-react-refresh` - Plugin React Refresh
+- `globals` - Variables globales partagées
+- `postcss` - Transformations CSS
+- `tailwindcss` - Framework CSS utilitaire
+- `typescript` - TypeScript
+- `typescript-eslint` - Intégration ESLint TypeScript
+- `vite` - Outil de build

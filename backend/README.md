@@ -16,33 +16,33 @@ Le backend fournit des APIs RESTful pour la gestion des utilisateurs, l'appariem
 - **Email** : Nodemailer pour les notifications
 - **Structure** : Pattern MVC avec couche de services
 
-## 📂 Project Structure
+## 📂 Structure du projet
 
 ```
 backend/
-├── src/
-│   ├── controllers/     # Route handlers
-│   ├── services/        # Business logic
-│   ├── models/          # Database models
-│   ├── repositories/    # Data access layer
-│   ├── routes/          # API routes
-│   ├── middleware/      # Custom middleware
-│   ├── validations/     # Input validation schemas
-│   └── index.js         # App entry point
-├── config/
-│   ├── database.js      # DB connection config
-│   ├── env.js           # Environment variables
-│   └── logger.js        # Logging config
-├── scripts/
-│   └── seed-users.js    # Database seeding
-├── data/
-│   └── users.seed.json  # Sample user data
+├── .dockerignore
+├── .env                   # Variables d'environnement locales
+├── Dockerfile
 ├── package.json
-├── .env                 # Environment variables
-└── README.md
+├── package-lock.json
+├── README.md
+├── test.js                # Script utilitaire / debug
+├── config/
+│   ├── database.js        # Configuration de la connexion PostgreSQL
+│   ├── env.js             # Chargement des variables d'environnement
+│   └── logger.js          # Configuration du logging
+├── controllers/           # Contrôleurs métier
+├── middleware/            # Middlewares Express
+├── repositories/          # Accès aux données
+├── routes/                # Définition des routes API
+└── src/
+    ├── index.js           # Point d'entrée de l'application
+    ├── services/          # Intégration IA et logique métier
+    ├── validators/        # Schémas de validation
+    └── models/            # Modèles de données (si présents)
 ```
 
-## � Getting Started
+## 🚀 Getting Started
 
 ### Prérequis
 
@@ -62,6 +62,19 @@ backend/
    npm install
    ```
 
+### Variables d'environnement
+
+Créez un fichier `.env` à la racine de `backend/` contenant au minimum :
+
+```env
+PORT=4000
+JWT_SECRET=donify_secret_key_2026
+DATABASE_URL=postgresql://postgres.bvtzgwqjwttuwhceyqba:Donify-2026@aws-1-eu-west-2.pooler.supabase.com:5432/postgres
+AI_SERVICE_URL=http://localhost:8000
+INTERNAL_API_KEY=donify_ML_Key_2026
+EMAIL_USER=donify.app@gmail.com
+EMAIL_PASS=yzwp vvof cxxn hwgz
+```
 
 ### Lancement du serveur
 
@@ -79,22 +92,22 @@ Le serveur tournera sur : `http://localhost:4000`
 
 Point de terminaison de vérification de santé : `GET /health`
 
-## � Dockerisation
+## 🐳 Dockerisation
 
-### Construction de l'image
+1. Construction de l'image
 
 Depuis le dossier `backend/` :
 ```bash
 docker build -t donify-backend .
 ```
 
-### Lancement du conteneur
+2. Lancement du conteneur
 
 ```bash
 docker run -d -p 4000:4000 --name donify-backend-container --env-file .env donify-backend
 ```
 
-### Vérification
+3. Vérification
 
 ```bash
 docker ps
@@ -106,65 +119,57 @@ CONTAINER ID   IMAGE            COMMAND                  CREATED          STATUS
 7dd5b81ca9be   donify-backend   "docker-entrypoint.s…"   16 seconds ago   Up 16 seconds   0.0.0.0:4000->4000/tcp, [::]:4000->4000/tcp   donify-backend-container
 ```
 
-### Logs
+4. Logs
 
 ```bash
 docker logs donify-backend-container
 ```
 
-### Arrêt du conteneur
+5. Arrêt du conteneur
 
 ```bash
 docker stop donify-backend-container
 ```
 
 
-### Démarrage du conteneur
+6. Démarrage du conteneur
 
 ```bash
 docker start donify-backend-container
 ```
 
-## �📚 Documentation API
+## 📚 Documentation API
 
-### Points de terminaison d'authentification
+### Santé et profil
 
-- `POST /api/auth/register` - Inscription utilisateur
+- `GET /health` - Vérification du service
+- `GET /api/profile` - Profil sécurisé (JWT requis)
+
+### Authentification
+
+- `POST /api/auth/register/donor` - Inscription d'un donneur
+- `POST /api/auth/register/hospital` - Inscription d'un hôpital
 - `POST /api/auth/login` - Connexion utilisateur
 - `POST /api/auth/forgot-password` - Demande de réinitialisation de mot de passe
 - `POST /api/auth/reset-password` - Réinitialisation de mot de passe
+- `GET /api/auth/users` - Liste des utilisateurs (usage interne/test)
+- `GET /api/auth/donors` - Liste des donneurs (usage interne/test)
+- `GET /api/auth/hospitals` - Liste des hôpitaux (usage interne/test)
 
-### Points de terminaison des donneurs
+### Matching IA
 
-- `GET /api/donors` - Obtenir tous les donneurs
-- `POST /api/donors` - Créer un profil de donneur
-- `GET /api/donors/:id` - Obtenir un donneur par ID
-- `PUT /api/donors/:id` - Mettre à jour un donneur
-- `DELETE /api/donors/:id` - Supprimer un donneur
+- `GET /api/matching/ml-health` - Vérification du service IA
+- `POST /api/matching/topk` - Recherche des meilleurs donneurs compatibles
+- `POST /api/matching/validate-donation` - Valider une donation
+- `GET /api/matching/validated-donations/:requestId` - Obtenir les donations validées pour une demande
 
-### Points de terminaison des hôpitaux
+### Prédiction de pénurie
 
-- `GET /api/hospitals` - Obtenir tous les hôpitaux
-- `POST /api/hospitals` - Créer un hôpital
-- `GET /api/hospitals/:id` - Obtenir un hôpital par ID
+- `POST /api/shortage/predict` - Prédiction de pénurie de sang
 
-### Intégration IA
+### Autres domaines
 
-- `POST /api/ai/predict-shortage` - Prédire une pénurie de sang
-- `POST /api/ai/match-donors` - Obtenir les K meilleurs appariements de donneurs
-
-## 🧪 Tests
-
-Exécuter les tests :
-```bash
-npm test
-```
-
-Exécuter avec couverture :
-```bash
-npm run test:coverage
-```
-
+- Routes pour `blood-requests`, `donor`, `hospital`, `notifications`, `donor-responses` et `donations`
 
 
 ## 📦 Dépendances
@@ -175,67 +180,16 @@ npm run test:coverage
 - `dotenv` - Variables d'environnement
 - `cors` - Partage de ressources cross-origin
 - `zod` - Validation de schéma
+- `bcrypt` - Hachage de mot de passe
 - `bcryptjs` - Hachage de mot de passe
 - `jsonwebtoken` - Authentification JWT
 - `nodemailer` - Envoi d'emails
 - `axios` - Client HTTP pour le service IA
+- `pino` - Logger performant
+- `pino-http` - Middleware HTTP pour Pino
+- `pino-pretty` - Affichage lisible des logs
+- `uuid` - Génération d'identifiants uniques
 
 ### Développement
 - `nodemon` - Redémarrage automatique du serveur
-- `eslint` - Linting du code
-- `prettier` - Formatage du code
 
-## 🧠 Standards de codage
-
-- **Async/Await** : Utilisez async/await pour les opérations asynchrones
-- **Gestion d'erreurs** : Utilisez des blocs try/catch et un middleware d'erreur personnalisé
-- **Validation** : Validez toutes les entrées en utilisant des schémas Zod
-- **Sécurité** : Utilisez des requêtes paramétrées pour éviter les injections SQL
-- **Journalisation** : Journalisez toutes les requêtes et erreurs de manière appropriée
-- **Séparation des préoccupations** : Gardez la logique métier dans les services, l'accès aux données dans les repositories
-
-## 🔮 Fonctionnalités planifiées
-
-- [ ] Documentation API complète (Swagger/OpenAPI)
-- [ ] Limitation de débit et middleware de sécurité
-- [ ] Transactions de base de données pour les opérations complexes
-- [ ] Support WebSocket pour les mises à jour en temps réel
-- [ ] Contrôle d'accès basé sur les rôles avancé
-- [ ] Versionnement d'API
-- [ ] Couche de cache (Redis)
-- [ ] Traitement des tâches en arrière-plan
-
-## 🌱 Amorçage de la base de données
-
-Pour amorcer la base de données avec des utilisateurs d'exemple :
-
-```bash
-node scripts/seed-users.js data/users.seed.json
-```
-
-Format JSON d'exemple :
-```json
-{
-  "users": [
-    {
-      "email": "donor@example.com",
-      "password_hash": "mot_de_passe_hashé",
-      "role": "donor",
-      "donor": {
-        "blood_type": "A+"
-      }
-    }
-  ]
-}
-```
-
-## 🤝 Contribution
-
-1. Suivez les standards de codage ci-dessus
-2. Écrivez des tests pour les nouvelles fonctionnalités
-3. Mettez à jour la documentation API
-4. Utilisez des messages de commit significatifs
-
-## 📄 Licence
-
-[Spécifiez la licence si applicable]

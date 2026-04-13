@@ -15,6 +15,7 @@ import DonorProfileEdit from "./pages/DonorProfileEdit";
 import HospitalProfileEdit from "./pages/HospitalProfileEdit";
 import HospitalProfil from "./pages/HospitalProfil";
 import BloodRequestHistory from "./pages/BloodRequestHistory";
+import RegisterPage from "./pages/RegisterPage";
 
 
 export default function App() {
