@@ -108,11 +108,11 @@
    ========================================================= */
 
 .hospital-header__notification {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  text-align: center !important;
 }
 
 .hospital-header__bell-icon {
@@ -143,8 +143,12 @@
    ========================================================= */
 
 .hospital-header__profile-wrapper {
-  position: relative;
+  /* position: relative; */
   padding-bottom: 12px;
+  text-align: center !important ;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   
 }
 
