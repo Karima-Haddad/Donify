@@ -1,0 +1,197 @@
+/* src/styles/SuccessPopup.css */
+
+.sp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.52);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: spFadeIn 0.25s ease;
+}
+
+@keyframes spFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.sp-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2.25rem 2rem 1.75rem;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.14);
+  animation: spSlideUp 0.3s ease;
+}
+
+@keyframes spSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Icône ── */
+.sp-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  font-size: 28px;
+}
+
+.sp-icon--donor    { background: #FCEBEB; color: #A2211B; }
+.sp-icon--hospital { background: #EBF2FB; color: #1E3A5F; }
+
+/* ── Textes ── */
+.sp-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px;
+}
+
+.sp-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.92rem;
+  color: #777;
+  margin: 0 0 1rem;
+}
+
+/* ── Badge ── */
+.sp-badge {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 1.25rem;
+}
+
+.sp-badge--donor    { background: #FCEBEB; color: #791F1F; }
+.sp-badge--hospital { background: #EBF2FB; color: #0C447C; }
+
+/* ── Séparateur ── */
+.sp-divider {
+  height: 1px;
+  background: #F0F0F0;
+  margin: 0 0 1.1rem;
+}
+
+/* ── Message ── */
+.sp-message {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.88rem;
+  color: #555;
+  line-height: 1.65;
+  margin: 0 0 1rem;
+  text-align: left;
+}
+
+.sp-message strong {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* ── Notice ── */
+.sp-notice {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.82rem;
+  color: #888;
+  background: #F8F9FA;
+  border-radius: 8px;
+  padding: 9px 14px;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+/* ── Bouton principal Se connecter ── */
+.sp-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  margin-bottom: 0.75rem;
+}
+
+/* Donneur : rouge Donify, hover rouge légèrement plus clair */
+.sp-btn--donor {
+  background: #A2211B;
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(162, 33, 27, 0.25);
+}
+
+.sp-btn--donor:hover {
+  background: #C0332B;
+  transform: translateY(-2px);
+}
+
+/* Hôpital : bleu Donify, hover bleu clair — plus de rouge */
+.sp-btn--hospital {
+  background: #1E3A5F;
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(30, 58, 95, 0.25) !important;
+}
+
+.sp-btn--hospital:hover {
+  background: #2A5490;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(30, 58, 95, 0.25) !important;
+}
+
+/* ── Bouton secondaire "Rester sur la page" — style bh-btn-reset ── */
+.sp-close-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  border: 1.5px solid #E0E3E7;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #555;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Hover bleu pour popup hôpital */
+.sp-card--hospital .sp-close-link {
+  box-shadow: 0 8px 22px rgba(30, 58, 95, 0.25) !important;
+}
+
+/* Hover rouge pour popup donneur */
+.sp-card--donor .sp-close-link:hover {
+  background: #FFF0F0;
+  border-color: #A2211B;
+  color: #A2211B;
+}
+
+/* Hover bleu pour popup hôpital */
+.sp-card--hospital .sp-close-link:hover {
+  background: #EBF2FB;
+  border-color: #1E3A5F;
+  color: #1E3A5F;
+  box-shadow: 0 8px 22px rgba(30, 58, 95, 0.25) !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .sp-card { padding: 1.75rem 1.5rem 1.5rem; }
+  .sp-title { font-size: 1.2rem; }
+}
