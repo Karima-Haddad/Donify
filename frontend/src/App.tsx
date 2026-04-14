@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Register from "./pages/RegisterPage";
 import HospitalDashboardPage from "./pages/hospitalDashboradPage";
 import HospitalLayout from "./layouts/HospitalLayout";
 import DonorLayout from "./layouts/DonorLayout";
@@ -14,6 +15,7 @@ import DonorProfileEdit from "./pages/DonorProfileEdit";
 import HospitalProfileEdit from "./pages/HospitalProfileEdit";
 import HospitalProfil from "./pages/HospitalProfil";
 import BloodRequestHistory from "./pages/BloodRequestHistory";
+import RegisterPage from "./pages/RegisterPage";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,6 +31,7 @@ export default function App() {
         <Route path="/" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Hospital */}
         <Route element={<HospitalLayout />}>

@@ -7,9 +7,8 @@ import {
   getCitiesByGovernorate,
   getCoordinates
 } from "../data/tunisiaLocations";
+import type { SuccessData } from "../pages/RegisterPage";
 
-
-// ── Type de l'état du formulaire ──────────────────────────────────────────
 interface DonorFormState {
   nom: string;
   prenom: string;
@@ -40,7 +39,12 @@ const initialState: DonorFormState = {
   hasTattooOrPiercing: "", password: "", confirmPassword: ""
 };
 
-export default function DonorForm(): React.ReactElement {
+// ── Prop onSuccess ajoutée ────────────────────────────────────────────────
+interface DonorFormProps {
+  onSuccess: (data: SuccessData) => void;
+}
+
+export default function DonorForm({ onSuccess }: DonorFormProps): React.ReactElement {
   const [formData, setFormData] = useState<DonorFormState>(initialState);
   const [errors, setErrors] = useState<Partial<Record<keyof DonorFormState, string>>>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -48,67 +52,54 @@ export default function DonorForm(): React.ReactElement {
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
   const cities: string[] = getCitiesByGovernorate(formData.governorate);
-
   const tunisianPhoneRegex = /^[0-9]{8}$/;
   const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
-  // ── Calcul de l'âge ───────────────────────────────────────────────────
   const calculateAge = (dateOfBirth: string): number => {
     const today = new Date();
     const birth = new Date(dateOfBirth);
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
-    }
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) age--;
     return age;
   };
 
-  // ── Gestion des changements ───────────────────────────────────────────
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ): void => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
-
     if (name === "governorate") {
       setFormData(prev => ({ ...prev, governorate: value, city: "" }));
       return;
     }
-
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value
-    }));
+    if (name === "contact_phone") {
+      const digitsOnly = value.replace(/\D/g, "").slice(0, 8);
+      setFormData(prev => ({ ...prev, contact_phone: digitsOnly }));
+      return;
+    }
+    setFormData(prev => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
   };
 
-  // ── Validation d'un seul champ ────────────────────────────────────────
   const validateField = (name: string, value: string): void => {
     let error = "";
-
     if (name === "nom" && !value.trim()) error = "Le nom est requis";
     if (name === "prenom" && !value.trim()) error = "Le prénom est requis";
     if (name === "email" && !/\S+@\S+\.\S+/.test(value)) error = "Email invalide";
     if (name === "contact_phone" && !tunisianPhoneRegex.test(value))
       error = "Le numéro doit contenir exactement 8 chiffres";
     if (name === "gender" && !value) error = "Le sexe est requis";
-
     if (name === "date_of_birth") {
-      if (!value) {
-        error = "La date de naissance est requise";
-      } else {
+      if (!value) { error = "La date de naissance est requise"; }
+      else {
         const age = calculateAge(value);
         if (age < 18) error = "Vous devez avoir au moins 18 ans pour donner votre sang";
         else if (age > 65) error = "Le don de sang n'est pas autorisé après 65 ans";
       }
     }
-
     if (name === "weight") {
       if (!value) error = "Le poids est requis";
       else if (isNaN(Number(value)) || Number(value) <= 0) error = "Veuillez entrer un poids valide";
       else if (Number(value) < 50) error = "Vous devez peser au moins 50 kg pour donner votre sang";
     }
-
     if (name === "blood_type" && !value) error = "Le groupe sanguin est requis";
     if (name === "governorate" && !value) error = "Le gouvernorat est requis";
     if (name === "city" && !value) error = "La ville est requise";
@@ -123,14 +114,10 @@ export default function DonorForm(): React.ReactElement {
       error = "Mot de passe faible (8 caractères min, maj, min, chiffre, symbole)";
     if (name === "confirmPassword" && value !== formData.password)
       error = "Les mots de passe ne correspondent pas";
-
     setErrors(prev => ({ ...prev, [name]: error }));
   };
 
-  // ── Touche Entrée ─────────────────────────────────────────────────────
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement>
-  ): void => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement>): void => {
     if (e.key === "Enter") {
       e.preventDefault();
       const target = e.target as HTMLInputElement | HTMLSelectElement;
@@ -139,17 +126,14 @@ export default function DonorForm(): React.ReactElement {
     }
   };
 
-  // ── Validation complète au submit ─────────────────────────────────────
   const validateAll = (): boolean => {
     const newErrors: Partial<Record<keyof DonorFormState, string>> = {};
-
     if (!formData.nom.trim()) newErrors.nom = "Le nom est requis";
     if (!formData.prenom.trim()) newErrors.prenom = "Le prénom est requis";
     if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email invalide";
     if (!tunisianPhoneRegex.test(formData.contact_phone))
       newErrors.contact_phone = "Le numéro doit contenir exactement 8 chiffres";
     if (!formData.gender) newErrors.gender = "Le sexe est requis";
-
     if (!formData.date_of_birth) {
       newErrors.date_of_birth = "La date de naissance est requise";
     } else {
@@ -157,7 +141,6 @@ export default function DonorForm(): React.ReactElement {
       if (age < 18) newErrors.date_of_birth = "Vous devez avoir au moins 18 ans pour donner votre sang";
       else if (age > 65) newErrors.date_of_birth = "Le don de sang n'est pas autorisé après 65 ans";
     }
-
     if (!formData.weight) {
       newErrors.weight = "Le poids est requis";
     } else if (isNaN(Number(formData.weight)) || Number(formData.weight) <= 0) {
@@ -165,7 +148,6 @@ export default function DonorForm(): React.ReactElement {
     } else if (Number(formData.weight) < 50) {
       newErrors.weight = "Vous devez peser au moins 50 kg pour donner votre sang";
     }
-
     if (!formData.blood_type) newErrors.blood_type = "Le groupe sanguin est requis";
     if (!formData.governorate) newErrors.governorate = "Le gouvernorat est requis";
     if (!formData.city) newErrors.city = "La ville est requise";
@@ -180,12 +162,11 @@ export default function DonorForm(): React.ReactElement {
       newErrors.password = "Mot de passe faible (8 caractères min, maj, min, chiffre, symbole)";
     if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // ── Submit ────────────────────────────────────────────────────────────
+  // ── Submit — seule section modifiée ──────────────────────────────────
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!validateAll()) return;
@@ -241,9 +222,25 @@ export default function DonorForm(): React.ReactElement {
         next_eligible_date
       });
 
-      alert("Compte créé avec succès !");
+      // ── Réinitialiser le formulaire ──
       setFormData(initialState);
       setErrors({});
+
+      // ── Formater la date pour l'affichage dans le popup ──
+      const nextEligibleFormatted = next_eligible_date
+        ? new Date(next_eligible_date).toLocaleDateString("fr-TN", {
+            day: "numeric", month: "long", year: "numeric"
+          })
+        : undefined;
+
+      // ── Déclencher le popup — PAS de navigate ici ──
+      onSuccess({
+        role: "donor",
+        name: `${formData.prenom} ${formData.nom}`,
+        bloodType: formData.blood_type,
+        nextEligibleDate: nextEligibleFormatted,
+      });
+
     } catch (error: unknown) {
       const err = error as { response?: { data?: { error?: string } } };
       alert(err.response?.data?.error || "Erreur lors de l'inscription");
@@ -255,7 +252,6 @@ export default function DonorForm(): React.ReactElement {
   return (
     <form onSubmit={handleSubmit} className="form-grid">
 
-      {/* Nom */}
       <div className={`input-group ${errors.nom ? "has-error" : ""}`}>
         <input type="text" name="nom" value={formData.nom}
           onChange={handleChange}
@@ -265,7 +261,6 @@ export default function DonorForm(): React.ReactElement {
         {errors.nom && <small className="error">{errors.nom}</small>}
       </div>
 
-      {/* Prénom */}
       <div className={`input-group ${errors.prenom ? "has-error" : ""}`}>
         <input type="text" name="prenom" value={formData.prenom}
           onChange={handleChange}
@@ -275,7 +270,6 @@ export default function DonorForm(): React.ReactElement {
         {errors.prenom && <small className="error">{errors.prenom}</small>}
       </div>
 
-      {/* Email */}
       <div className={`input-group ${errors.email ? "has-error" : ""}`}>
         <input type="email" name="email" value={formData.email}
           onChange={handleChange}
@@ -285,17 +279,15 @@ export default function DonorForm(): React.ReactElement {
         {errors.email && <small className="error">{errors.email}</small>}
       </div>
 
-      {/* Téléphone */}
       <div className={`input-group ${errors.contact_phone ? "has-error" : ""}`}>
-        <input type="text" name="contact_phone" value={formData.contact_phone}
+        <input type="tel" name="contact_phone" value={formData.contact_phone}
           onChange={handleChange}
           onBlur={(e) => validateField(e.target.name, e.target.value)}
-          onKeyDown={handleKeyDown} placeholder=" " />
+          onKeyDown={handleKeyDown} placeholder=" " maxLength={8} inputMode="numeric" />
         <label className="floating-label">Téléphone (8 chiffres)</label>
         {errors.contact_phone && <small className="error">{errors.contact_phone}</small>}
       </div>
 
-      {/* Sexe */}
       <div className={`input-group ${errors.gender ? "has-error" : ""}`}>
         <label className="select-label">Sexe</label>
         <select name="gender" value={formData.gender}
@@ -309,7 +301,6 @@ export default function DonorForm(): React.ReactElement {
         {errors.gender && <small className="error">{errors.gender}</small>}
       </div>
 
-      {/* Date de naissance */}
       <div className={`input-group ${errors.date_of_birth ? "has-error" : ""}`}>
         <input type="date" name="date_of_birth" value={formData.date_of_birth}
           onChange={handleChange}
@@ -319,18 +310,15 @@ export default function DonorForm(): React.ReactElement {
         {errors.date_of_birth && <small className="error">{errors.date_of_birth}</small>}
       </div>
 
-      {/* Poids */}
       <div className={`input-group ${errors.weight ? "has-error" : ""}`}>
         <input type="number" name="weight" value={formData.weight}
           onChange={handleChange}
           onBlur={(e) => validateField(e.target.name, e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder=" " min="1" max="300" />
+          onKeyDown={handleKeyDown} placeholder=" " min="1" max="300" />
         <label className="floating-label">Poids (kg)</label>
         {errors.weight && <small className="error">{errors.weight}</small>}
       </div>
 
-      {/* Groupe sanguin */}
       <div className={`input-group ${errors.blood_type ? "has-error" : ""}`}>
         <label className="select-label">Groupe sanguin</label>
         <select name="blood_type" value={formData.blood_type}
@@ -345,7 +333,6 @@ export default function DonorForm(): React.ReactElement {
         {errors.blood_type && <small className="error">{errors.blood_type}</small>}
       </div>
 
-      {/* Gouvernorat */}
       <div className={`input-group ${errors.governorate ? "has-error" : ""}`}>
         <label className="select-label">Gouvernorat</label>
         <select name="governorate" value={formData.governorate}
@@ -360,14 +347,12 @@ export default function DonorForm(): React.ReactElement {
         {errors.governorate && <small className="error">{errors.governorate}</small>}
       </div>
 
-      {/* Ville */}
       <div className={`input-group ${errors.city ? "has-error" : ""}`}>
         <label className="select-label">Ville</label>
         <select name="city" value={formData.city}
           onChange={handleChange}
           onBlur={(e) => validateField(e.target.name, e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={!formData.governorate}>
+          onKeyDown={handleKeyDown} disabled={!formData.governorate}>
           <option value="">
             {formData.governorate ? "Sélectionner" : "Choisir d'abord un gouvernorat"}
           </option>
@@ -378,7 +363,6 @@ export default function DonorForm(): React.ReactElement {
         {errors.city && <small className="error">{errors.city}</small>}
       </div>
 
-      {/* Q1 : Don antérieur */}
       <div className={`input-group full-width ${errors.hasDonatedBefore ? "has-error" : ""}`}>
         <label className="select-label">Avez-vous déjà effectué un don de sang ?</label>
         <select name="hasDonatedBefore" value={formData.hasDonatedBefore}
@@ -392,7 +376,6 @@ export default function DonorForm(): React.ReactElement {
         {errors.hasDonatedBefore && <small className="error">{errors.hasDonatedBefore}</small>}
       </div>
 
-      {/* Date dernier don */}
       {formData.hasDonatedBefore === "yes" && (
         <div className={`input-group full-width ${errors.lastDonationDate ? "has-error" : ""}`}>
           <input type="date" name="lastDonationDate" value={formData.lastDonationDate}
@@ -404,7 +387,6 @@ export default function DonorForm(): React.ReactElement {
         </div>
       )}
 
-      {/* Q2 : Maladies chroniques */}
       <div className={`input-group full-width ${errors.chronicDisease ? "has-error" : ""}`}>
         <label className="select-label">Souffrez-vous d'une maladie chronique grave ?</label>
         <select name="chronicDisease" value={formData.chronicDisease}
@@ -418,7 +400,6 @@ export default function DonorForm(): React.ReactElement {
         {errors.chronicDisease && <small className="error">{errors.chronicDisease}</small>}
       </div>
 
-      {/* Précision maladie */}
       {formData.chronicDisease === "yes" && (
         <div className={`input-group full-width ${errors.chronicDiseaseDetails ? "has-error" : ""}`}>
           <input type="text" name="chronicDiseaseDetails" value={formData.chronicDiseaseDetails}
@@ -430,7 +411,6 @@ export default function DonorForm(): React.ReactElement {
         </div>
       )}
 
-      {/* Q3 : Tatouage / Piercing */}
       <div className={`input-group full-width ${errors.hasTattooOrPiercing ? "has-error" : ""}`}>
         <label className="select-label">Avez-vous un tatouage ou piercing de moins de 6 mois ?</label>
         <select name="hasTattooOrPiercing" value={formData.hasTattooOrPiercing}
@@ -444,11 +424,8 @@ export default function DonorForm(): React.ReactElement {
         {errors.hasTattooOrPiercing && <small className="error">{errors.hasTattooOrPiercing}</small>}
       </div>
 
-      {/* Mot de passe */}
       <div className={`input-group full-width ${errors.password ? "has-error" : ""}`}>
-        <input
-          type={showPassword ? "text" : "password"}
-          name="password" value={formData.password}
+        <input type={showPassword ? "text" : "password"} name="password" value={formData.password}
           onChange={handleChange}
           onBlur={(e) => validateField(e.target.name, e.target.value)}
           onKeyDown={handleKeyDown} placeholder=" " />
@@ -459,11 +436,8 @@ export default function DonorForm(): React.ReactElement {
         {errors.password && <small className="error">{errors.password}</small>}
       </div>
 
-      {/* Confirmer mot de passe */}
       <div className={`input-group full-width ${errors.confirmPassword ? "has-error" : ""}`}>
-        <input
-          type={showConfirmPassword ? "text" : "password"}
-          name="confirmPassword" value={formData.confirmPassword}
+        <input type={showConfirmPassword ? "text" : "password"} name="confirmPassword" value={formData.confirmPassword}
           onChange={handleChange}
           onBlur={(e) => validateField(e.target.name, e.target.value)}
           onKeyDown={handleKeyDown} placeholder=" " />

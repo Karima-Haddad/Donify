@@ -35,31 +35,37 @@ Service IA (Python - FastAPI)
 
 ```
 project-root/
+├── .gitignore
+├── docker-compose.yml
+├── package.json
+├── package-lock.json
+├── README.md
+├── docs/             # Documentation et architecture
 ├── backend/          # Serveur API Node.js
-│   ├── src/          # Code source
-│   ├── config/       # Configuration
-│   ├── scripts/      # Scripts utilitaires
+│   ├── src/          # Code source backend
+│   ├── config/       # Configuration backend
+│   ├── routes/       # Routes API backend
 │   └── README.md     # Documentation backend
 ├── frontend/         # Application React
-│   ├── src/          # Code source
-│   ├── public/       # Ressources statiques
+│   ├── src/          # Code source frontend
+│   ├── public/       # Ressources statiques frontend
 │   └── README.md     # Documentation frontend
 ├── ai/               # Service de prédiction IA
 │   ├── models/       # Modèles entraînés
 │   ├── services/     # Scripts d'IA
 │   └── README.md     # Documentation IA
-├── docs/             # Documentation et architecture
-└── README.md         # Ce fichier
+└── scripts/          # Outils et utilitaires de projet
 ```
 
 ## ⚙️ Technologies
 
 ### Frontend
-- **React 18** - Bibliothèque UI moderne
+- **React** - Bibliothèque UI moderne
 - **Vite** - Outil de build rapide
 - **TypeScript** - Sécurité des types
-- **React Router** - Navigation
+- **React Router DOM** - Navigation
 - **Axios** - Client HTTP
+- **Tailwind CSS** - Styles utilitaires
 
 ### Backend
 - **Node.js + Express** - Framework API
@@ -67,17 +73,19 @@ project-root/
 - **Supabase** - Plateforme cloud
 - **JWT** - Authentification
 - **Zod** - Validation
+- **Pino** - Journalisation
 
 ### Intelligence Artificielle
 - **Python + FastAPI** - Service IA
 - **Scikit-learn** - Apprentissage automatique
 - **XGBoost** - Modèles avancés
 - **Pandas** - Analyse de données
+- **Joblib** - Sérialisation de modèles
 
 ### Outils de développement
 - **Git + GitHub** - Contrôle de version
 - **ESLint + Prettier** - Qualité du code
-- **Docker** - Conteneurisation (planifié)
+- **Docker Compose** - Orchestration de services
 
 ## 🚀 Démarrage rapide
 
@@ -123,7 +131,7 @@ cd ../ai
 python -m venv venv
 venv\Scripts\activate  # Sur Windows
 pip install -r requirements.txt
-# Créer .env avec INTERNAL_API_KEY
+# Créez un fichier .env avec INTERNAL_API_KEY
 python -m uvicorn main:app --reload
 ```
 
@@ -181,59 +189,18 @@ docker compose down
 
 ## 🌍 Workflow de développement
 
-- `main` → Code prêt pour la production
-- `dev` → Branche d'intégration
-- `feature/*` → Développement individuel
+- `main` → code prêt pour la production
+- `dev` → branche d'intégration
+- `feature/*` → développement individuel
 
 ## 📊 État actuel du projet
 
-- ✅ Backend connecté à Supabase
-- ✅ Schéma de base de données implémenté
-- ✅ Frontend initialisé avec TypeScript
-- ✅ Module IA en développement
-- ✅ Authentification JWT
-- ✅ APIs de base pour donneurs et hôpitaux
-
-## 🔮 Fonctionnalités planifiées
-
-### Phase 1 (Courant)
-- [x] Architecture de base
-- [x] Authentification utilisateur
-- [x] Gestion des profils donneurs/hôpitaux
-- [ ] Interface d'appariement IA
-
-### Phase 2 (Prochaine)
-- [ ] Prédictions de pénuries en temps réel
-- [ ] Notifications push
-- [ ] Application mobile
-- [ ] Intégration avec les systèmes hospitaliers
-
-### Phase 3 (Futur)
-- [ ] Analytics avancés
-- [ ] IA prédictive pour les campagnes
-- [ ] Intégration blockchain pour la traçabilité
-- [ ] API publique pour les partenaires
-
-## 🤝 Contribution
-
-Nous accueillons les contributions ! Voici comment participer :
-
-1. Forkez le projet
-2. Créez une branche feature (`git checkout -b feature/AmazingFeature`)
-3. Commitez vos changements (`git commit -m 'Add some AmazingFeature'`)
-4. Pushez vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrez une Pull Request
-
-### Standards de contribution
-
-- Suivez les guides de style (ESLint, Prettier)
-- Écrivez des tests pour les nouvelles fonctionnalités
-- Mettez à jour la documentation
-- Utilisez des messages de commit descriptifs
-
-## 📄 Licence
-
-Ce projet est sous licence [MIT](LICENSE). Voir le fichier `LICENSE` pour plus de détails.
+- ✅ Backend Node.js + Express en cours d'intégration
+- ✅ Frontend React + Vite initialisé
+- ✅ Service IA FastAPI disponible dans `ai/`
+- ✅ Authentification JWT implémentée
+- ✅ Routes principales pour donneurs, hôpitaux et matching
+- ✅ Docker Compose présent pour l'orchestration des services
 
 ## 📞 Support
 
@@ -252,36 +219,5 @@ Pour obtenir de l'aide ou signaler un problème :
 ## 🌍 Development Workflow
 
 - `main` → production-ready code
-- `dev` → integration branch
 - `feature/*` → individual development
-
----
-
-## 📌 Current Status
-
-- Backend connected to Supabase
-- Database schema implemented
-- Frontend initialized with TypeScript
-- AI module under development
-
----
-
-## 👥 Team Guidelines
-
-- Follow ESLint rules
-- Use conventional commits
-- Do not push `.env` files
-- Always create feature branches
-
----
-
-## 📈 Future Roadmap
-
-- Authentication system
-- Smart donor matching algorithm
-- AI shortage prediction
-- Notification system
-- Production deployment
-
----
 
