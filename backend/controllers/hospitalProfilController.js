@@ -23,10 +23,9 @@ export async function getHospitalProfilController(req, res, next) {
   }
 }
 
-
 export async function updateHospitalProfilController(req, res, next) {
   try {
-    const hospitalId = req.params.id;
+    const { hospitalId } = req.params; // 👈 AU LIEU DE id
     const data = req.body;
 
     const updated = await updateHospitalProfilService(hospitalId, data);
@@ -36,6 +35,7 @@ export async function updateHospitalProfilController(req, res, next) {
     next(err);
   }
 }
+
 
 
 

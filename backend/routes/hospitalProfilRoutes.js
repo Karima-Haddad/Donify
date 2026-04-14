@@ -23,6 +23,8 @@ router.get("/hospitals/:hospitalId/dashboard", getHospitalDashboardController);
 router.get("/blood-requests/recent/:hospitalId", getRecentRequests);
 
 //router.get("/:id/profil", getHospitalProfilController);
-router.put("/:id/profil", updateHospitalProfilController);
+//router.put("/:id/profil", updateHospitalProfilController);
+router.put("/hospitals/:hospitalId/profil", updateHospitalProfilController);
+
 
 export default router;
