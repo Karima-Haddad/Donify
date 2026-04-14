@@ -176,7 +176,7 @@ export default function CompatibleDonorsTable({
                     <td data-label="Genre">{formatGender(d.gender)}</td>
                     <td data-label="Groupe">{d.blood_type}</td>
                     <td data-label="Âge">{d.age}</td>
-                    <td data-label="Téléphone">{d.phone || "N/A"}</td>
+                    <td data-label="Téléphone">{d.phone ? d.phone.replace(/^\+216\s?/, "") : "N/A"}</td>
                     <td data-label="Score" className="score">
                       {Math.round(d.proba_accept * 100)}%
                     </td>

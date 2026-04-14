@@ -184,3 +184,49 @@ h3.full-width {
     width: 100%;
   }
 }
+
+
+
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 42px;
+}
+
+.password-icon {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 18px;
+}
+
+.password-icon:hover {
+  color: #1e3a5f;
+}
+
+.input-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d9e2ec;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 15px;
+  outline: none;
+}
+
+.input-group select:focus {
+  border-color: #1e3a5f;
+}
+
+.input-group select:disabled {
+  background: #f3f4f6;
+  cursor: not-allowed;
+}

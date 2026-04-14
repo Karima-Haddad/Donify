@@ -48,34 +48,104 @@ export const getAllDonors = async (client = pool) => {
 };
 
 
+
 export const updateDonorProfilRepository = async (donorId, data) => {
-  const { firstName, lastName, email, phone, city, lastDonation, availability, newPassword } = data;
+  const client = await pool.connect();
 
-  const fullName = `${lastName} ${firstName}`;
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      availability,
+      currentPassword,
+      newPassword,
+    } = data;
 
-  await pool.query(
-    `UPDATE users u
-     SET name=$1, email=$2, contact_phone=$3
-     WHERE id=$4`,
-    [fullName, email, phone, donorId]
-  );
-
-  await pool.query(
-    `UPDATE donors d
-     SET last_donation_date=$1, availability=$2
-     WHERE id=$3`,
-    [lastDonation, availability, donorId]
-  );
-
-  if (newPassword) {
-    // Hash password avant update
     const bcrypt = await import("bcrypt");
-    const hashed = await bcrypt.hash(newPassword, 10);
-    await pool.query(
-      `UPDATE users SET password_hash=$1 WHERE id=$2`,
-      [hashed, donorId]
-    );
-  }
+    const fullName = `${lastName} ${firstName}`.trim();
 
-  return { message: "Profil mis à jour avec succès" };
+    // 1) Vérifier les champs obligatoires
+    if (!firstName?.trim() || !lastName?.trim() || !email?.trim()) {
+      throw new Error("Veuillez remplir les champs obligatoires");
+    }
+
+    if (!currentPassword || currentPassword.trim() === "") {
+      throw new Error("Le mot de passe actuel est obligatoire");
+    }
+
+    // 2) Récupérer l'utilisateur
+    const userResult = await client.query(
+      `SELECT password_hash FROM users WHERE id = $1`,
+      [donorId]
+    );
+
+    if (userResult.rows.length === 0) {
+      throw new Error("Utilisateur introuvable");
+    }
+
+    const user = userResult.rows[0];
+
+    // 3) Vérifier le mot de passe actuel
+    const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
+
+    if (!isMatch) {
+      throw new Error("Mot de passe actuel incorrect");
+    }
+
+    // 4) Vérifier le nouveau mot de passe seulement s'il existe
+    if (newPassword && newPassword.trim() !== "" && newPassword.length < 8) {
+      throw new Error("Le nouveau mot de passe doit contenir au moins 8 caractères");
+    }
+
+    // 5) Préparer le hash seulement si nouveau mot de passe rempli
+    let hashedPassword = null;
+    if (newPassword && newPassword.trim() !== "") {
+      hashedPassword = await bcrypt.hash(newPassword, 10);
+    }
+
+    // 6) Début transaction
+    await client.query("BEGIN");
+
+    // Update users
+    if (hashedPassword) {
+      await client.query(
+        `UPDATE users
+         SET name = $1,
+             email = $2,
+             contact_phone = $3,
+             password_hash = $4
+         WHERE id = $5`,
+        [fullName, email, phone || null, hashedPassword, donorId]
+      );
+    } else {
+      await client.query(
+        `UPDATE users
+         SET name = $1,
+             email = $2,
+             contact_phone = $3
+         WHERE id = $4`,
+        [fullName, email, phone || null, donorId]
+      );
+    }
+
+    // Update donors
+    await client.query(
+      `UPDATE donors
+       SET availability = $1
+       WHERE id = $2`,
+      [availability, donorId]
+    );
+
+    // 7) Validation finale
+    await client.query("COMMIT");
+
+    return { message: "Profil mis à jour avec succès" };
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
 };
