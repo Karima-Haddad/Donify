@@ -13,7 +13,7 @@ import type { HospitalDashboardData } from "../types/dashboard";
 import type { RecentBloodRequest } from "../types/bloodRequest";
 
 
-import "../styles/HospitalDashboardPage.css"; 
+import "../styles/hospitalDashboardPage.css"; 
 
 export default function HospitalDashboardPage() {
   const hospitalName = localStorage.getItem("userName") || "Hôpital";

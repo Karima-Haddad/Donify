@@ -18,11 +18,11 @@ type Hospital = {
   public_id?: string;
   name: string;
   email: string;
-  contact_phone?: string;
+  contact_phone?: string | null;
   created_at?: string;
   updated_at?: string;
-  city?: string;
-  governorate?: string;
+  city?: string | null;
+  governorate?: string | null;
 };
 
 type RequestStat = {

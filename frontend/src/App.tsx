@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import Register from "./pages/RegisterPage";
 import HospitalDashboardPage from "./pages/hospitalDashboradPage";
 import HospitalLayout from "./layouts/HospitalLayout";
 import DonorLayout from "./layouts/DonorLayout";
@@ -31,7 +30,7 @@ export default function App() {
         <Route path="/" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<RegisterPage />} />
 
         {/* Hospital */}
         <Route element={<HospitalLayout />}>

@@ -14,6 +14,7 @@ import type { Donor, ValidatedDonation } from "../types/matching";
 import CompatibleDonorsTable from "./CompatibleDonorsTable";
 import ValidatedDonationsList from "./ValidatedDonationsList";
 import Loader from "./Loader";
+import "../styles/CompatiblesDonorsTable.css";
 
 type Props = {
   requestStatus: "open" | "in_progress" | "satisfied" | "expired";
@@ -99,7 +100,7 @@ export default function MatchingTable({ requestStatus, bloodType }: Props) {
       <ValidatedDonationsList donations={validatedDonations} />
 
       {isClosed ? (
-        <div className="card">
+        <div className="card-compatible">
           <h2>Donneurs compatibles</h2>
           <p>Cette demande est clôturée. Ce service n'est plus disponible.</p>
         </div>

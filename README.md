@@ -190,7 +190,6 @@ docker compose down
 ## 🌍 Workflow de développement
 
 - `main` → code prêt pour la production
-- `dev` → branche d'intégration
 - `feature/*` → développement individuel
 
 ## 📊 État actuel du projet
@@ -214,10 +213,4 @@ Pour obtenir de l'aide ou signaler un problème :
 
 **Donify** - Sauver des vies, une goutte à la fois. 🩸
 
-
-
-## 🌍 Development Workflow
-
-- `main` → production-ready code
-- `feature/*` → individual development
 

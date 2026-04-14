@@ -7,7 +7,7 @@ body {
 
 /* ✅ CENTRAGE DU BLOC */
 .container {
-  max-width: 700px;
+  max-width: 1100px;
   margin: 40px auto; /* centre horizontalement */
   padding: 20px;
  
@@ -142,3 +142,44 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.password-field span {
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 18px;
+}
+
+.password-field span:hover {
+  color: #1e3a5f;
+}
+
+
+
+.input-group input:focus {
+  border-color: #1e3a5f;
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.12);
+}
+
+.input-group input:disabled {
+  background: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.input-group input:invalid {
+  border-color: #dc2626;
+}
+

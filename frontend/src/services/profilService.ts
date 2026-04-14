@@ -43,17 +43,27 @@ export const getDonorProfil = async (donorId: string): Promise<DonorProfil> => {
 
 // 🔹 TYPES
 
-export type Hospital = {
+export interface Hospital {
   id: string;
-  public_id?: string;
   name: string;
   email: string;
-  contact_phone?: string;
-  created_at?: string;
-  updated_at?: string;
-  city?: string;
-  governorate?: string;
-};
+
+  contact_phone?: string | null;
+  phone?: string | null;
+
+  // 🔥 localisation directe
+  city?: string | null;
+  governorate?: string | null;
+
+  // 🔥 location relation (important)
+  location?: {
+    city?: string | null;
+    governorate?: string | null;
+  } | null;
+
+  // 🔥 optionnel (si tu veux garder dans frontend)
+  address?: string | null;
+}
 
 export type RequestStat = {
   id: string;

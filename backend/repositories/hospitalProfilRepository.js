@@ -123,26 +123,153 @@ export async function getHospitalProfilRepository(hospitalId) {
   };
 }
 
+// export async function updateHospitalProfilRepository(hospitalId, data) {
+//   const {
+//     name,
+//     email,
+//     phone,
+//   } = data;
+
+//   // 🔥 update USERS (car hospital = users)
+//   await pool.query(
+//     `
+//     UPDATE users
+//     SET name = $1,
+//         email = $2,
+//         contact_phone = $3
+//     WHERE id = $4
+//     `,
+//     [name, email, phone, hospitalId]
+//   );
+
+//   return { message: "Hospital profil mis à jour" };
+// }
+
+
+
 export async function updateHospitalProfilRepository(hospitalId, data) {
-  const {
-    name,
-    email,
-    phone,
-  } = data;
+  const client = await pool.connect();
 
-  // 🔥 update USERS (car hospital = users)
-  await pool.query(
-    `
-    UPDATE users
-    SET name = $1,
-        email = $2,
-        contact_phone = $3
-    WHERE id = $4
-    `,
-    [name, email, phone, hospitalId]
-  );
+  try {
+    const {
+      name,
+      email,
+      phone,
+      governorate,
+      city,
+      currentPassword,
+      newPassword,
+    } = data;
 
-  return { message: "Hospital profil mis à jour" };
+    const bcryptModule = await import("bcrypt");
+    const bcrypt = bcryptModule.default || bcryptModule;
+
+    if (!currentPassword || currentPassword.trim() === "") {
+      throw new Error("Le mot de passe actuel est obligatoire");
+    }
+
+    const userResult = await client.query(
+      `
+      SELECT id, password_hash, location_id
+      FROM users
+      WHERE id = $1
+      `,
+      [hospitalId]
+    );
+
+    if (userResult.rows.length === 0) {
+      throw new Error("Utilisateur introuvable");
+    }
+
+    const user = userResult.rows[0];
+
+    const isMatch = await bcrypt.compare(
+      currentPassword,
+      user.password_hash
+    );
+
+    if (!isMatch) {
+      throw new Error("Mot de passe actuel incorrect");
+    }
+
+    let hashedPassword = null;
+    if (newPassword && newPassword.trim() !== "") {
+      hashedPassword = await bcrypt.hash(newPassword, 10);
+    }
+
+    await client.query("BEGIN");
+
+    if (hashedPassword) {
+      await client.query(
+        `
+        UPDATE users
+        SET name = $1,
+            email = $2,
+            contact_phone = $3,
+            password_hash = $4,
+            updated_at = now()
+        WHERE id = $5
+        `,
+        [name, email, phone, hashedPassword, hospitalId]
+      );
+    } else {
+      await client.query(
+        `
+        UPDATE users
+        SET name = $1,
+            email = $2,
+            contact_phone = $3,
+            updated_at = now()
+        WHERE id = $4
+        `,
+        [name, email, phone, hospitalId]
+      );
+    }
+
+    if (city || governorate) {
+      if (user.location_id) {
+        await client.query(
+          `
+          UPDATE locations
+          SET city = $1,
+              governorate = $2
+          WHERE id = $3
+          `,
+          [city || null, governorate || null, user.location_id]
+        );
+      } else {
+        const locationResult = await client.query(
+          `
+          INSERT INTO locations (city, governorate)
+          VALUES ($1, $2)
+          RETURNING id
+          `,
+          [city || null, governorate || null]
+        );
+
+        const newLocationId = locationResult.rows[0].id;
+
+        await client.query(
+          `
+          UPDATE users
+          SET location_id = $1,
+              updated_at = now()
+          WHERE id = $2
+          `,
+          [newLocationId, hospitalId]
+        );
+      }
+    }
+
+    await client.query("COMMIT");
+
+    return { message: "Profil hôpital mis à jour avec succès" };
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 
