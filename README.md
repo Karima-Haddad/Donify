@@ -103,6 +103,15 @@ git clone <url-du-repo>
 cd project-root
 ```
 
+**Première exécution uniquement**
+
+Avant de démarrer le serveur FastAPI pour la première fois, lancez le script de préparation :
+```bash
+cd ai
+python services/entrypoint.py
+```
+Ce script crée les datasets et entraîne les modèles manquants si nécessaire.
+
 ### 2️⃣ Configuration du backend
 
 ```bash

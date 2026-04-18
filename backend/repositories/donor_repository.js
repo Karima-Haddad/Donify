@@ -102,138 +102,325 @@ export async function findAvailableDonorsByBloodType(bloodType, requestId) {
  */
 
 export async function respondToRequestRepository({
-    request_id,
-    donor_id,
-    notification_id,
-    response_status,
-  }) {
-    const client = await pool.connect();
+  request_id,
+  donor_id,
+  notification_id,
+  response_status,
+}) {
+  const client = await pool.connect();
 
-    try {
-      await client.query("BEGIN");
+  try {
+    await client.query("BEGIN");
 
-      // ================================
-      // 1. Vérifier la demande + récupérer hôpital
-      // ================================
-      const requestResult = await client.query(
-        `
-        SELECT hospital_id, blood_type
-        FROM blood_requests
-        WHERE id = $1
-        `,
-        [request_id]
-      );
+    // ================================
+    // 1. Vérifier la demande + récupérer hôpital
+    // ================================
+    const requestResult = await client.query(
+      `
+      SELECT hospital_id, blood_type
+      FROM blood_requests
+      WHERE id = $1
+      `,
+      [request_id]
+    );
 
-      if (requestResult.rows.length === 0) {
-        throw new Error("Blood request not found");
-      }
-
-      const { hospital_id, blood_type } = requestResult.rows[0];
-
-      // ================================
-      // 2. Récupérer public_id du donneur
-      // ================================
-      const donorResult = await client.query(
-        `
-        SELECT public_id
-        FROM users
-        WHERE id = $1
-        `,
-        [donor_id]
-      );
-
-      if (donorResult.rows.length === 0) {
-        throw new Error("Donor not found");
-      }
-
-      const { public_id } = donorResult.rows[0];
-
-      // ================================
-      // 3. Enregistrer la réponse
-      // ================================
-      const responseResult = await client.query(
-        `
-        INSERT INTO donor_responses (
-          id,
-          request_id,
-          donor_id,
-          notification_id,
-          response_status,
-          sent_at,
-          responded_at,
-          created_at
-        )
-        VALUES (
-          gen_random_uuid(),
-          $1,
-          $2,
-          $3,
-          $4,
-          NOW(),
-          NOW(),
-          NOW()
-        )
-        RETURNING *
-        `,
-        [request_id, donor_id, notification_id || null, response_status]
-      );
-
-      // ================================
-      // 4. Construire message notification
-      // ================================
-      let title = "";
-      let message = "";
-
-      if (response_status === "accepted") {
-        title = "Donneur disponible";
-        message = `Le donneur ${public_id} a accepté votre demande de sang ${blood_type}.`;
-      } else {
-        title = "Donneur indisponible";
-        message = `Le donneur ${public_id} a refusé votre demande de sang ${blood_type}.`;
-      }
-
-      // ================================
-      // 5. Créer notification pour hôpital
-      // ================================
-      const notificationResult = await client.query(
-        `
-        INSERT INTO notifications (
-          id,
-          user_id,
-          request_id,
-          type,
-          title,
-          message,
-          status,
-          channel,
-          sent_at
-        )
-        VALUES (
-          gen_random_uuid(),
-          $1,
-          $2,
-          'donation_response',
-          $3,
-          $4,
-          'unread',
-          'in_app',
-          NOW()
-        )
-        RETURNING *
-        `,
-        [hospital_id, request_id, title, message]
-      );
-
-      await client.query("COMMIT");
-
-      return {
-        donor_response: responseResult.rows[0],
-        hospital_notification: notificationResult.rows[0],
-      };
-    } catch (error) {
-      await client.query("ROLLBACK");
-      throw error;
-    } finally {
-      client.release();
+    if (requestResult.rows.length === 0) {
+      throw new Error("Blood request not found");
     }
+
+    const { hospital_id, blood_type } = requestResult.rows[0];
+
+    // ================================
+    // 2. Récupérer infos du donneur
+    // ================================
+    const donorResult = await client.query(
+      `
+      SELECT public_id, contact_phone
+      FROM users
+      WHERE id = $1
+      `,
+      [donor_id]
+    );
+
+    if (donorResult.rows.length === 0) {
+      throw new Error("Donor not found");
+    }
+
+    const { public_id, contact_phone  } = donorResult.rows[0];
+
+    // ================================
+    // 3. Vérifier si cette notification a déjà été traitée
+    // ================================
+    if (notification_id) {
+      const notificationCheck = await client.query(
+        `
+        SELECT response_status
+        FROM notifications
+        WHERE id = $1
+        `,
+        [notification_id]
+      );
+
+      if (notificationCheck.rows.length === 0) {
+        throw new Error("Notification not found");
+      }
+
+      if (notificationCheck.rows[0].response_status) {
+        throw new Error("This notification has already been answered");
+      }
+    }
+
+    // ================================
+    // 4. Enregistrer la réponse
+    // ================================
+    const responseResult = await client.query(
+      `
+      INSERT INTO donor_responses (
+        id,
+        request_id,
+        donor_id,
+        notification_id,
+        response_status,
+        sent_at,
+        responded_at,
+        created_at
+      )
+      VALUES (
+        gen_random_uuid(),
+        $1,
+        $2,
+        $3,
+        $4,
+        NOW(),
+        NOW(),
+        NOW()
+      )
+      RETURNING *
+      `,
+      [request_id, donor_id, notification_id || null, response_status]
+    );
+
+    // ================================
+    // 5. Mettre à jour la notification du donneur
+    // ================================
+    let updatedDonorNotification = null;
+
+    if (notification_id) {
+      const updatedNotificationResult = await client.query(
+        `
+        UPDATE notifications
+        SET response_status = $1,
+            responded_at = NOW()
+        WHERE id = $2
+        RETURNING *
+        `,
+        [response_status, notification_id]
+      );
+
+      updatedDonorNotification = updatedNotificationResult.rows[0];
+    }
+
+    // ================================
+    // 6. Construire message notification pour hôpital
+    // ================================
+    let title = "";
+    let message = "";
+
+    if (response_status === "accepted") {
+  title = "Donneur disponible";
+  message = `Le donneur ${public_id} a accepté votre demande de sang ${blood_type}. 📞 ${contact_phone || "Non disponible"}.`;
+} else {
+  title = "Donneur indisponible";
+  message = `Le donneur ${public_id} a refusé votre demande de sang ${blood_type}. 📞 ${contact_phone || "Non disponible"}.`;
 }
+
+    // ================================
+    // 7. Créer notification pour hôpital
+    // ================================
+    const notificationResult = await client.query(
+      `
+      INSERT INTO notifications (
+        id,
+        user_id,
+        request_id,
+        type,
+        title,
+        message,
+        status,
+        channel,
+        sent_at
+      )
+      VALUES (
+        gen_random_uuid(),
+        $1,
+        $2,
+        'donation_response',
+        $3,
+        $4,
+        'unread',
+        'in_app',
+        NOW()
+      )
+      RETURNING *
+      `,
+      [hospital_id, request_id, title, message]
+    );
+
+    await client.query("COMMIT");
+
+    return {
+      donor_response: responseResult.rows[0],
+      updated_donor_notification: updatedDonorNotification,
+      hospital_notification: notificationResult.rows[0],
+    };
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+
+// /**
+//  * Gère la réponse d’un donneur à une demande de sang :
+//  * enregistre la réponse dans la base de données et envoie
+//  * une notification à l’hôpital concerné, le tout dans une transaction sécurisée.
+//  */
+
+// export async function respondToRequestRepository({
+//     request_id,
+//     donor_id,
+//     notification_id,
+//     response_status,
+//   }) {
+//     const client = await pool.connect();
+
+//     try {
+//       await client.query("BEGIN");
+
+//       // ================================
+//       // 1. Vérifier la demande + récupérer hôpital
+//       // ================================
+//       const requestResult = await client.query(
+//         `
+//         SELECT hospital_id, blood_type
+//         FROM blood_requests
+//         WHERE id = $1
+//         `,
+//         [request_id]
+//       );
+
+//       if (requestResult.rows.length === 0) {
+//         throw new Error("Blood request not found");
+//       }
+
+//       const { hospital_id, blood_type } = requestResult.rows[0];
+
+//       // ================================
+//       // 2. Récupérer public_id du donneur
+//       // ================================
+//       const donorResult = await client.query(
+//         `
+//         SELECT public_id
+//         FROM users
+//         WHERE id = $1
+//         `,
+//         [donor_id]
+//       );
+
+//       if (donorResult.rows.length === 0) {
+//         throw new Error("Donor not found");
+//       }
+
+//       const { public_id } = donorResult.rows[0];
+
+//       // ================================
+//       // 3. Enregistrer la réponse
+//       // ================================
+//       const responseResult = await client.query(
+//         `
+//         INSERT INTO donor_responses (
+//           id,
+//           request_id,
+//           donor_id,
+//           notification_id,
+//           response_status,
+//           sent_at,
+//           responded_at,
+//           created_at
+//         )
+//         VALUES (
+//           gen_random_uuid(),
+//           $1,
+//           $2,
+//           $3,
+//           $4,
+//           NOW(),
+//           NOW(),
+//           NOW()
+//         )
+//         RETURNING *
+//         `,
+//         [request_id, donor_id, notification_id || null, response_status]
+//       );
+
+//       // ================================
+//       // 4. Construire message notification
+//       // ================================
+//       let title = "";
+//       let message = "";
+
+//       if (response_status === "accepted") {
+//         title = "Donneur disponible";
+//         message = `Le donneur ${public_id} a accepté votre demande de sang ${blood_type}.`;
+//       } else {
+//         title = "Donneur indisponible";
+//         message = `Le donneur ${public_id} a refusé votre demande de sang ${blood_type}.`;
+//       }
+
+//       // ================================
+//       // 5. Créer notification pour hôpital
+//       // ================================
+//       const notificationResult = await client.query(
+//         `
+//         INSERT INTO notifications (
+//           id,
+//           user_id,
+//           request_id,
+//           type,
+//           title,
+//           message,
+//           status,
+//           channel,
+//           sent_at
+//         )
+//         VALUES (
+//           gen_random_uuid(),
+//           $1,
+//           $2,
+//           'donation_response',
+//           $3,
+//           $4,
+//           'unread',
+//           'in_app',
+//           NOW()
+//         )
+//         RETURNING *
+//         `,
+//         [hospital_id, request_id, title, message]
+//       );
+
+//       await client.query("COMMIT");
+
+//       return {
+//         donor_response: responseResult.rows[0],
+//         hospital_notification: notificationResult.rows[0],
+//       };
+//     } catch (error) {
+//       await client.query("ROLLBACK");
+//       throw error;
+//     } finally {
+//       client.release();
+//     }
+// }

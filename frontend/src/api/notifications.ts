@@ -1,6 +1,5 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-
 export type HospitalNotification = {
   id: string;
   user_id: string;
@@ -11,7 +10,10 @@ export type HospitalNotification = {
   status: "read" | "unread";
   sent_at: string | null;
   read_at?: string | null;
+  response_status?: "accepted" | "refused" | null;
+  responded_at?: string | null;
 };
+
 if (!API_URL) {
   throw new Error("VITE_API_URL est non définie.");
 }

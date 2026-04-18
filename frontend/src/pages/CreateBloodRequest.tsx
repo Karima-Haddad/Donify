@@ -141,7 +141,7 @@ export default function CreateBloodRequest() {
               <button className="cr-btn-primary" onClick={() => setSuccess(false)}>
                 <i className="fas fa-plus"></i> Nouvelle demande
               </button>
-              <button className="cr-btn-secondary" onClick={() => navigate("/hospital-dashboard")}>
+              <button className="cr-btn-secondary" onClick={() => navigate("/hospital-dashboard-page")}>
                 Retour au dashboard
               </button>
             </div>
