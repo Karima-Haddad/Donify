@@ -42,6 +42,15 @@ Le répertoire `ai/` contient les composants d'apprentissage automatique du proj
 
 ## Utilisation
 
+**Première exécution uniquement**
+
+Avant de démarrer le serveur FastAPI pour la première fois, lancez le script de préparation :
+```bash
+cd ai
+python services/entrypoint.py
+```
+Ce script crée les datasets et entraîne les modèles manquants si nécessaire.
+
 ### Lancement avec Docker
 
 Pour lancer le service AI avec Docker :
@@ -78,33 +87,7 @@ Pour lancer le service AI avec Docker :
 
 ### Lancement du service API
 
-1. Génération d'ensembles de données
-
-Utilisez le script de génération d'ensembles de données pour le modèle de punérie :
-```bash
-python generate_big_dataset.py
-```
-
-Utilisez le script de génération d'ensembles de données pour le modèle de matching :
-```bash
-python generate_matching_dataset.py
-```
-
-2. Entraînement des modèles
-
-Exécutez le script d'entraînement de prédiction des pénuries :
-```bash
-python train_shortage.py    
-```
-Cela entraînera un modèle Random Forest et le sauvegardera dans `models/shortage_model.pkl`.
-
-Exécutez le script d'entraînement de modèle de matching:
-```bash
-python services/train_matchig_model.py
-```
-Cela entraînera les 3 modèles testés (Logistic Regression, Random Forest, XGBoost) et les sauvegardera dans `models`.
-
-3. Démarrez le serveur FastAPI :
+Démarrez le serveur FastAPI :
 ```bash
 python -m uvicorn main:app --reload
 ```
