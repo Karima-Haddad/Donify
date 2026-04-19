@@ -15,14 +15,12 @@ import HospitalProfileEdit from "./pages/HospitalProfileEdit";
 import HospitalProfil from "./pages/HospitalProfil";
 import BloodRequestHistory from "./pages/BloodRequestHistory";
 import RegisterPage from "./pages/RegisterPage";
-
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   return (
     <>
-      {/* 🔔 Toast container doit être ICI (hors Routes) */}
       <ToastContainer position="top-right" autoClose={3000} />
 
       <Routes>
